@@ -23,7 +23,15 @@ var roleHarvester = {
                     creep.moveTo(targets[0]);
                 }
             } else {
-                roleUpgrader.run(creep);
+
+                for (let name in Game.creeps) {
+                    let unit = Game.creeps[name];
+                    if (unit.memory.role == 'upgrader') {
+                        if (creep.transfer(unit, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(unit);
+                        }
+                    }
+                }
             }
         }
     }
