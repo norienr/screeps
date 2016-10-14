@@ -1,4 +1,24 @@
 var defenseModule = {
+    getTowers: function (roomName) {
+        return Game.rooms[roomName].find(
+            FIND_MY_STRUCTURES, {
+                filter: {structureType: STRUCTURE_TOWER}
+            });
+    },
+    spottedThreats: function (roomName) {
+        return (Game.rooms[roomName].find(FIND_HOSTILE_CREEPS)).length;
+    },
+    hasDamagedStructs: function (roomName) {
+        return Game.rooms[roomName].find(
+            FIND_STRUCTURES, {
+                filter: (structure) => structure.hits < structure.hitsMax
+            });
+    },
+    getClosestDamagedStructs: function (tower) {
+        return tower.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: (structure) => structure.hits < structure.hitsMax
+        });
+    },
     doRepair: function (tower, closestDamagedStructure) {
         if (closestDamagedStructure) {
             tower.repair(closestDamagedStructure);
@@ -10,28 +30,22 @@ var defenseModule = {
         }
     },
     run: function () {
-
         for (let i in Game.rooms) {
+            const roomName = Game.rooms[i].name;
 
-            let roomName = Game.rooms[i].name;
-            let towers = Game.rooms[roomName].find(
-                FIND_MY_STRUCTURES, {
-                    filter: {structureType: STRUCTURE_TOWER}
-                });
+            let towers;
+            if ((towers = this.getTowers(roomName)).length) {
 
-            if (towers.length) {
-
-                let threats = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS);
-                if (threats.length) {
-                    towers.forEach(tower => attackThreats(tower, tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS)));
+                if (this.spottedThreats(roomName)) {
+                    towers.forEach(
+                        tower => this.attackThreats(tower, tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
+                        ));
+                } else if (this.hasDamagedStructs(roomName)) {
+                    towers.forEach(
+                        tower => this.doRepair(tower, this.getClosestDamagedStructs(tower))
+                    );
                 }
-
-                towers.forEach(tower => doRepair(tower, tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                    filter: (structure) => structure.hits < structure.hitsMax
-                })));
             }
-
-
         }
     }
 };
