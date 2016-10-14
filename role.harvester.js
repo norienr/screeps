@@ -25,8 +25,8 @@ var roleHarvester = {
                     creep.moveTo(targets[0]);
                 }
             } else {
-                for (let name in Game.creeps) {
-                    let unit = Game.creeps[name];
+                for (let i in Game.creeps) {
+                    let unit = Game.creeps[i];
                     if (unit.memory.role == 'upgrader') {
                         if (creep.transfer(unit, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                             creep.moveTo(unit);
