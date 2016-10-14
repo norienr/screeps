@@ -1,53 +1,60 @@
-var defenseModule = {
-    getTowers: function (roomName) {
-        return Game.rooms[roomName].find(
-            FIND_MY_STRUCTURES, {
-                filter: {structureType: STRUCTURE_TOWER}
-            });
-    },
-    spottedThreats: function (roomName) {
-        return (Game.rooms[roomName].find(FIND_HOSTILE_CREEPS)).length;
-    },
-    hasDamagedStructs: function (roomName) {
-        return Game.rooms[roomName].find(
-            FIND_STRUCTURES, {
+var defenseModule = (function () {
+    var o = {
+        getTowers: function (roomName) {
+            return Game.rooms[roomName].find(
+                FIND_MY_STRUCTURES, {
+                    filter: {structureType: STRUCTURE_TOWER}
+                });
+        },
+        spottedThreats: function (roomName) {
+            return (Game.rooms[roomName].find(FIND_HOSTILE_CREEPS)).length;
+        },
+        hasDamagedStructs: function (roomName) {
+            return Game.rooms[roomName].find(
+                FIND_STRUCTURES, {
+                    filter: (structure) => structure.hits < structure.hitsMax
+                });
+        },
+        getClosestDamagedStructs: function (tower) {
+            return tower.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: (structure) => structure.hits < structure.hitsMax
             });
-    },
-    getClosestDamagedStructs: function (tower) {
-        return tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax
-        });
-    },
-    doRepair: function (tower, closestDamagedStructure) {
-        if (closestDamagedStructure) {
-            tower.repair(closestDamagedStructure);
-        }
-    },
-    attackThreats: function (tower, closestThreat) {
-        if (closestThreat) {
-            tower.attack(closestThreat);
-        }
-    },
-    run: function () {
-        for (let i in Game.rooms) {
-            const roomName = Game.rooms[i].name;
+        },
+        doRepair: function (tower, closestDamagedStructure) {
+            if (closestDamagedStructure) {
+                tower.repair(closestDamagedStructure);
+            }
+        },
+        attackThreats: function (tower, closestThreat) {
+            if (closestThreat) {
+                tower.attack(closestThreat);
+            }
+        },
+    };
 
-            let towers;
-            if ((towers = this.getTowers(roomName)).length) {
+    var publicAPI = {
+        run: function () {
+            for (let i in Game.rooms) {
+                const roomName = Game.rooms[i].name;
 
-                if (this.spottedThreats(roomName)) {
-                    towers.forEach(
-                        tower => this.attackThreats(tower, tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
-                        ));
-                } else if (this.hasDamagedStructs(roomName)) {
-                    towers.forEach(
-                        tower => this.doRepair(tower, this.getClosestDamagedStructs(tower))
-                    );
+                let towers;
+                if ((towers = o.getTowers(roomName)).length) {
+
+                    if (o.spottedThreats(roomName)) {
+                        towers.forEach(
+                            tower => o.attackThreats(tower, tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
+                            ));
+                    } else if (o.hasDamagedStructs(roomName)) {
+                        towers.forEach(
+                            tower => o.doRepair(tower, o.getClosestDamagedStructs(tower))
+                        );
+                    }
                 }
             }
         }
-    }
-};
+    };
+
+    return publicAPI;
+})();
 
 module.exports = defenseModule;
