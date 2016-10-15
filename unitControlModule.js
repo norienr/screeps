@@ -12,6 +12,13 @@ var unitControlModule = (function () {
     const MIN_UPGRADER_NUM = 1;
     const MIN_BUILDER_NUM = 1;
 
+    const CREEPS = [ //highest priority at top
+        {role: ROLE_HARVESTER, needed: MIN_HARVESTER_NUM},
+        {role: ROLE_UPGRADER, needed: MIN_UPGRADER_NUM},
+        {role: ROLE_BUILDER, needed: MIN_BUILDER_NUM},
+    ];
+
+
     var o = {
         deleteUnusedNames: function () {
             for (let name in Memory.creeps) {
@@ -40,49 +47,61 @@ var unitControlModule = (function () {
         getSpawnsByRoom(roomName) {
             return _.filter(Game.rooms[roomName].find(FIND_MY_STRUCTURES), struct => struct.structureType == STRUCTURE_SPAWN);
         },
-        spawnCreepsInRoom(roomName, role, num) {
-            _.forEach(this.getSpawnsByRoom(roomName), function (spawn) {
-                if (num++) {
-                    spawn.createCreep([WORK, CARRY, MOVE], undefined, {role: role});
-                }
-            });
+        spawnCreeps(spawn, parts, role) {
+            var canSpawn = spawn.canCreateCreep(parts);
+            if (canSpawn == OK) {
+                spawn.createCreep(parts, undefined, {role: role});
+                spawn.memory.lastSpawningRole = role;
+            }
+            return canSpawn;
         }
     };
 
     var publicAPI = {
-        run: function () {
+            run: function (roomName) {
+                o.runCreeps();
 
-            o.runCreeps();
+                o.deleteUnusedNames();
 
-            o.deleteUnusedNames();
+                if (Game.rooms[roomName].memory.spawnQueue === undefined) {
+                    Game.rooms[roomName].memory.spawnQueue = [];
+                }
 
-            for (let i in Game.rooms) {
-                const roomName = Game.rooms[i].name;
 
-                let harvesters = o.getCreepsByRole(roomName, ROLE_HARVESTER);
-                let harvestersNeeded = MIN_HARVESTER_NUM - harvesters.length;
-                if (harvestersNeeded) {
-                    o.spawnCreepsInRoom(roomName, ROLE_HARVESTER, harvestersNeeded);
-                } else { // only after we have enough harvesters
-                    let upgraders = o.getCreepsByRole(roomName, ROLE_UPGRADER);
-                    let upgradersNeeded = MIN_UPGRADER_NUM - upgraders.length;
-                    if (upgradersNeeded) {
-                        o.spawnCreepsInRoom(roomName, ROLE_UPGRADER, upgradersNeeded);
-                    }
+                _.forEach(CREEPS, function (c) {
+                        const creepsAlive = o.getCreepsByRole(roomName, c.role).length;
+                        const creepsInQueue = _.filter(Game.rooms[roomName].memory.spawnQueue, x => x == c.role).length;
+                        const creepsSpawning = _.filter(o.getSpawnsByRoom(roomName),
+                            s => s.spawning != null && s.memory.lastSpawningRole == c.role
+                        ).length;
 
-                    if (upgradersNeeded === 0) {
-                        let builders = o.getCreepsByRole(roomName, ROLE_BUILDER);
-                        let buildersNeeded = MIN_BUILDER_NUM - builders.length;
-                        if (buildersNeeded) {
-                            o.spawnCreepsInRoom(roomName, ROLE_BUILDER, buildersNeeded);
+                        const numToSpawn = c.needed - creepsAlive - creepsInQueue - creepsSpawning;
+
+                        if (numToSpawn > 0) {
+                            for (let i = 0; i < numToSpawn; ++i) {
+                                Game.rooms[roomName].memory.spawnQueue.push(c.role);
+                            }
                         }
                     }
+                );
+                console.log(`Build queue: ${Game.rooms[roomName].memory.spawnQueue}`);
+
+                if (Game.rooms[roomName].memory.spawnQueue.length) {
+
+                    _.forEach(o.getSpawnsByRoom(roomName), function (s) {
+                        if (s.spawning == null && Game.rooms[roomName].memory.spawnQueue.length) { //can spawn
+                            if (o.spawnCreeps(s, [WORK, CARRY, MOVE], Game.rooms[roomName].memory.spawnQueue[0]) == OK) {
+                                Game.rooms[roomName].memory.spawnQueue.shift();
+                            }
+                        }
+                    });
                 }
             }
         }
-    };
+        ;
 
     return publicAPI;
-})();
+})
+();
 
 module.exports = unitControlModule;

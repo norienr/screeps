@@ -33,24 +33,22 @@ var defenseModule = (function () {
     };
 
     var publicAPI = {
-        run: function () {
-            for (let i in Game.rooms) {
-                const roomName = Game.rooms[i].name;
+        run: function (roomName) {
 
-                let towers;
-                if ((towers = o.getTowers(roomName)).length) {
+            let towers;
+            if ((towers = o.getTowers(roomName)).length) {
 
-                    if (o.spottedThreats(roomName)) {
-                        towers.forEach(
-                            tower => o.attackThreats(tower, tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
-                            ));
-                    } else if (o.hasDamagedStructs(roomName)) {
-                        towers.forEach(
-                            tower => o.doRepair(tower, o.getClosestDamagedStructs(tower))
-                        );
-                    }
+                if (o.spottedThreats(roomName)) {
+                    towers.forEach(
+                        tower => o.attackThreats(tower, tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
+                        ));
+                } else if (o.hasDamagedStructs(roomName)) {
+                    towers.forEach(
+                        tower => o.doRepair(tower, o.getClosestDamagedStructs(tower))
+                    );
                 }
             }
+
         }
     };
 

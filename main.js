@@ -3,9 +3,14 @@ var unitControlModule = require('unitControlModule');
 var constructionModule = require('constructionModule');
 
 var main = function () {
-    unitControlModule.run();
-    constructionModule.run();
-    defenseModule.run();
+
+    for (let i in Game.rooms) {
+        const roomName = Game.rooms[i].name;
+
+        unitControlModule.run(roomName);
+        constructionModule.run(roomName);
+        defenseModule.run(roomName);
+    }
 
 };
 

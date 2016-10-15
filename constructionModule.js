@@ -24,18 +24,14 @@ var constructionModule = (function () {
     };
 
     var publicAPI = {
-        run: function () {
+        run: function (roomName) {
 
-            for (let i in Game.rooms) {
-                const roomName = Game.rooms[i].name;
-
-                let spawn = o.getStructures(roomName, STRUCTURE_SPAWN);
-                if (o.getStructures(roomName, STRUCTURE_EXTENSION).length < MIN_EXTENSION_NUM) {
-                    let x = spawn[0].pos.x;
-                    let y = spawn[0].pos.y;
-                    if (Game.rooms[i].createConstructionSite(x - 2, y, STRUCTURE_EXTENSION) == ERR_INVALID_TARGET) {
-                        //TODO: FIND ANOTHER LOCATION
-                    }
+            let spawn = o.getStructures(roomName, STRUCTURE_SPAWN);
+            if (o.getStructures(roomName, STRUCTURE_EXTENSION).length < MIN_EXTENSION_NUM) {
+                let x = spawn[0].pos.x;
+                let y = spawn[0].pos.y;
+                if (Game.rooms[roomName].createConstructionSite(x - 2, y, STRUCTURE_EXTENSION) == ERR_INVALID_TARGET) {
+                    //TODO: FIND ANOTHER LOCATION
                 }
             }
 
