@@ -20,9 +20,8 @@ var unitControlModule = (function () {
                 }
             }
         },
-        runCreeps: function () {
-            for (let name in Game.creeps) {
-                let creep = Game.creeps[name];
+        runCreeps: function (roomName) {
+            _.forEach(Game.rooms[roomName].find(FIND_MY_CREEPS), function (creep) {
                 if (creep.memory.role == Config.ROLE_HARVESTER) {
                     roleHarvester.run(creep);
                 }
@@ -32,15 +31,21 @@ var unitControlModule = (function () {
                 else if (creep.memory.role == Config.ROLE_BUILDER) {
                     roleBuilder.run(creep);
                 }
-            }
+
+            });
         },
         getCreepsByRole: function (roomName, role) {
             return _.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), creep => creep.memory.role == role);
-        },
-        getSpawnsByRoom(roomName) {
+        }
+
+        ,
+        getSpawnsByRoom(roomName)
+        {
             return _.filter(Game.rooms[roomName].find(FIND_MY_STRUCTURES), struct => struct.structureType == STRUCTURE_SPAWN);
-        },
-        spawnCreeps(spawn, parts, role) {
+        }
+        ,
+        spawnCreeps(spawn, parts, role)
+        {
             var canSpawn = spawn.canCreateCreep(parts);
             if (canSpawn == OK) {
                 spawn.createCreep(parts, undefined, {role: role});
@@ -53,7 +58,7 @@ var unitControlModule = (function () {
     var publicAPI = {
         run: function (roomName) {
 
-            o.runCreeps();
+            o.runCreeps(roomName);
 
             o.deleteUnusedNames();
 

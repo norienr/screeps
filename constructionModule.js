@@ -2,6 +2,10 @@ var Config = require('config');
 
 var constructionModule = (function () {
 
+    const WORK_PRIORITIES = [
+        Config.ROLE_HARVESTER,
+        ];
+
     var o = {
         getStructures: function (roomName, structureType) {
             return _.filter(Game.rooms[roomName].find(FIND_MY_STRUCTURES),
