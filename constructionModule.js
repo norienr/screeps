@@ -32,7 +32,8 @@ var constructionModule = (function () {
                 this.buildRoad(roomName, spawnPos, srcPos);
             }
             else {
-                //Game.rooms[roomName].createConstructionSite(p.x, p.y, STRUCTURE_ROAD);
+                const p = this.getStructures(roomName, STRUCTURE_SPAWN);
+                return Game.rooms[roomName].createConstructionSite(p.x-5, p.y, type);
             }
         },
         buildRoad: function (roomName, startPos, endPos) {
@@ -52,8 +53,6 @@ var constructionModule = (function () {
                 Game.rooms[roomName].memory.queueInitialized = false;
             }
 
-            console.log(JSON.stringify(Game.rooms[roomName].memory.buildQueue));
-
             if (Game.rooms[roomName].hasCreep(Config.ROLE_BUILDER)) {
                 if (!Game.rooms[roomName].memory.queueInitialized) {
                     _.forEach(Config.STRUCTURES, function (structure) {
@@ -62,8 +61,10 @@ var constructionModule = (function () {
                     Game.rooms[roomName].memory.queueInitialized = true;
                 }
 
-                if (_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), creep => creep.memory.canBuild == true)) {
-                    o.buildStructure(roomName, Game.rooms[roomName].memory.buildQueue.shift());
+                if (_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), creep => creep.memory.canBuild == true).length) {
+                    if (o.buildStructure(roomName, Game.rooms[roomName].memory.buildQueue[0]) == OK) {
+                        Game.rooms[roomName].memory.buildQueue.shift();
+                    }
                 }
             }
         }
