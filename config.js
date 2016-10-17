@@ -4,16 +4,16 @@ var config = (function () {
     const ROLE_UPGRADER = 'upgrader';
     const ROLE_BUILDER = 'builder';
 
-    const CREEPS = [ //highest priority == lowest inQueue
-        {role: ROLE_HARVESTER, num: 2, inQueue: 1},
-        {role: ROLE_BUILDER, num: 1, inQueue: 2},
-        {role: ROLE_UPGRADER, num: 1, inQueue: 3},
-        {role: ROLE_BUILDER, num: 1, inQueue: 4}
+    const CREEPS = [ //highest priority == lowest generation
+        {role: ROLE_HARVESTER, num: 2, generation: 1},
+        {role: ROLE_BUILDER, num: 1, generation: 2},
+        {role: ROLE_UPGRADER, num: 1, generation: 3},
+        {role: ROLE_BUILDER, num: 1, generation: 4}
     ];
 
-    const STRUCTURES = [ //highest priority == lowest inQueue
-        {type: STRUCTURE_ROAD, num: 1, inQueue: 1},
-        {type: STRUCTURE_EXTENSION, num: 1, inQueue: 2}
+    const STRUCTURES = [ //highest priority == lowest generation
+        {type: STRUCTURE_ROAD, num: 1, generation: 1},
+        {type: STRUCTURE_EXTENSION, num: 1, generation: 2}
     ];
 
     return {

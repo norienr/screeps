@@ -40,6 +40,13 @@ var constructionModule = (function () {
             }
 
             if (Game.rooms[roomName].hasCreep(Config.ROLE_BUILDER)) {
+                _.forEach(Config.STRUCTURES, function (s) {
+
+
+
+                });
+
+
                 if (Game.rooms[roomName].memory.hasRoads === undefined) {
                     const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
                     const spawnPos = new RoomPosition(spawns[0].pos.x, spawns[0].pos.y, roomName);
