@@ -23,7 +23,19 @@ var constructionModule = (function () {
             });
             return {x: src.pos.x, y: src.pos.y};
         },
-        buildRoad(roomName, startPos, endPos) {
+        buildStructure: function (roomName, type) {
+            if (type == STRUCTURE_ROAD) {
+                const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
+                const spawnPos = new RoomPosition(spawns[0].pos.x, spawns[0].pos.y, roomName);
+                const closestSource = _.clone(o.getClosestSourceTo(roomName, spawnPos.x, spawnPos.y));
+                const srcPos = new RoomPosition(closestSource.x, closestSource.y, roomName);
+                this.buildRoad(roomName, spawnPos, srcPos);
+            }
+            else {
+                //Game.rooms[roomName].createConstructionSite(p.x, p.y, STRUCTURE_ROAD);
+            }
+        },
+        buildRoad: function (roomName, startPos, endPos) {
             const path = Game.rooms[roomName].findPath(startPos, endPos, {
                 ignoreCreeps: true,
                 maxOps: 1000
@@ -37,25 +49,21 @@ var constructionModule = (function () {
 
             if (Game.rooms[roomName].memory.buildQueue === undefined) {
                 Game.rooms[roomName].memory.buildQueue = [];
+                Game.rooms[roomName].memory.queueInitialized = false;
             }
 
+            console.log(JSON.stringify(Game.rooms[roomName].memory.buildQueue));
+
             if (Game.rooms[roomName].hasCreep(Config.ROLE_BUILDER)) {
-                _.forEach(Config.STRUCTURES, function (s) {
+                if (!Game.rooms[roomName].memory.queueInitialized) {
+                    _.forEach(Config.STRUCTURES, function (structure) {
+                        Game.rooms[roomName].memory.buildQueue.push(structure);
+                    });
+                    Game.rooms[roomName].memory.queueInitialized = true;
+                }
 
-
-
-                });
-
-
-                if (Game.rooms[roomName].memory.hasRoads === undefined) {
-                    const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
-                    const spawnPos = new RoomPosition(spawns[0].pos.x, spawns[0].pos.y, roomName);
-                    const closestSource = _.clone(o.getClosestSourceTo(roomName, spawnPos.x, spawnPos.y));
-                    const srcPos = new RoomPosition(closestSource.x, closestSource.y, roomName);
-
-
-                    o.buildRoad(roomName, spawnPos, srcPos);
-                    Game.rooms[roomName].memory.hasRoads = true;
+                if (_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), creep => creep.memory.canBuild == true)) {
+                    o.buildStructure(roomName, Game.rooms[roomName].memory.buildQueue.shift());
                 }
             }
         }

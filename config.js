@@ -11,9 +11,9 @@ var config = (function () {
         {role: ROLE_BUILDER, num: 1, generation: 4}
     ];
 
-    const STRUCTURES = [ //highest priority == lowest generation
-        {type: STRUCTURE_ROAD, num: 1, generation: 1},
-        {type: STRUCTURE_EXTENSION, num: 1, generation: 2}
+    const STRUCTURES = [ //highest priority at top
+        STRUCTURE_ROAD,
+        STRUCTURE_EXTENSION
     ];
 
     return {

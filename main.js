@@ -9,7 +9,7 @@ var main = function () {
 
         if (Game.rooms[roomName].hasCreep == undefined) {
             Room.prototype.hasCreep = function (creepRole) {
-                if (_.filter(Game.rooms[this.name].find(FIND_MY_CREEPS), creep => creep.memory.role == creepRole)) {
+                if (_.filter(Game.rooms[this.name].find(FIND_MY_CREEPS), creep => creep.memory.role == creepRole).length) {
                     return true;
                 }
                 return false;
