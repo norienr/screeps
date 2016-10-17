@@ -13,7 +13,7 @@ var config = (function () {
 
     const STRUCTURES = [ //highest priority == lowest inQueue
         {type: STRUCTURE_ROAD, num: 1, inQueue: 1},
-        {role: STRUCTURE_EXTENSION, num: 1, inQueue: 2}
+        {type: STRUCTURE_EXTENSION, num: 1, inQueue: 2}
     ];
 
     return {
