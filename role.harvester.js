@@ -13,7 +13,7 @@ var roleHarvester = {
             }
         }
         else {
-            var targets = creep.room.find(FIND_STRUCTURES, {
+            let targets = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_EXTENSION ||
                         structure.structureType == STRUCTURE_SPAWN ||
@@ -25,20 +25,32 @@ var roleHarvester = {
                     creep.moveTo(targets[0]);
                 }
             } else {
-                for (let i in Game.creeps) {
-                    let unit = Game.creeps[i];
-                    if (unit.memory.role == 'upgrader') {
-                        if (creep.transfer(unit, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                            creep.moveTo(unit);
-                        }
-                        if (creep.carry.energy) {
-                            if (!creep.memory.waiting) {
-                                creep.memory.waiting = true;
+                let targets = creep.room.find(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return (structure.structureType == STRUCTURE_CONTAINER ||
+                            structure.structureType == STRUCTURE_STORAGE) && _.sum(structure.store) < structure.storeCapacity;
+                    }
+                });
+                if (targets.length > 0) {
+                    if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(targets[0]);
+                    }
+                } else {
+                    for (let i in Game.creeps) {
+                        let unit = Game.creeps[i];
+                        if (unit.memory.role == 'upgrader') {
+                            if (creep.transfer(unit, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                creep.moveTo(unit);
                             }
-                        } else {
-                            if (creep.memory.waiting) {
-                                creep.memory.waiting = false;
-                                creep.say('harvesting');
+                            if (creep.carry.energy) {
+                                if (!creep.memory.waiting) {
+                                    creep.memory.waiting = true;
+                                }
+                            } else {
+                                if (creep.memory.waiting) {
+                                    creep.memory.waiting = false;
+                                    creep.say('harvesting');
+                                }
                             }
                         }
                     }
