@@ -5,13 +5,6 @@ var roleBuilder = require('role.builder');
 
 var unitControlModule = (function () {
 
-
-    const CREEPS = [ //highest priority == lowest inQueue
-        {role: Config.ROLE_HARVESTER, num: Config.MIN_HARVESTER_NUM, inQueue: 1},
-        {role: Config.ROLE_UPGRADER, num: Config.MIN_UPGRADER_NUM, inQueue: 2},
-        {role: Config.ROLE_BUILDER, num: Config.MIN_BUILDER_NUM, inQueue: 3},
-    ];
-
     var o = {
         deleteUnusedNames: function () {
             for (let name in Memory.creeps) {
@@ -66,7 +59,7 @@ var unitControlModule = (function () {
             }
 
 
-            _.forEach(CREEPS, function (c) {
+            _.forEach(Config.CREEPS, function (c) {
                     const creepsAlive = o.getCreepsByRole(roomName, c.role).length;
                     const creepsInQueue = _.filter(Game.rooms[roomName].memory.spawnQueue, x => x == c.role).length;
                     const creepsSpawning = _.filter(o.getSpawnsByRoom(roomName),

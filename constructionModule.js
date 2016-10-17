@@ -2,10 +2,6 @@ var Config = require('config');
 
 var constructionModule = (function () {
 
-    const WORK_PRIORITIES = [
-        Config.ROLE_HARVESTER,
-        ];
-
     var o = {
         getStructures: function (roomName, structureType) {
             return _.filter(Game.rooms[roomName].find(FIND_MY_STRUCTURES),
@@ -38,6 +34,10 @@ var constructionModule = (function () {
 
     var publicAPI = {
         run: function (roomName) {
+
+            if (Game.rooms[roomName].memory.buildQueue === undefined) {
+                Game.rooms[roomName].memory.buildQueue = [];
+            }
 
             if (Game.rooms[roomName].hasCreep(Config.ROLE_BUILDER)) {
                 if (Game.rooms[roomName].memory.hasRoads === undefined) {
