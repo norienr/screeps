@@ -10,14 +10,13 @@ var unitControlModule = (function () {
 
     const MIN_HARVESTER_NUM = 2;
     const MIN_UPGRADER_NUM = 1;
-    const MIN_BUILDER_NUM = 1;
+    const MIN_BUILDER_NUM = 2;
 
     const CREEPS = [ //highest priority at top
         {role: ROLE_HARVESTER, needed: MIN_HARVESTER_NUM},
         {role: ROLE_UPGRADER, needed: MIN_UPGRADER_NUM},
         {role: ROLE_BUILDER, needed: MIN_BUILDER_NUM},
     ];
-
 
     var o = {
         deleteUnusedNames: function () {
@@ -58,47 +57,46 @@ var unitControlModule = (function () {
     };
 
     var publicAPI = {
-            run: function (roomName) {
-                o.runCreeps();
+        run: function (roomName) {
 
-                o.deleteUnusedNames();
+            o.runCreeps();
 
-                if (Game.rooms[roomName].memory.spawnQueue === undefined) {
-                    Game.rooms[roomName].memory.spawnQueue = [];
-                }
+            o.deleteUnusedNames();
+
+            if (Game.rooms[roomName].memory.spawnQueue === undefined) {
+                Game.rooms[roomName].memory.spawnQueue = [];
+            }
 
 
-                _.forEach(CREEPS, function (c) {
-                        const creepsAlive = o.getCreepsByRole(roomName, c.role).length;
-                        const creepsInQueue = _.filter(Game.rooms[roomName].memory.spawnQueue, x => x == c.role).length;
-                        const creepsSpawning = _.filter(o.getSpawnsByRoom(roomName),
-                            s => s.spawning != null && s.memory.lastSpawningRole == c.role
-                        ).length;
+            _.forEach(CREEPS, function (c) {
+                    const creepsAlive = o.getCreepsByRole(roomName, c.role).length;
+                    const creepsInQueue = _.filter(Game.rooms[roomName].memory.spawnQueue, x => x == c.role).length;
+                    const creepsSpawning = _.filter(o.getSpawnsByRoom(roomName),
+                        s => s.spawning != null && s.memory.lastSpawningRole == c.role
+                    ).length;
 
-                        const numToSpawn = c.needed - creepsAlive - creepsInQueue - creepsSpawning;
+                    const numToSpawn = c.needed - creepsAlive - creepsInQueue - creepsSpawning;
 
-                        if (numToSpawn > 0) {
-                            for (let i = 0; i < numToSpawn; ++i) {
-                                Game.rooms[roomName].memory.spawnQueue.push(c.role);
-                            }
+                    if (numToSpawn > 0) {
+                        for (let i = 0; i < numToSpawn; ++i) {
+                            Game.rooms[roomName].memory.spawnQueue.push(c.role);
                         }
                     }
-                );
-                console.log(`Build queue: ${Game.rooms[roomName].memory.spawnQueue}`);
-
-                if (Game.rooms[roomName].memory.spawnQueue.length) {
-
-                    _.forEach(o.getSpawnsByRoom(roomName), function (s) {
-                        if (s.spawning == null && Game.rooms[roomName].memory.spawnQueue.length) { //can spawn
-                            if (o.spawnCreeps(s, [WORK, CARRY, MOVE], Game.rooms[roomName].memory.spawnQueue[0]) == OK) {
-                                Game.rooms[roomName].memory.spawnQueue.shift();
-                            }
-                        }
-                    });
                 }
+            );
+
+            if (Game.rooms[roomName].memory.spawnQueue.length) {
+
+                _.forEach(o.getSpawnsByRoom(roomName), function (s) {
+                    if (s.spawning == null && Game.rooms[roomName].memory.spawnQueue.length) { //can spawn
+                        if (o.spawnCreeps(s, [WORK, CARRY, MOVE], Game.rooms[roomName].memory.spawnQueue[0]) == OK) {
+                            Game.rooms[roomName].memory.spawnQueue.shift();
+                        }
+                    }
+                });
             }
         }
-        ;
+    };
 
     return publicAPI;
 })
