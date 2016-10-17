@@ -42,7 +42,7 @@ var unitControlModule = (function () {
             return canSpawn;
         },
         getCreepQueueValue: function (role) {
-            return _.filter(CREEPS, c => c.role == role)[0].inQueue;
+            return _.filter(Config.CREEPS, c => c.role == role)[0].inQueue;
         }
     };
 
