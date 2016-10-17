@@ -7,9 +7,9 @@ var unitControlModule = (function () {
 
 
     const CREEPS = [ //highest priority == lowest inQueue
-        {role: Config.ROLE_HARVESTER, needed: Config.MIN_HARVESTER_NUM, inQueue: 1},
-        {role: Config.ROLE_UPGRADER, needed: Config.MIN_UPGRADER_NUM, inQueue: 2},
-        {role: Config.ROLE_BUILDER, needed: Config.MIN_BUILDER_NUM, inQueue: 3},
+        {role: Config.ROLE_HARVESTER, num: Config.MIN_HARVESTER_NUM, inQueue: 1},
+        {role: Config.ROLE_UPGRADER, num: Config.MIN_UPGRADER_NUM, inQueue: 2},
+        {role: Config.ROLE_BUILDER, num: Config.MIN_BUILDER_NUM, inQueue: 3},
     ];
 
     var o = {
@@ -73,7 +73,7 @@ var unitControlModule = (function () {
                         s => s.spawning != null && s.memory.lastSpawningRole == c.role
                     ).length;
 
-                    const numToSpawn = c.needed - creepsAlive - creepsInQueue - creepsSpawning;
+                    const numToSpawn = c.num - creepsAlive - creepsInQueue - creepsSpawning;
 
                     if (numToSpawn > 0) {
                         for (let i = 0; i < numToSpawn; ++i) {
