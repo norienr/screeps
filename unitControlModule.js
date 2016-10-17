@@ -36,16 +36,11 @@ var unitControlModule = (function () {
         },
         getCreepsByRole: function (roomName, role) {
             return _.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), creep => creep.memory.role == role);
-        }
-
-        ,
-        getSpawnsByRoom(roomName)
-        {
+        },
+        getSpawnsByRoom: function (roomName) {
             return _.filter(Game.rooms[roomName].find(FIND_MY_STRUCTURES), struct => struct.structureType == STRUCTURE_SPAWN);
-        }
-        ,
-        spawnCreeps(spawn, parts, role)
-        {
+        },
+        spawnCreeps: function (spawn, parts, role) {
             var canSpawn = spawn.canCreateCreep(parts);
             if (canSpawn == OK) {
                 spawn.createCreep(parts, undefined, {role: role});
@@ -58,9 +53,10 @@ var unitControlModule = (function () {
     var publicAPI = {
         run: function (roomName) {
 
+            o.deleteUnusedNames();
+
             o.runCreeps(roomName);
 
-            o.deleteUnusedNames();
 
             if (Game.rooms[roomName].memory.spawnQueue === undefined) {
                 Game.rooms[roomName].memory.spawnQueue = [];
