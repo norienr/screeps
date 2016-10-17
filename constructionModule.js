@@ -30,11 +30,11 @@ var constructionModule = (function () {
                 const closestSource = _.clone(o.getClosestSourceTo(roomName, spawnPos.x, spawnPos.y));
                 const srcPos = new RoomPosition(closestSource.x, closestSource.y, roomName);
                 this.buildRoad(roomName, spawnPos, srcPos);
-                return OK;
+                return OK;// always enough for the first structure
             }
             else {
                 const p = this.getStructures(roomName, STRUCTURE_SPAWN);
-                return Game.rooms[roomName].createConstructionSite(p.x-5, p.y, type);
+                return Game.rooms[roomName].createConstructionSite(p.x - 5, p.y, type);
             }
         },
         buildRoad: function (roomName, startPos, endPos) {
