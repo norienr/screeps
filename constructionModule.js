@@ -1,6 +1,6 @@
-var constructionModule = (function () {
+var Config = require('config');
 
-    const MIN_EXTENSION_NUM = 1;
+var constructionModule = (function () {
 
     var o = {
         getStructures: function (roomName, structureType) {
@@ -35,20 +35,17 @@ var constructionModule = (function () {
     var publicAPI = {
         run: function (roomName) {
 
-            const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
-            if (o.getStructures(roomName, STRUCTURE_EXTENSION).length < MIN_EXTENSION_NUM) {
-                const spawnPos = new RoomPosition(spawns[0].pos.x, spawns[0].pos.y, roomName);
-                const closestSource = _.clone(o.getClosestSourceTo(roomName, spawnPos.x, spawnPos.y));
-                const srcPos = new RoomPosition(closestSource.x, closestSource.y, roomName);
+            if (Game.rooms[roomName].hasCreep(Config.ROLE_BUILDER)) {
+                if (Game.rooms[roomName].memory.hasRoads === undefined) {
+                    const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
+                    const spawnPos = new RoomPosition(spawns[0].pos.x, spawns[0].pos.y, roomName);
+                    const closestSource = _.clone(o.getClosestSourceTo(roomName, spawnPos.x, spawnPos.y));
+                    const srcPos = new RoomPosition(closestSource.x, closestSource.y, roomName);
 
-                if (Game.rooms[roomName].hasCreep('builder')) {
-                    if (Game.rooms[roomName].memory.hasRoads === undefined) {
-                        Game.rooms[roomName].memory.hasRoads = true;
-                        o.buildRoad(roomName, spawnPos, srcPos);
-                    }
 
+                    o.buildRoad(roomName, spawnPos, srcPos);
+                    Game.rooms[roomName].memory.hasRoads = true;
                 }
-
             }
         }
     };

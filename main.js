@@ -8,7 +8,6 @@ var main = function () {
         const roomName = Game.rooms[i].name;
 
         if (Game.rooms[roomName].hasCreep == undefined) {
-            console.log('adding prot');
             Room.prototype.hasCreep = function (creepRole) {
                 if (_.filter(Game.rooms[this.name].find(FIND_MY_CREEPS), creep => creep.memory.role == creepRole)) {
                     return true;

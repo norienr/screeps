@@ -1,21 +1,15 @@
+var Config = require('config');
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 
 var unitControlModule = (function () {
 
-    const ROLE_HARVESTER = 'harvester';
-    const ROLE_UPGRADER = 'upgrader';
-    const ROLE_BUILDER = 'builder';
-
-    const MIN_HARVESTER_NUM = 2;
-    const MIN_UPGRADER_NUM = 1;
-    const MIN_BUILDER_NUM = 2;
 
     const CREEPS = [ //highest priority at top
-        {role: ROLE_HARVESTER, needed: MIN_HARVESTER_NUM},
-        {role: ROLE_UPGRADER, needed: MIN_UPGRADER_NUM},
-        {role: ROLE_BUILDER, needed: MIN_BUILDER_NUM},
+        {role: Config.ROLE_HARVESTER, needed: Config.MIN_HARVESTER_NUM},
+        {role: Config.ROLE_UPGRADER, needed: Config.MIN_UPGRADER_NUM},
+        {role: Config.ROLE_BUILDER, needed: Config.MIN_BUILDER_NUM},
     ];
 
     var o = {
@@ -29,13 +23,13 @@ var unitControlModule = (function () {
         runCreeps: function () {
             for (let name in Game.creeps) {
                 let creep = Game.creeps[name];
-                if (creep.memory.role == ROLE_HARVESTER) {
+                if (creep.memory.role == Config.ROLE_HARVESTER) {
                     roleHarvester.run(creep);
                 }
-                else if (creep.memory.role == ROLE_UPGRADER) {
+                else if (creep.memory.role == Config.ROLE_UPGRADER) {
                     roleUpgrader.run(creep);
                 }
-                else if (creep.memory.role == ROLE_BUILDER) {
+                else if (creep.memory.role == Config.ROLE_BUILDER) {
                     roleBuilder.run(creep);
                 }
             }
