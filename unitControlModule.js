@@ -6,10 +6,10 @@ var roleBuilder = require('role.builder');
 var unitControlModule = (function () {
 
 
-    const CREEPS = [ //highest priority at top
-        {role: Config.ROLE_HARVESTER, needed: Config.MIN_HARVESTER_NUM},
-        {role: Config.ROLE_UPGRADER, needed: Config.MIN_UPGRADER_NUM},
-        {role: Config.ROLE_BUILDER, needed: Config.MIN_BUILDER_NUM},
+    const CREEPS = [ //highest priority == lowest inQueue
+        {role: Config.ROLE_HARVESTER, needed: Config.MIN_HARVESTER_NUM, inQueue: 1},
+        {role: Config.ROLE_UPGRADER, needed: Config.MIN_UPGRADER_NUM, inQueue: 2},
+        {role: Config.ROLE_BUILDER, needed: Config.MIN_BUILDER_NUM, inQueue: 3},
     ];
 
     var o = {
@@ -47,6 +47,9 @@ var unitControlModule = (function () {
                 spawn.memory.lastSpawningRole = role;
             }
             return canSpawn;
+        },
+        getCreepQueueValue: function (role) {
+            return _.filter(CREEPS, c => c.role == role)[0].inQueue;
         }
     };
 
@@ -81,6 +84,9 @@ var unitControlModule = (function () {
             );
 
             if (Game.rooms[roomName].memory.spawnQueue.length) {
+
+                Game.rooms[roomName].memory.spawnQueue =
+                    _.sortBy(Game.rooms[roomName].memory.spawnQueue, r => o.getCreepQueueValue(r));
 
                 _.forEach(o.getSpawnsByRoom(roomName), function (s) {
                     if (s.spawning == null && Game.rooms[roomName].memory.spawnQueue.length) { //can spawn
