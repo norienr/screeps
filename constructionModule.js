@@ -8,24 +8,11 @@ var constructionModule = (function () {
                 struct => struct.structureType == structureType
             );
         },
-        getClosestSourceTo(roomName, x0, y0) {
-            const srcs = Game.rooms[roomName].find(FIND_SOURCES);
-
-            const pos = new RoomPosition(x0, y0, roomName);
-
-            const src = _.reduce(srcs, function (s, x) {
-                if (pos.getRangeTo(x.pos) < pos.getRangeTo(s.pos)) {
-                    return x;
-                }
-                return s;
-            });
-            return {x: src.pos.x, y: src.pos.y};
-        },
         buildStructure: function (roomName, type) {
             if (type == STRUCTURE_ROAD) {
                 const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
                 const spawnPos = new RoomPosition(spawns[0].pos.x, spawns[0].pos.y, roomName);
-                const closestSource = _.clone(o.getClosestSourceTo(roomName, spawnPos.x, spawnPos.y));
+                const closestSource = _.clone((spawns[0].pos.findClosestByRange(FIND_SOURCES)).pos);
                 const srcPos = new RoomPosition(closestSource.x, closestSource.y, roomName);
                 this.buildRoad(roomName, spawnPos, srcPos);
                 return OK;// always enough for the first structure

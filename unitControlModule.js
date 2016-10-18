@@ -18,12 +18,7 @@ var unitControlModule = (function () {
                 if (creep.memory.saving) {
                     let spawns = _.filter(Game.rooms[roomName].find(FIND_MY_STRUCTURES),
                         s => s.structureType == STRUCTURE_SPAWN);
-                    const closestSpawn = _.reduce(spawns, function (s, x) {
-                        if (creep.pos.getRangeTo(x) < creep.pos.getRangeTo(s)) {
-                            return x;
-                        }
-                        return s;
-                    });
+                    const closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
 
                     creep.moveTo(closestSpawn);
 
