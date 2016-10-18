@@ -19,8 +19,7 @@ var unitControlModule = (function () {
                     let spawns = _.filter(Game.rooms[roomName].find(FIND_MY_STRUCTURES),
                         s => s.structureType == STRUCTURE_SPAWN);
                     const closestSpawn = _.reduce(spawns, function (s, x) {
-                        if (this.getDistance(creep.pos.x, creep.pos.y, x.pos.x, x.pos.y) <
-                            this.getDistance(x0, y0, s.pos.x, s.pos.y)) {
+                        if (creep.pos.getRangeTo(x) < creep.pos.getRangeTo(s)) {
                             return x;
                         }
                         return s;
@@ -80,9 +79,6 @@ var unitControlModule = (function () {
         getCreepsToNormalRoles: function (roomName) {
             _.forEach(_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), c => c.memory.tempRole != undefined),
                 c => c.memory.tempRole = undefined);
-        },
-        getDistance: function (x1, y1, x2, y2) {
-            return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
         }
     };
 
@@ -93,6 +89,7 @@ var unitControlModule = (function () {
 
             o.runCreeps(roomName);
 
+
             if (Game.rooms[roomName].memory.spawnQueue === undefined) {
                 Game.rooms[roomName].memory.spawnQueue = [];
             }
@@ -102,7 +99,7 @@ var unitControlModule = (function () {
             if (hostiles.length) {
                 _.forEach(o.getCreepsByRole(roomName, Config.ROLE_HARVESTER), function (harv) {
                     _.forEach(hostiles, function (threat) {
-                        if (o.getDistance(harv.pos.x, harv.pos.y, threat.pos.x, threat.pos.y) < Config.MIN_SAFE_DISTANCE) {
+                        if (harv.pos.getRangeTo(threat) < Config.MIN_SAFE_DISTANCE) {
                             harv.memory.saving = true;
                         } else {
                             harv.memory.saving = false;
@@ -110,7 +107,7 @@ var unitControlModule = (function () {
                     });
                 });
             } else {
-                harv.memory.saving = false;
+                _.forEach(o.getCreepsByRole(roomName, Config.ROLE_HARVESTER), harv => harv.memory.saving = false);
             }
 
             _.forEach(Config.CREEPS, function (c) {

@@ -11,12 +11,10 @@ var constructionModule = (function () {
         getClosestSourceTo(roomName, x0, y0) {
             const srcs = Game.rooms[roomName].find(FIND_SOURCES);
 
-            function path(x1, y1, x2, y2) {
-                return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-            }
+            const pos = new RoomPosition(x, y);
 
             const src = _.reduce(srcs, function (s, x) {
-                if (path(x0, y0, x.pos.x, x.pos.y) < path(x0, y0, s.pos.x, s.pos.y)) {
+                if (pos.getRangeTo(x.pos) < pos.getRangeTo(s.pos)) {
                     return x;
                 }
                 return s;
