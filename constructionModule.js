@@ -11,7 +11,7 @@ var constructionModule = (function () {
         getClosestSourceTo(roomName, x0, y0) {
             const srcs = Game.rooms[roomName].find(FIND_SOURCES);
 
-            const pos = new RoomPosition(x, y);
+            const pos = new RoomPosition(x0, y0, roomName);
 
             const src = _.reduce(srcs, function (s, x) {
                 if (pos.getRangeTo(x.pos) < pos.getRangeTo(s.pos)) {
