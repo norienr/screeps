@@ -5,6 +5,7 @@ var config = (function () {
     const ROLE_BUILDER = 'builder';
 
     const MIN_SAFE_DISTANCE = 5;
+    const TOWER_ATTACK_INTERVAL = 5;
 
     const CREEPS = [ //highest priority == lowest generation
         {role: ROLE_HARVESTER, num: 2, generation: 1},
@@ -23,6 +24,7 @@ var config = (function () {
         ROLE_UPGRADER: ROLE_UPGRADER,
         ROLE_BUILDER: ROLE_BUILDER,
         MIN_SAFE_DISTANCE: MIN_SAFE_DISTANCE,
+        TOWER_ATTACK_INTERVAL: TOWER_ATTACK_INTERVAL,
         CREEPS: CREEPS,
         STRUCTURES: STRUCTURES
     };
