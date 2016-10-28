@@ -54,7 +54,7 @@ var constructionModule = (function () {
                 }
 
                 if (_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), creep => creep.memory.canBuild == true).length) {
-                    if (o.buildStructure(roomName, Game.rooms[roomName].memory.buildQueue[0]) == OK) {
+                    if (o.buildStructure(roomName, Game.rooms[roomName].memory.buildQueue[0]) === OK) {
                         Game.rooms[roomName].memory.buildQueue.shift();
                     }
                 }
