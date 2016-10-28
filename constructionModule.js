@@ -8,18 +8,24 @@ var constructionModule = (function () {
                 struct => struct.structureType == structureType
             );
         },
-        buildStructure: function (roomName, type) {
-            if (type == STRUCTURE_ROAD) {
+        buildStructureAutoPos: function (roomName, structurePayload) {
+            if (structurePayload.type == STRUCTURE_ROAD) {
                 const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
                 const spawnPos = new RoomPosition(spawns[0].pos.x, spawns[0].pos.y, roomName);
                 const closestSource = _.clone((spawns[0].pos.findClosestByRange(FIND_SOURCES)).pos);
                 const srcPos = new RoomPosition(closestSource.x, closestSource.y, roomName);
                 this.buildRoad(roomName, spawnPos, srcPos);
                 return OK;// always enough for the first structure
+            } else {
+                return -1; // no other auto-build structs defined yet
             }
-            else {
-                const p = this.getStructures(roomName, STRUCTURE_SPAWN);
-                return Game.rooms[roomName].createConstructionSite(p.x - 5, p.y, type);
+        },
+        buildStructure: function (roomName, structurePayload) {
+            if (structurePayload.pos === undefined) {
+                this.buildStructureAutoPos(roomName, structurePayload);
+            } else {
+                return Game.rooms[roomName].createConstructionSite(structurePayload.pos.x, structurePayload.pos.y,
+                    structurePayload.type);
             }
         },
         buildRoad: function (roomName, startPos, endPos) {

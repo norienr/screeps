@@ -44,29 +44,32 @@ var unitControlModule = (function () {
             });
         },
         getCreepsByRole: function (roomName, role) {
-            return _.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), creep => creep.memory.role == role);
+            return _.filter(Game.rooms[roomName].find(FIND_MY_CREEPS),
+                creep => creep.memory.role == role);
         },
         getCreeps: function (roomName, role, generation) {
-            return _.filter(this.getCreepsByRole(roomName, role), creep => creep.memory.generation == generation);
+            return _.filter(this.getCreepsByRole(roomName, role),
+                creep => creep.memory.priorityGeneration == generation);
         },
         getSpawnsByRoom: function (roomName) {
-            return _.filter(Game.rooms[roomName].find(FIND_MY_STRUCTURES), struct => struct.structureType == STRUCTURE_SPAWN);
+            return _.filter(Game.rooms[roomName].find(FIND_MY_STRUCTURES),
+                struct => struct.structureType == STRUCTURE_SPAWN);
         },
         spawnCreeps: function (spawn, parts, role, generation) {
             var canSpawn = spawn.canCreateCreep(parts);
             if (canSpawn == OK) {
-                spawn.createCreep(parts, undefined, {generation: generation, role: role});
-                spawn.memory.lastSpawningCreepMemory = {generation: generation, role: role};
+                spawn.createCreep(parts, undefined, {priorityGeneration: generation, role: role});
+                spawn.memory.lastSpawningCreepMemory = {priorityGeneration: generation, role: role};
             }
             return canSpawn;
         },
         getMissingCreepsNum: function (roomName, c) {
-            const creepsAlive = this.getCreeps(roomName, c.role, c.generation).length;
+            const creepsAlive = this.getCreeps(roomName, c.role, c.priorityGeneration).length;
             const creepsInQueue = _.filter(Game.rooms[roomName].memory.spawnQueue,
-                cr => cr.role == c.role && cr.generation == c.generation).length;
+                cr => cr.role == c.role && cr.priorityGeneration == c.priorityGeneration).length;
             const creepsSpawning = _.filter(this.getSpawnsByRoom(roomName),
                 s => s.spawning != null && s.memory.lastSpawningCreepMemory.role == c.role &&
-                s.memory.lastSpawningCreepMemory.generation == c.generation).length;
+                s.memory.lastSpawningCreepMemory.priorityGeneration == c.priorityGeneration).length;
             return c.num - creepsAlive - creepsInQueue - creepsSpawning;
         },
         getCreepsToNormalRoles: function (roomName) {
@@ -108,7 +111,11 @@ var unitControlModule = (function () {
 
                     if (numToSpawn > 0) {
                         for (let i = 0; i < numToSpawn; ++i) {
-                            Game.rooms[roomName].memory.spawnQueue.push({role: c.role, generation: c.generation});
+                            Game.rooms[roomName].memory.spawnQueue.push({
+                                parts: c.parts,
+                                role: c.role,
+                                priorityGeneration: c.priorityGeneration
+                            });
                         }
                     }
                 }
@@ -116,18 +123,19 @@ var unitControlModule = (function () {
 
             if (Game.rooms[roomName].memory.spawnQueue.length) {
                 Game.rooms[roomName].memory.spawnQueue =
-                    _.sortBy(Game.rooms[roomName].memory.spawnQueue, 'generation');
+                    _.sortBy(Game.rooms[roomName].memory.spawnQueue, 'priorityGeneration');
                 _.forEach(o.getSpawnsByRoom(roomName), function (s) {
                     if (s.spawning == null && Game.rooms[roomName].memory.spawnQueue.length) {
                         const creep = Game.rooms[roomName].memory.spawnQueue[0];
-                        if (o.spawnCreeps(s, [WORK, CARRY, MOVE], creep.role, creep.generation) == OK) {
+                        if (o.spawnCreeps(s, creep.parts, creep.role, creep.priorityGeneration) === OK) {
                             o.getCreepsToNormalRoles(roomName);
                             Game.rooms[roomName].memory.spawnQueue.shift();
                         } else { // reassign roles if can't spawn most valuable ones (harvester)
                             if (o.getCreepsByRole(roomName, Config.CREEPS[0].role).length < Config.CREEPS[0].num) {
                                 const availableCreeps = _.sortBy(
-                                    _.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), c => c.memory.tempRole == undefined),
-                                    'generation'
+                                    _.filter(Game.rooms[roomName].find(FIND_MY_CREEPS),
+                                        c => c.memory.tempRole === undefined),
+                                    'priorityGeneration'
                                 );
 
                                 for (let i = 0, num = Config.CREEPS[0].num, aNum = availableCreeps.length;
@@ -143,7 +151,6 @@ var unitControlModule = (function () {
     };
 
     return publicAPI;
-})
-();
+})();
 
 module.exports = unitControlModule;
