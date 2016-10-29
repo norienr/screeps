@@ -4,6 +4,7 @@ var config = (() => {
     const ROLE_UPGRADER = 'upgrader';
     const ROLE_BUILDER = 'builder';
     const ROLE_MINER = 'miner';
+    const ROLE_TRANSPORTER = 'transporter';
 
     const MIN_SAFE_DISTANCE = 5;
     const TOWER_ATTACK_INTERVAL = 5;
@@ -11,13 +12,21 @@ var config = (() => {
     const DYNAMIC_NUM = -1;
 
     const CREEPS = [
-        {role: ROLE_HARVESTER, num: 1, parts: [WORK, CARRY, MOVE], priorityGeneration: 1},
-        {role: ROLE_MINER, num: 1,
-            parts: [WORK, WORK, CARRY, MOVE], priorityGeneration: 2}
-        //{role: ROLE_BUILDER, num: 1, parts: [WORK, CARRY, MOVE], priorityGeneration: 3},
-        //{role: ROLE_UPGRADER, num: 1, parts: [WORK, CARRY, MOVE], priorityGeneration: 4},
-        //{role: ROLE_BUILDER, num: 1, parts: [WORK, CARRY, MOVE], priorityGeneration: 5},
-
+        {
+            role: ROLE_HARVESTER,
+            num: 1, parts: [WORK, CARRY, MOVE],
+            priorityGeneration: 1
+        },
+        {
+            role: ROLE_MINER, num: 1,
+            parts: [WORK, WORK, CARRY, MOVE],
+            priorityGeneration: 2
+        },
+        {
+            role: ROLE_TRANSPORTER, num: 1,
+            parts: [WORK, CARRY, MOVE, MOVE],
+            priorityGeneration: 3
+        }
     ];
 
     const STRUCTURES = [ //highest priority at top
@@ -29,6 +38,7 @@ var config = (() => {
         ROLE_UPGRADER: ROLE_UPGRADER,
         ROLE_BUILDER: ROLE_BUILDER,
         ROLE_MINER: ROLE_MINER,
+        ROLE_TRANSPORTER: ROLE_TRANSPORTER,
         DYNAMIC_NUM: DYNAMIC_NUM,
         MIN_SAFE_DISTANCE: MIN_SAFE_DISTANCE,
         TOWER_ATTACK_INTERVAL: TOWER_ATTACK_INTERVAL,

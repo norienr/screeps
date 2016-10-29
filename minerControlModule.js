@@ -1,7 +1,8 @@
 const Config = require('config');
 const roleMiner = require('role.miner');
+var MODULE = require('transporterControlModule');
 
-var MODULE = (function (module) {
+MODULE = (function (module) {
 
     module.locateContainerPos = function (room, source) {
         const x1 = source.pos.x - 5;
@@ -24,14 +25,14 @@ var MODULE = (function (module) {
 
     module.hasMinerAssigned = function (room, source) {
         return _.filter(room.find(FIND_MY_CREEPS),
-            creep => creep.memory.role == Config.ROLE_MINER &&
+            creep => creep.memory.role === Config.ROLE_MINER &&
             creep.memory.sourceId != undefined &&
-            Game.getObjectById(creep.memory.sourceId).pos == source.pos).length;
+            creep.memory.sourceId === source.id).length;
     };
 
-    module.findUnassignedSource = function (room, creep) {
-        const srcs = _.filter(room.find(FIND_SOURCES),
-            src => !module.hasMinerAssigned(room, src));
+    module.findUnassignedSource = function (creep) {
+        const srcs = _.filter(creep.room.find(FIND_SOURCES),
+            src => !module.hasMinerAssigned(creep.room, src));
         return creep.pos.findClosestByRange(srcs);
     };
 
@@ -42,7 +43,7 @@ var MODULE = (function (module) {
         }
 
         if (creep.memory.sourceId === undefined) {
-            const src = module.findUnassignedSource(room, creep);
+            const src = module.findUnassignedSource(creep);
             if (src != undefined) {
                 const container = _.filter(room.memory.containers,
                     x => x.sourceId === src.id);
@@ -97,7 +98,6 @@ var MODULE = (function (module) {
                         if (container != undefined) {
                             creep.memory.containerId = container.id;
                             conts[0].containerId = container.id;
-                            site.memory.inited = true;
                         } else {
                             console.log('cannot init container');
                         }

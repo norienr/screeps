@@ -38,6 +38,8 @@ MODULE = (function (module) {
                     roleBuilder.run(creep);
                 } else if (creep.memory.role === Config.ROLE_MINER) {
                     module.initMiner(creep);
+                } else if (creep.memory.role === Config.ROLE_TRANSPORTER) {
+                    module.initTransporter(creep);
                 }
             }
         });
