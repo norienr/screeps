@@ -21,12 +21,15 @@ var roleMiner = {
                 }
             }
         } else {
-            const cont = Game.getObjectById(creep.memory.containerId);
-            if (creep.carryEnergy === 0) {
-                if (creep.harvest(cont) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(cont);
+            if (creep.carry.energy < creep.carryCapacity) {
+                console.log('m');
+                const src = Game.getObjectById(creep.memory.sourceId);
+
+                if (creep.harvest(src) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(src);
                 }
-            } else if (creep.carryEnergy === creep.carryCapacity) {
+            } else {
+                const cont = Game.getObjectById(creep.memory.containerId);
                 if (creep.transfer(cont, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(cont);
                 }

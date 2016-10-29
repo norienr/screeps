@@ -87,17 +87,16 @@ MODULE = (function (module) {
                 }
             } else {
                 const site = Game.getObjectById(creep.memory.siteId);
-                if (site === null) {
+                if (site === null && creep.memory.containerId === undefined) {
                     const conts = _.filter(room.memory.containers,
                         x => x.siteId === creep.memory.siteId);
                     if (conts.length) {
-
-                        const container = creep.room.lookForAt(LOOK_STRUCTURES,
+                        const containers = creep.room.lookForAt(LOOK_STRUCTURES,
                             new RoomPosition(conts[0].x,
                                 conts[0].y, room.name));
-                        if (container != undefined) {
-                            creep.memory.containerId = container.id;
-                            conts[0].containerId = container.id;
+                        if (containers.length) {
+                            creep.memory.containerId = containers[0].id;
+                            conts[0].containerId = containers[0].id;
                         } else {
                             console.log('cannot init container');
                         }

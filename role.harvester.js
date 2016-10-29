@@ -1,12 +1,10 @@
-var roleHarvester = {
+const roleUpgrader = require('role.upgrader');
+
+const roleHarvester = {
 
     /** @param {Creep} creep **/
     run: function (creep) {
-        if (creep.memory.waiting === undefined) {
-            creep.memory.waiting = false;
-        }
-
-        if (!creep.memory.waiting && (creep.carry.energy < creep.carryCapacity)) {
+        if (creep.carry.energy < creep.carryCapacity) {
             var sources = creep.room.find(FIND_SOURCES);
             if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources[0]);
@@ -36,24 +34,7 @@ var roleHarvester = {
                         creep.moveTo(targets[0]);
                     }
                 } else {
-                    for (let i in Game.creeps) {
-                        let unit = Game.creeps[i];
-                        if (unit.memory.role == 'upgrader') {
-                            if (creep.transfer(unit, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                                creep.moveTo(unit);
-                            }
-                            if (creep.carry.energy) {
-                                if (!creep.memory.waiting) {
-                                    creep.memory.waiting = true;
-                                }
-                            } else {
-                                if (creep.memory.waiting) {
-                                    creep.memory.waiting = false;
-                                    creep.say('harvesting');
-                                }
-                            }
-                        }
-                    }
+                    roleUpgrader.run(creep);
                 }
             }
         }

@@ -60,7 +60,8 @@ var MODULE = (function (module) {
         }
 
         if (creep.memory.containerInited === undefined) {
-            const srcNum = creep.room.find(FIND_SOURCES).length;
+            const srcNum = _.filter(creep.room.find(FIND_MY_CREEPS),
+                s => s.memory.role === Config.ROLE_TRANSPORTER).length;
             const spawns = _.filter(creep.room.find(FIND_MY_STRUCTURES),
                 s => s.structureType === STRUCTURE_SPAWN &&
                 (s.memory.containersNum === undefined || s.memory.containersNum < srcNum));
