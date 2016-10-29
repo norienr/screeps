@@ -46,25 +46,20 @@ var MODULE = (function (module) {
     };
 
     module.initTransporter = function (creep) {
-        console.log('start');
         if (creep.memory.containerId === undefined) {
-            console.log('contUndef');
             const conts = module.findUnassignedContainer(creep);
             if (conts.length) {
                 creep.memory.containerId = conts[0].id;
             } else {
-                console.log('roleBuilder');
                 roleBuilder.run(creep);
             }
         } else if (creep.memory.containerLvl2Id === undefined) {
-            console.log('contLvl2Undef');
+            roleBuilder.run(creep);
+        } else {
             roleTransporter.run(creep);
         }
 
-        console.log('middle');
-
         if (creep.memory.containerInited === undefined) {
-            console.log('containerNotInited');
             const srcNum = creep.room.find(FIND_SOURCES).length;
             const spawns = _.filter(creep.room.find(FIND_MY_STRUCTURES),
                 s => s.structureType === STRUCTURE_SPAWN &&
