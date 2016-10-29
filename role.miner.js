@@ -4,7 +4,7 @@ var roleMiner = {
         const room = creep.room;
 
         const site = Game.getObjectById(creep.memory.siteId);
-        if (site.progress < site.progressTotal) {
+        if (site != null && site.progress < site.progressTotal) {
 
             if (creep.memory.building && creep.carry.energy === 0) {
                 creep.memory.building = false;
@@ -23,21 +23,17 @@ var roleMiner = {
                 }
             }
         } else {
-            const containers = creep.room.lookForAt(LOOK_STRUCTURES,
-                new RoomPosition(site.pos.x, site.pos.y, room.name));
-            if (containers.length) {
-                const cont = containers[0];
-
-                if (creep.carryEnergy === 0) {
-                    if (creep.harvest(cont) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(cont);
-                    }
-                } else if (creep.carryEnergy === creep.carryCapacity) {
-                    if (creep.transfer(cont, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(cont);
-                    }
+            const cont = Game.getObjectById(creep.memory.containerId);
+            if (creep.carryEnergy === 0) {
+                if (creep.harvest(cont) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(cont);
+                }
+            } else if (creep.carryEnergy === creep.carryCapacity) {
+                if (creep.transfer(cont, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(cont);
                 }
             }
+
         }
     }
 };

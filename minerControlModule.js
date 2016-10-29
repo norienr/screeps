@@ -1,5 +1,6 @@
 const Config = require('config');
 const roleMiner = require('role.miner');
+
 var MODULE = (function (module) {
 
     module.locateContainerPos = function (room, source) {
@@ -73,7 +74,12 @@ var MODULE = (function (module) {
                         container.y, room.name));
                 if (site.length) {
                     creep.memory.siteId = site[0].id;
-                    room.memory.containers.push({siteId: site[0].id, sourceId: creep.memory.sourceId});
+                    room.memory.containers.push({
+                        siteId: site[0].id,
+                        sourceId: creep.memory.sourceId,
+                        x: site[0].pos.x,
+                        y: site[0].pos.y
+                    });
                     console.log('pushed');
                     creep.memory.needsInit = undefined;
                 } else {
@@ -81,18 +87,20 @@ var MODULE = (function (module) {
                 }
             } else {
                 const site = Game.getObjectById(creep.memory.siteId);
-                if (site.progress === site.progressTotal && !site.memory.inited) {
-                    const container = creep.room.lookForAt(LOOK_STRUCTURES,
-                        new RoomPosition(site.pos.x,
-                            site.pos.y, room.name));
-                    if (container != undefined) {
-                        const cont = _.filter(room.memory.containers,
-                            x => x.siteId === site.id);
-                        creep.memory.containerId = container.id;
-                        cont[0].containerId = container.id;
-                        site.memory.inited = true;
-                    } else {
-                        console.log('cannot init container');
+                if (site === null) {
+                    const conts = _.filter(room.memory.containers,
+                        x => x.siteId === creep.memory.siteId);
+                    if (conts.length) {
+                        const container = creep.room.lookForAt(LOOK_STRUCTURES,
+                            new RoomPosition(conts[0].x,
+                                conts[0].y, room.name));
+                        if (container != undefined) {
+                            creep.memory.containerId = container.id;
+                            conts[0].containerId = container.id;
+                            site.memory.inited = true;
+                        } else {
+                            console.log('cannot init container');
+                        }
                     }
                 } else {
                     roleMiner.run(creep);
