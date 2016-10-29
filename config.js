@@ -1,4 +1,4 @@
-var config = (function () {
+var config = (() => {
 
     const ROLE_HARVESTER = 'harvester';
     const ROLE_UPGRADER = 'upgrader';
@@ -10,20 +10,10 @@ var config = (function () {
 
     const DYNAMIC_NUM = -1;
 
-    /*
-    const CREEPS = [
-        {role: ROLE_HARVESTER, num: 2, parts: [WORK, CARRY, MOVE], priorityGeneration: 1},
-        {role: ROLE_MINER, num: DYNAMIC_NUM, parts: [WORK, CARRY, MOVE], priorityGeneration: 2},
-        {role: ROLE_BUILDER, num: 1, parts: [WORK, CARRY, MOVE], priorityGeneration: 3},
-        {role: ROLE_UPGRADER, num: 1, parts: [WORK, CARRY, MOVE], priorityGeneration: 4},
-        {role: ROLE_BUILDER, num: 1, parts: [WORK, CARRY, MOVE], priorityGeneration: 5}
-    ];
-    */
-
     const CREEPS = [
         {role: ROLE_HARVESTER, num: 1, parts: [WORK, CARRY, MOVE], priorityGeneration: 1},
-        {role: ROLE_MINER, num: DYNAMIC_NUM,
-            parts: [WORK, CARRY, MOVE], priorityGeneration: 2}
+        {role: ROLE_MINER, num: 1,
+            parts: [WORK, WORK, CARRY, MOVE], priorityGeneration: 2}
         //{role: ROLE_BUILDER, num: 1, parts: [WORK, CARRY, MOVE], priorityGeneration: 3},
         //{role: ROLE_UPGRADER, num: 1, parts: [WORK, CARRY, MOVE], priorityGeneration: 4},
         //{role: ROLE_BUILDER, num: 1, parts: [WORK, CARRY, MOVE], priorityGeneration: 5},
