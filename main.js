@@ -1,6 +1,6 @@
 var defenseModule = require('defenseModule');
-var unitControlModule = require('unitControlModule');
 var constructionModule = require('constructionModule');
+var unitControlModule = require('unitControlModule');
 
 var main = function () {
 
