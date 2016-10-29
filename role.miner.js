@@ -1,8 +1,6 @@
 var roleMiner = {
     /** @param {Creep} creep **/
     run: (creep) => {
-        const room = creep.room;
-
         const site = Game.getObjectById(creep.memory.siteId);
         if (site != null && site.progress < site.progressTotal) {
 

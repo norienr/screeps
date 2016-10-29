@@ -80,7 +80,6 @@ var MODULE = (function (module) {
                         x: site[0].pos.x,
                         y: site[0].pos.y
                     });
-                    console.log('pushed');
                     creep.memory.needsInit = undefined;
                 } else {
                     console.log('cannot assign site');
@@ -91,6 +90,7 @@ var MODULE = (function (module) {
                     const conts = _.filter(room.memory.containers,
                         x => x.siteId === creep.memory.siteId);
                     if (conts.length) {
+
                         const container = creep.room.lookForAt(LOOK_STRUCTURES,
                             new RoomPosition(conts[0].x,
                                 conts[0].y, room.name));
