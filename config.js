@@ -6,7 +6,7 @@ var config = (() => {
     const ROLE_MINER = 'miner';
     const ROLE_TRANSPORTER = 'transporter';
     const ROLE_ARCHER = 'archer';
-    const ROLE_MELEE = 'archer';
+    const ROLE_MELEE = 'melee';
 
     const MIN_SAFE_DISTANCE = 5;
     const TOWER_ATTACK_INTERVAL = 5;
@@ -17,7 +17,7 @@ var config = (() => {
         {
             role: ROLE_HARVESTER,
             num: 1,
-            parts: [WORK, CARRY, CARRY, MOVE],
+            parts: [WORK, CARRY, MOVE, MOVE],
             priorityGeneration: 1
         },
         {

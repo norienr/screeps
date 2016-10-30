@@ -16,15 +16,7 @@ var MODULE = (function (module) {
         let positions = [];
         _.forEach(filtered, f => positions.push(new RoomPosition(f.x, f.y, creep.room.name)));
         if (positions.length) {
-            let id;
-            if (creep.memory.containerId !== undefined) {
-                id = creep.memory.containerId;
-            } else {
-                id = creep.memory.siteId;
-            }
-            const to = Game.getObjectById(id);
-            const res = to.pos.findClosestByPath(positions);
-            return res;
+            return positions;
         } else {
             return false;
         }
@@ -55,7 +47,7 @@ var MODULE = (function (module) {
 
     module.findUnassignedSite = function (creep) {
         const sites = _.filter(creep.room.find(FIND_CONSTRUCTION_SITES),
-            c => _.filter(room.memory.containers,
+            c => _.filter(creep.room.memory.containers,
                 c => c.siteId === c.id && !module.siteHasTransporter(creep.room, c)).length === 0);
         if (sites.length > 1) {
             return creep.pos.findClosestByRange(sites);
@@ -91,8 +83,17 @@ var MODULE = (function (module) {
                 s => s.structureType === STRUCTURE_SPAWN &&
                 (s.memory.containersNum === undefined || s.memory.containersNum < srcNum));
             if (spawns.length) {
-                const container = module.locateLvl2ContainerPos(creep, spawns[0]);
-                if (container) {
+                const containers = module.locateLvl2ContainerPos(creep, spawns[0]);
+                if (containers.length) {
+                    let id;
+                    if (creep.memory.containerId !== undefined) {
+                        id = creep.memory.containerId;
+                    } else {
+                        id = creep.memory.siteId;
+                    }
+                    const to = Game.getObjectById(id);
+                    const container = to.pos.findClosestByPath(containers);
+
                     const res = creep.room.createConstructionSite(container.x, container.y,
                         STRUCTURE_CONTAINER);
 
