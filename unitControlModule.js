@@ -131,8 +131,6 @@ MODULE = (function (module) {
 
     module.run = function (roomName) {
 
-        console.log(JSON.stringify(Game.rooms[roomName].memory.spawnQueue));
-
         module.deleteUnusedNames();
 
         module.runCreeps(roomName);
