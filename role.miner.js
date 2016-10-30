@@ -22,7 +22,6 @@ var roleMiner = {
             }
         } else {
             if (creep.carry.energy < creep.carryCapacity) {
-                console.log('m');
                 const src = Game.getObjectById(creep.memory.sourceId);
 
                 if (creep.harvest(src) === ERR_NOT_IN_RANGE) {

@@ -6,6 +6,7 @@ var config = (() => {
     const ROLE_MINER = 'miner';
     const ROLE_TRANSPORTER = 'transporter';
     const ROLE_ARCHER = 'archer';
+    const ROLE_MELEE = 'archer';
 
     const MIN_SAFE_DISTANCE = 5;
     const TOWER_ATTACK_INTERVAL = 5;
@@ -30,12 +31,6 @@ var config = (() => {
             num: DYNAMIC_SPAWN_NUM,
             parts: [WORK, WORK, CARRY, MOVE],
             priorityGeneration: 3
-        },
-        {
-            role: ROLE_ARCHER,
-            num: 1,
-            parts: [MOVE, RANGED_ATTACK, RANGED_ATTACK],
-            priorityGeneration: 4
         }
     ];
 
@@ -50,6 +45,7 @@ var config = (() => {
         ROLE_MINER: ROLE_MINER,
         ROLE_TRANSPORTER: ROLE_TRANSPORTER,
         ROLE_ARCHER: ROLE_ARCHER,
+        ROLE_MELEE: ROLE_MELEE,
         DYNAMIC_SPAWN_NUM: DYNAMIC_SPAWN_NUM,
         MIN_SAFE_DISTANCE: MIN_SAFE_DISTANCE,
         TOWER_ATTACK_INTERVAL: TOWER_ATTACK_INTERVAL,

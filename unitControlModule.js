@@ -3,6 +3,7 @@ const roleHarvester = require('role.harvester');
 const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
 const roleArcher = require('role.archer');
+const roleMelee = require('role.melee');
 let MODULE = require('minerControlModule');
 
 MODULE = (function (module) {
@@ -41,6 +42,8 @@ MODULE = (function (module) {
                     module.initTransporter(creep);
                 } else if (creep.memory.role === Config.ROLE_ARCHER) {
                     roleArcher.run(creep);
+                } else if (creep.memory.role === Config.ROLE_MELEE) {
+                    roleMelee.run(creep);
                 }
             }
         });
@@ -96,13 +99,22 @@ MODULE = (function (module) {
 
         let num;
         if (c.num === Config.DYNAMIC_SPAWN_NUM) {
+
             if (c.role === Config.ROLE_MINER) {
                 num = _.filter(Game.rooms[roomName].find(FIND_SOURCES),
                     s => !module.hasHostilesAround(Game.rooms[roomName], s)).length;
             } else if (c.role === Config.ROLE_TRANSPORTER) {
-                num = _.filter(Game.rooms[roomName].find(FIND_STRUCTURES),
-                    s => s.structureType === STRUCTURE_CONTAINER &&
-                    s.memory.level === undefined).length;
+                num = _.filter(Game.rooms[roomName].find(FIND_MY_CREEPS),
+                    s => s.memory.role === Config.ROLE_MINER).length;
+            }
+
+            if ((num - creepsAlive - creepsInQueue - creepsSpawning) > 0) {
+                if (_.filter(Game.rooms[roomName].memory.spawnQueue,
+                        c => c.role === Config.ROLE_MINER).length) {
+                    return 0;
+                } else {
+                    return 1;
+                }
             }
 
         } else {
@@ -118,6 +130,8 @@ MODULE = (function (module) {
     };
 
     module.run = function (roomName) {
+
+        console.log(JSON.stringify(Game.rooms[roomName].memory.spawnQueue));
 
         module.deleteUnusedNames();
 

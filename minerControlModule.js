@@ -31,13 +31,23 @@ MODULE = (function (module) {
     };
 
     module.hasHostilesAround = function (room, source) {
-        const x1 = source.pos.x - 10;
-        const x2 = source.pos.x + 10;
-        const y1 = source.pos.y - 10;
-        const y2 = source.pos.y + 10;
-        const posArr = room.lookForAtArea(LOOK_CREEPS, y1, x1, y2, x2, true);
-        const filtered = _.filter(posArr, p => p.creep.owner.username === 'Source Keeper');
-        return filtered.length;
+        if (room.memory.dangerSources === undefined) {
+            room.memory.dangerSources = [];
+        }
+        if (room.memory.dangerSources.length === 0) {
+            const x1 = source.pos.x - 10;
+            const x2 = source.pos.x + 10;
+            const y1 = source.pos.y - 10;
+            const y2 = source.pos.y + 10;
+            const posArr = room.lookForAtArea(LOOK_CREEPS, y1, x1, y2, x2, true);
+            const filtered = _.filter(posArr, p => p.creep.owner.username === 'Source Keeper');
+            if (filtered.length) {
+                room.memory.dangerSources.push(source.id);
+            }
+            return filtered.length;
+        } else {
+            return _.filter(room.memory.dangerSources, s => s === source.id).length;
+        }
     };
 
     module.findUnassignedSource = function (creep) {
