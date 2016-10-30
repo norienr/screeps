@@ -69,6 +69,22 @@ MODULE = (function (module) {
         return canSpawn;
     };
 
+    module.getNeededEnergy = function (parts) {
+        let energy = 0;
+        _.forEach(parts, (p) => {
+            if (p === WORK) {
+                energy += 100;
+            } else if (p === CARRY) {
+                energy += 50;
+            } else if (p === MOVE) {
+                energy += 50;
+            } else { // not supported
+                energy += 600;
+            }
+        });
+        return energy;
+    };
+
     module.getMissingCreepsNum = function (roomName, c) {
         const creepsAlive = module.getCreeps(roomName, c.role, c.priorityGeneration).length;
         const creepsInQueue = _.filter(Game.rooms[roomName].memory.spawnQueue,
@@ -78,8 +94,10 @@ MODULE = (function (module) {
             s.memory.lastSpawningCreepMemory.priorityGeneration === c.priorityGeneration).length;
 
         let num;
-        if (c.num === Config.DYNAMIC_NUM) {
+        if (c.num === Config.DYNAMIC_SPAWN_NUM) {
             if (c.role === Config.ROLE_MINER) {
+                num = Game.rooms[roomName].find(FIND_SOURCES).length;
+            } else if (c.role === Config.ROLE_TRANSPORTER) {
                 num = Game.rooms[roomName].find(FIND_SOURCES).length;
             }
         } else {
@@ -141,7 +159,14 @@ MODULE = (function (module) {
             _.forEach(module.getSpawnsByRoom(roomName), function (s) {
                 if (s.spawning == null && Game.rooms[roomName].memory.spawnQueue.length) {
                     const creep = Game.rooms[roomName].memory.spawnQueue[0];
-                    if (module.spawnCreeps(s, creep.parts, creep.role, creep.priorityGeneration) == OK) {
+                    const parts = creep.parts;
+                    const availableEnergy = Game.rooms[roomName].energyAvailable -
+                        module.getNeededEnergy(parts);
+                    if (availableEnergy >= 100) {
+                        parts.unshift(WORK);
+                    }
+
+                    if (module.spawnCreeps(s, parts, creep.role, creep.priorityGeneration) == OK) {
                         module.getCreepsToNormalRoles(roomName);
                         Game.rooms[roomName].memory.spawnQueue.shift();
                     } else { // reassign roles if can't spawn most valuable ones (harvester)
