@@ -1,7 +1,7 @@
 var roleBuilder = {
 
     /** @param {Creep} creep **/
-    run: function (creep) {
+    run: function (creep, ...sites) {
 
         if (creep.memory.building && creep.carry.energy === 0) {
             creep.memory.building = false;
@@ -11,7 +11,16 @@ var roleBuilder = {
         }
 
         if (creep.memory.building) {
-            var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+            let targets = [];
+            if (sites.length === 0) {
+                targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+            } else {
+                console.log('sites -> ' + JSON.stringify(sites));
+                targets = _.filter(creep.room.find(FIND_CONSTRUCTION_SITES),
+                    s => _.filter(sites, s2 => s2.id === s.id).length);
+                console.log('tlength:' + targets.length);
+            }
+
             if (targets.length) {
                 creep.memory.canBuild = false;
                 if (creep.build(targets[0]) === ERR_NOT_IN_RANGE) {

@@ -49,8 +49,11 @@ var MODULE = (function (module) {
         const sites = _.filter(creep.room.find(FIND_CONSTRUCTION_SITES),
             c => !module.siteHasTransporter(creep.room, c) && _.filter(creep.room.memory.containers,
                 c2 => c2.siteId === c.id).length);
+        console.log('slength:' + creep.name + ' as ' + sites.length);
         if (sites.length > 1) {
             return creep.pos.findClosestByRange(sites);
+        } else if (sites.length === 1) {
+            return sites[0];
         }
         return 0;
     };
@@ -67,11 +70,9 @@ var MODULE = (function (module) {
                         creep.memory.siteId = site.id;
                     }
                 } else {
-                    roleBuilder.run(creep);
+                    roleBuilder.run(creep, Game.getObjectById(creep.memory.siteId));
                 }
             }
-        } else if (creep.memory.containerLvl2Id === undefined) {
-            roleBuilder.run(creep);
         } else {
             roleTransporter.run(creep);
         }
@@ -93,8 +94,8 @@ var MODULE = (function (module) {
                     }
                     if (id != 0) {
                         const to = Game.getObjectById(id);
-                        console.log(JSON.stringify(to));
                         const container = to.pos.findClosestByPath(containers);
+                        console.log('cont:'+JSON.stringify(container));
                         const res = creep.room.createConstructionSite(container.x, container.y,
                             STRUCTURE_CONTAINER);
                         if (res === OK) {
