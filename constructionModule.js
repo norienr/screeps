@@ -66,11 +66,9 @@ var constructionModule = (function () {
                 if (!Game.rooms[roomName].memory.queueInitialized) {
                     _.forEach(Config.STRUCTURES, function (structure) {
                         if (structure.type === STRUCTURE_CONTAINER) {
-                            if (structure.level === 1) {
-
-                            } else {
+                            if (structure.level === 2) {
                                 const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
-                                const containers = module.locateLvl2ContainerPos(roomName, spawns[0]);
+                                const containers = o.locateLvl2ContainerPos(roomName, spawns[0]);
                                 if (containers.length) {
                                     structure.pos = {x: containers[0].x, y: containers[0].y};
                                     Game.rooms[roomName].memory.buildQueue.push(structure);
@@ -84,9 +82,22 @@ var constructionModule = (function () {
                 }
 
                 if (Game.rooms[roomName].memory.buildQueue.length) {
-                    if (_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), creep => creep.memory.canBuild === true).length) {
+                    if (_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS),
+                            creep => creep.memory.canBuild === true).length) {
                         if (o.buildStructure(roomName, Game.rooms[roomName].memory.buildQueue[0]) === OK) {
                             Game.rooms[roomName].memory.buildQueue.shift();
+                        } else {
+                            const structure = Game.rooms[roomName].memory.buildQueue[0];
+                            if (structure.type === STRUCTURE_CONTAINER) {
+                                const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
+                                const containers = o.locateLvl2ContainerPos(roomName, spawns[0]);
+                                if (containers.length > 1) {
+                                    structure.pos = {x: containers[1].x, y: containers[1].y};
+                                    Game.rooms[roomName].memory.buildQueue.shift();
+                                    Game.rooms[roomName].memory.buildQueue.push(structure);
+                                }
+                            }
+
                         }
                     }
                 }

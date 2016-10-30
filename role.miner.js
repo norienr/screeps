@@ -1,4 +1,6 @@
-var roleMiner = {
+const roleBuilder = require('role.builder');
+
+const roleMiner = {
     /** @param {Creep} creep **/
     run: (creep) => {
         const site = Game.getObjectById(creep.memory.siteId);
@@ -21,18 +23,22 @@ var roleMiner = {
                 }
             }
         } else {
-            if (creep.carry.energy < creep.carryCapacity) {
-                const src = Game.getObjectById(creep.memory.sourceId);
-
-                if (creep.harvest(src) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(src);
+            const cont = Game.getObjectById(creep.memory.containerId);
+            if (cont.store[RESOURCE_ENERGY] < cont.storeCapacity) {
+                if (creep.carry.energy < creep.carryCapacity) {
+                    const src = Game.getObjectById(creep.memory.sourceId);
+                    if (creep.harvest(src) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(src);
+                    }
+                } else {
+                    if (creep.transfer(cont, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(cont);
+                    }
                 }
             } else {
-                const cont = Game.getObjectById(creep.memory.containerId);
-                if (creep.transfer(cont, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(cont);
-                }
+                roleBuilder.run(creep);
             }
+
 
         }
     }

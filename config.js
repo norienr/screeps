@@ -24,13 +24,13 @@ var config = (() => {
             role: ROLE_BUILDER,
             num: 2,
             parts: [WORK, WORK, CARRY, MOVE],
-            priorityGeneration: 3
+            priorityGeneration: 2
         },
         {
             role: ROLE_MINER,
             num: DYNAMIC_SPAWN_NUM,
             parts: [WORK, WORK, CARRY, MOVE],
-            priorityGeneration: 2
+            priorityGeneration: 3
         },
         {
             role: ROLE_TRANSPORTER,
@@ -41,6 +41,8 @@ var config = (() => {
     ];
 
     const STRUCTURES = [ //highest priority at top
+        {type: STRUCTURE_CONTAINER, level: 2},
+        {type: STRUCTURE_CONTAINER, level: 2}
         //{type: STRUCTURE_ROAD}
     ];
 

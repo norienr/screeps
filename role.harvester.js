@@ -21,8 +21,8 @@ const roleHarvester = {
 
         if (creep.carry.energy === 0) {
             creep.memory.harvesting = true;
-
         }
+
         if (!creep.memory.harvesting) {
             let targets = creep.room.find(FIND_STRUCTURES, {
                 filter: (s) => {
@@ -36,20 +36,7 @@ const roleHarvester = {
                     creep.moveTo(targets[0]);
                 }
             } else {
-                let targets = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return (structure.structureType === STRUCTURE_CONTAINER ||
-                            structure.structureType === STRUCTURE_STORAGE) &&
-                            _.sum(structure.store) < structure.storeCapacity;
-                    }
-                });
-                if (targets.length) {
-                    if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(targets[0]);
-                    }
-                } else {
-                    roleUpgrader.run(creep);
-                }
+                roleUpgrader.run(creep);
             }
         }
     }
