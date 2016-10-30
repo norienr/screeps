@@ -97,10 +97,14 @@ MODULE = (function (module) {
         let num;
         if (c.num === Config.DYNAMIC_SPAWN_NUM) {
             if (c.role === Config.ROLE_MINER) {
-                num = Game.rooms[roomName].find(FIND_SOURCES).length;
+                num = _.filter(Game.rooms[roomName].find(FIND_SOURCES),
+                    s => !module.hasHostilesAround(Game.rooms[roomName], s)).length;
             } else if (c.role === Config.ROLE_TRANSPORTER) {
-                num = Game.rooms[roomName].find(FIND_SOURCES).length;
+                num = _.filter(Game.rooms[roomName].find(FIND_STRUCTURES),
+                    s => s.structureType === STRUCTURE_CONTAINER &&
+                    s.memory.level === undefined).length;
             }
+
         } else {
             num = c.num;
         }
