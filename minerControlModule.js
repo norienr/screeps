@@ -30,9 +30,19 @@ MODULE = (function (module) {
             creep.memory.sourceId === source.id).length;
     };
 
+    module.hasHostilesAround = function (room, source) {
+        const x1 = source.pos.x - 10;
+        const x2 = source.pos.x + 10;
+        const y1 = source.pos.y - 10;
+        const y2 = source.pos.y + 10;
+        const posArr = room.lookForAtArea(LOOK_CREEPS, y1, x1, y2, x2, true);
+        const filtered = _.filter(posArr, p => p.creep.owner.username === 'Source Keeper');
+        return filtered.length;
+    };
+
     module.findUnassignedSource = function (creep) {
         const srcs = _.filter(creep.room.find(FIND_SOURCES),
-            src => !module.hasMinerAssigned(creep.room, src));
+            src => !module.hasMinerAssigned(creep.room, src) && !module.hasHostilesAround(creep.room, src));
         return creep.pos.findClosestByRange(srcs);
     };
 

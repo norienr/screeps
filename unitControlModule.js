@@ -2,6 +2,7 @@ const Config = require('config');
 const roleHarvester = require('role.harvester');
 const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
+const roleArcher = require('role.archer');
 let MODULE = require('minerControlModule');
 
 MODULE = (function (module) {
@@ -18,9 +19,7 @@ MODULE = (function (module) {
         _.forEach(Game.rooms[roomName].find(FIND_MY_CREEPS), (creep) => {
             if (creep.memory.saving) {
                 const closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
-
                 creep.moveTo(closestSpawn);
-
             } else if (creep.memory.tempRole != undefined) {
                 if (creep.memory.tempRole === Config.ROLE_HARVESTER) {
                     roleHarvester.run(creep);
@@ -40,6 +39,8 @@ MODULE = (function (module) {
                     module.initMiner(creep);
                 } else if (creep.memory.role === Config.ROLE_TRANSPORTER) {
                     module.initTransporter(creep);
+                } else if (creep.memory.role === Config.ROLE_ARCHER) {
+                    roleArcher.run(creep);
                 }
             }
         });
@@ -125,17 +126,17 @@ MODULE = (function (module) {
         const hostiles = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS);
 
         if (hostiles.length) {
-            _.forEach(module.getCreepsByRole(roomName, Config.ROLE_HARVESTER), function (harv) {
+            _.forEach(module.getCreepsByRole(roomName, Config.ROLE_MINER), function (m) {
                 _.forEach(hostiles, function (threat) {
-                    if (harv.pos.getRangeTo(threat) < Config.MIN_SAFE_DISTANCE) {
-                        harv.memory.saving = true;
+                    if (m.pos.getRangeTo(threat) < Config.MIN_SAFE_DISTANCE) {
+                        m.memory.saving = true;
                     } else {
-                        harv.memory.saving = false;
+                        m.memory.saving = false;
                     }
                 });
             });
         } else {
-            _.forEach(module.getCreepsByRole(roomName, Config.ROLE_HARVESTER), harv => harv.memory.saving = false);
+            _.forEach(module.getCreepsByRole(roomName, Config.ROLE_MINER), m => m.memory.saving = false);
         }
 
         _.forEach(Config.CREEPS, function (c) {

@@ -26,10 +26,6 @@ var MODULE = (function (module) {
     };
 
     module.hasTransporterAssigned = function (room, container) {
-        console.log('l->>>>' + _.filter(room.find(FIND_MY_CREEPS),
-                creep => creep.memory.role === Config.ROLE_TRANSPORTER &&
-                creep.memory.containerId != undefined &&
-                creep.memory.containerId === container.id).length);
         return _.filter(room.find(FIND_MY_CREEPS),
             creep => creep.memory.role === Config.ROLE_TRANSPORTER &&
             creep.memory.containerId != undefined &&
