@@ -34,6 +34,23 @@ var constructionModule = (function () {
                 maxOps: 1000
             });
             _.forEach(path, p => Game.rooms[roomName].createConstructionSite(p.x, p.y, STRUCTURE_ROAD));
+        },
+        locateLvl2ContainerPos: function (roomName, spawn) {
+            const x1 = spawn.pos.x - 3;
+            const x2 = spawn.pos.x + 3;
+            const y1 = spawn.pos.y - 3;
+            const y2 = spawn.pos.y + 3;
+            const posArr = Game.rooms[roomName].lookForAtArea(LOOK_TERRAIN, y1, x1, y2, x2, true);
+            const filtered = _.filter(posArr, p => p.terrain === 'plain' &&
+            p.x != spawn.pos.x && p.y != spawn.pos.y && p.x != spawn.pos.x - 1 && p.y != spawn.pos.y - 1 &&
+            p.x != spawn.pos.x + 1 && p.y != spawn.pos.y + 1);
+            let positions = [];
+            _.forEach(filtered, f => positions.push(new RoomPosition(f.x, f.y, Game.rooms[roomName].name)));
+            if (positions.length) {
+                return positions;
+            } else {
+                return false;
+            }
         }
     };
 
@@ -48,14 +65,29 @@ var constructionModule = (function () {
             if (Game.rooms[roomName].hasCreep(Config.ROLE_BUILDER)) {
                 if (!Game.rooms[roomName].memory.queueInitialized) {
                     _.forEach(Config.STRUCTURES, function (structure) {
-                        Game.rooms[roomName].memory.buildQueue.push(structure);
+                        if (structure.type === STRUCTURE_CONTAINER) {
+                            if (structure.level === 1) {
+
+                            } else {
+                                const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
+                                const containers = module.locateLvl2ContainerPos(roomName, spawns[0]);
+                                if (containers.length) {
+                                    structure.pos = {x: containers[0].x, y: containers[0].y};
+                                    Game.rooms[roomName].memory.buildQueue.push(structure);
+                                }
+                            }
+                        } else {
+                            Game.rooms[roomName].memory.buildQueue.push(structure);
+                        }
                     });
                     Game.rooms[roomName].memory.queueInitialized = true;
                 }
 
-                if (_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), creep => creep.memory.canBuild == true).length) {
-                    if (o.buildStructure(roomName, Game.rooms[roomName].memory.buildQueue[0]) === OK) {
-                        Game.rooms[roomName].memory.buildQueue.shift();
+                if (Game.rooms[roomName].memory.buildQueue.length) {
+                    if (_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), creep => creep.memory.canBuild === true).length) {
+                        if (o.buildStructure(roomName, Game.rooms[roomName].memory.buildQueue[0]) === OK) {
+                            Game.rooms[roomName].memory.buildQueue.shift();
+                        }
                     }
                 }
             }

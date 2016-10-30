@@ -1,3 +1,5 @@
+const roleHarvester = require('role.harvester');
+
 var roleBuilder = {
 
     /** @param {Creep} creep **/
@@ -28,6 +30,7 @@ var roleBuilder = {
                 }
             } else {
                 creep.memory.canBuild = true;
+                roleHarvester.run(creep);
             }
         } else {
             const source = creep.pos.findClosestByRange(FIND_SOURCES);

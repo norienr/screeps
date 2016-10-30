@@ -1,8 +1,7 @@
 const Config = require('config');
 const roleMiner = require('role.miner');
-var MODULE = require('transporterControlModule');
 
-MODULE = (function (module) {
+var MODULE = (function (module) {
 
     module.locateContainerPos = function (room, source) {
         const x1 = source.pos.x - 5;

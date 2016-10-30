@@ -2,6 +2,7 @@ const Config = require('config');
 const roleHarvester = require('role.harvester');
 const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
+const roleTransporter = require('role.transporter');
 const roleArcher = require('role.archer');
 const roleMelee = require('role.melee');
 let MODULE = require('minerControlModule');
@@ -39,7 +40,7 @@ MODULE = (function (module) {
                 } else if (creep.memory.role === Config.ROLE_MINER) {
                     module.initMiner(creep);
                 } else if (creep.memory.role === Config.ROLE_TRANSPORTER) {
-                    module.initTransporter(creep);
+                    roleTransporter.run(creep);
                 } else if (creep.memory.role === Config.ROLE_ARCHER) {
                     roleArcher.run(creep);
                 } else if (creep.memory.role === Config.ROLE_MELEE) {
@@ -99,13 +100,21 @@ MODULE = (function (module) {
 
         let num;
         if (c.num === Config.DYNAMIC_SPAWN_NUM) {
-
             if (c.role === Config.ROLE_MINER) {
                 num = _.filter(Game.rooms[roomName].find(FIND_SOURCES),
                     s => !module.hasHostilesAround(Game.rooms[roomName], s)).length;
             } else if (c.role === Config.ROLE_TRANSPORTER) {
-                num = _.filter(Game.rooms[roomName].find(FIND_MY_CREEPS),
-                    s => s.memory.role === Config.ROLE_MINER).length;
+                num = _.filter(Game.rooms[roomName].find(FIND_STRUCTURES),
+                    s => (s.structureType === STRUCTURE_CONTAINER ||
+                    s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_TERMINAL) &&
+                    _.filter(Game.rooms[roomName].memory.containers, x => x.containerId === s.id).length === 0).length;
+                console.log(num);
+                if (num > 0) {
+                    num += _.filter(Game.rooms[roomName].find(FIND_STRUCTURES),
+                        s => (s.structureType === STRUCTURE_CONTAINER ||
+                        s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_TERMINAL)
+                        && _.filter(Game.rooms[roomName].memory.containers, x => x.id === s.id).length).length;
+                }
             }
 
             if ((num - creepsAlive - creepsInQueue - creepsSpawning) > 0) {
