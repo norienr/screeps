@@ -17,7 +17,7 @@ var config = (() => {
         {
             role: ROLE_HARVESTER,
             num: 1,
-            parts: [WORK, CARRY, MOVE],
+            parts: [WORK, CARRY, CARRY, MOVE],
             priorityGeneration: 1
         },
         {

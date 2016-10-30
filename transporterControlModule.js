@@ -55,7 +55,8 @@ var MODULE = (function (module) {
 
     module.findUnassignedSite = function (creep) {
         const sites = _.filter(creep.room.find(FIND_CONSTRUCTION_SITES),
-            c => !module.siteHasTransporter(creep.room, c));
+            c => _.filter(room.memory.containers,
+                c => c.siteId === c.id && !module.siteHasTransporter(creep.room, c)).length === 0);
         if (sites.length > 1) {
             return creep.pos.findClosestByRange(sites);
         }
@@ -72,7 +73,7 @@ var MODULE = (function (module) {
                     const site = module.findUnassignedSite(creep);
                     if (site != 0) {
                         creep.memory.siteId = site.id;
-                     }
+                    }
                 } else {
                     roleBuilder.run(creep);
                 }
