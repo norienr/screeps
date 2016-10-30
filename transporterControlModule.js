@@ -47,8 +47,8 @@ var MODULE = (function (module) {
 
     module.findUnassignedSite = function (creep) {
         const sites = _.filter(creep.room.find(FIND_CONSTRUCTION_SITES),
-            c => _.filter(creep.room.memory.containers,
-                c => c.siteId === c.id && !module.siteHasTransporter(creep.room, c)).length === 0);
+            c => !module.siteHasTransporter(creep.room, c) && _.filter(creep.room.memory.containers,
+                c2 => c2.siteId === c.id).length);
         if (sites.length > 1) {
             return creep.pos.findClosestByRange(sites);
         }
@@ -85,26 +85,29 @@ var MODULE = (function (module) {
             if (spawns.length) {
                 const containers = module.locateLvl2ContainerPos(creep, spawns[0]);
                 if (containers.length) {
-                    let id;
+                    let id = 0;
                     if (creep.memory.containerId !== undefined) {
                         id = creep.memory.containerId;
-                    } else {
+                    } else if (creep.memory.siteId !== undefined) {
                         id = creep.memory.siteId;
                     }
-                    const to = Game.getObjectById(id);
-                    const container = to.pos.findClosestByPath(containers);
-
-                    const res = creep.room.createConstructionSite(container.x, container.y,
-                        STRUCTURE_CONTAINER);
-
-                    if (res === OK) {
-                        if (spawns[0].memory.containersNum === undefined) {
-                            spawns[0].memory.containersNum = 0;
+                    if (id != 0) {
+                        const to = Game.getObjectById(id);
+                        console.log(JSON.stringify(to));
+                        const container = to.pos.findClosestByPath(containers);
+                        const res = creep.room.createConstructionSite(container.x, container.y,
+                            STRUCTURE_CONTAINER);
+                        if (res === OK) {
+                            if (spawns[0].memory.containersNum === undefined) {
+                                spawns[0].memory.containersNum = 0;
+                            }
                             creep.memory.containerInited = true;
+                            spawns[0].memory.containersNum++;
+                        } else {
+                            console.log(`cannot build lvl2 container: ${res}`);
                         }
-                        spawns[0].memory.containersNum++;
                     } else {
-                        console.log(`cannot build lvl2 container: ${res}`);
+                        console.log('neither id assigned to transporter');
                     }
                 }
             }
