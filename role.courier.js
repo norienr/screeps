@@ -1,3 +1,5 @@
+const roleBuilder = require('role.builder');
+
 const roleCourier = {
 
     /** @param {Creep} creep **/
@@ -43,11 +45,21 @@ const roleCourier = {
                 }
             });
             if (targets.length) {
-                if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0]);
+                let towers = _.filter(targets,
+                    (s) => s.structureType === STRUCTURE_TOWER);
+
+                let target;
+                if (towers.length) {
+                    target = towers[0];
+                } else {
+                    target = targets[0];
+                }
+
+                if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target);
                 }
             } else {
-                roleUpgrader.run(creep);
+                roleBuilder.run(creep);
             }
         }
     }
