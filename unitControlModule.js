@@ -3,8 +3,10 @@ const roleHarvester = require('role.harvester');
 const roleUpgrader = require('role.upgrader');
 const roleBuilder = require('role.builder');
 const roleTransporter = require('role.transporter');
+const roleCourier = require('role.courier');
 const roleArcher = require('role.archer');
 const roleMelee = require('role.melee');
+const roleHealer = require('role.healer');
 let MODULE = require('minerControlModule');
 
 MODULE = (function (module) {
@@ -19,35 +21,40 @@ MODULE = (function (module) {
 
     module.runCreeps = function (roomName) {
         _.forEach(Game.rooms[roomName].find(FIND_MY_CREEPS), (creep) => {
-            if (creep.memory.saving) {
-                const closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
-                creep.moveTo(closestSpawn);
-            } else if (creep.memory.tempRole != undefined) {
-                if (creep.memory.tempRole === Config.ROLE_HARVESTER) {
-                    roleHarvester.run(creep);
-                } else if (creep.memory.tempRole === Config.ROLE_UPGRADER) {
-                    roleUpgrader.run(creep);
-                } else if (creep.memory.tempRole === Config.ROLE_BUILDER) {
-                    roleBuilder.run(creep);
-                }
-            } else {
-                if (creep.memory.role === Config.ROLE_HARVESTER) {
-                    roleHarvester.run(creep);
-                } else if (creep.memory.role === Config.ROLE_UPGRADER) {
-                    roleUpgrader.run(creep);
-                } else if (creep.memory.role === Config.ROLE_BUILDER) {
-                    roleBuilder.run(creep);
-                } else if (creep.memory.role === Config.ROLE_MINER) {
-                    module.initMiner(creep);
-                } else if (creep.memory.role === Config.ROLE_TRANSPORTER) {
-                    roleTransporter.run(creep);
-                } else if (creep.memory.role === Config.ROLE_ARCHER) {
-                    roleArcher.run(creep);
-                } else if (creep.memory.role === Config.ROLE_MELEE) {
-                    roleMelee.run(creep);
+                if (creep.memory.saving) {
+                    const closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+                    creep.moveTo(closestSpawn);
+                } else if (creep.memory.tempRole != undefined) {
+                    if (creep.memory.tempRole === Config.ROLE_HARVESTER) {
+                        roleHarvester.run(creep);
+                    } else if (creep.memory.tempRole === Config.ROLE_UPGRADER) {
+                        roleUpgrader.run(creep);
+                    } else if (creep.memory.tempRole === Config.ROLE_BUILDER) {
+                        roleBuilder.run(creep);
+                    }
+                } else {
+                    if (creep.memory.role === Config.ROLE_HARVESTER) {
+                        roleHarvester.run(creep);
+                    } else if (creep.memory.role === Config.ROLE_UPGRADER) {
+                        roleUpgrader.run(creep);
+                    } else if (creep.memory.role === Config.ROLE_BUILDER) {
+                        roleBuilder.run(creep);
+                    } else if (creep.memory.role === Config.ROLE_MINER) {
+                        module.initMiner(creep);
+                    } else if (creep.memory.role === Config.ROLE_TRANSPORTER) {
+                        roleTransporter.run(creep);
+                    } else if (creep.memory.role === Config.ROLE_COURIER) {
+                        roleCourier.run(creep);
+                    } else if (creep.memory.role === Config.ROLE_ARCHER) {
+                        roleArcher.run(creep);
+                    } else if (creep.memory.role === Config.ROLE_MELEE) {
+                        roleMelee.run(creep);
+                    } else if (creep.memory.role === Config.ROLE_HEALER) {
+                        roleHealer.run(creep);
+                    }
                 }
             }
-        });
+        );
     };
 
     module.getCreepsByRole = function (roomName, role) {

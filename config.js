@@ -5,8 +5,10 @@ var config = (() => {
     const ROLE_BUILDER = 'builder';
     const ROLE_MINER = 'miner';
     const ROLE_TRANSPORTER = 'transporter';
+    const ROLE_COURIER = 'courier';
     const ROLE_ARCHER = 'archer';
     const ROLE_MELEE = 'melee';
+    const ROLE_HEALER = 'healer';
 
     const MIN_SAFE_DISTANCE = 5;
     const TOWER_ATTACK_INTERVAL = 5;
@@ -33,10 +35,22 @@ var config = (() => {
             priorityGeneration: 3
         },
         {
+            role: ROLE_UPGRADER,
+            num: 1,
+            parts: [WORK, WORK, CARRY, MOVE],
+            priorityGeneration: 4
+        },
+        {
             role: ROLE_TRANSPORTER,
             num: DYNAMIC_SPAWN_NUM,
             parts: [WORK, WORK, CARRY, MOVE],
-            priorityGeneration: 4
+            priorityGeneration: 5
+        },
+        {
+            role: ROLE_COURIER,
+            num: 2,
+            parts: [WORK, WORK, CARRY, MOVE],
+            priorityGeneration: 6
         }
     ];
 
@@ -52,8 +66,10 @@ var config = (() => {
         ROLE_BUILDER: ROLE_BUILDER,
         ROLE_MINER: ROLE_MINER,
         ROLE_TRANSPORTER: ROLE_TRANSPORTER,
+        ROLE_COURIER: ROLE_COURIER,
         ROLE_ARCHER: ROLE_ARCHER,
         ROLE_MELEE: ROLE_MELEE,
+        ROLE_HEALER: ROLE_HEALER,
         DYNAMIC_SPAWN_NUM: DYNAMIC_SPAWN_NUM,
         MIN_SAFE_DISTANCE: MIN_SAFE_DISTANCE,
         TOWER_ATTACK_INTERVAL: TOWER_ATTACK_INTERVAL,
