@@ -26,7 +26,8 @@ var defenseModule = (function () {
                 }
             }
         },
-        attackThreats: function (tower, closestThreat) {
+        attackThreats: function (tower, targets) {
+            const closestThreat = tower.pos.findClosestByRange(targets);
             if (closestThreat) {
                 tower.attack(closestThreat);
             }
@@ -44,11 +45,10 @@ var defenseModule = (function () {
                 c => c.owner.username !== 'Source Keeper');
 
             if (targets.length) {
-                Game.rooms[roomName].underAttack = true;
+                Game.rooms[roomName].memory.underAttack = true;
 
                 let towers;
                 if ((towers = o.getTowers(roomName)).length) {
-
                     if (targets.length) {
                         towers.forEach(
                             tower => o.attackThreats(tower, targets));
@@ -64,7 +64,7 @@ var defenseModule = (function () {
                     }
                 }
             } else {
-                Game.rooms[roomName].underAttack = false;
+                Game.rooms[roomName].memory.underAttack = false;
             }
 
 

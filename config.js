@@ -62,6 +62,7 @@ var config = (() => {
         {type: STRUCTURE_EXTENSION},
         {type: STRUCTURE_EXTENSION},
         {type: STRUCTURE_EXTENSION},
+        {type: STRUCTURE_TOWER},
         {type: STRUCTURE_TOWER}
     ];
 
@@ -76,13 +77,13 @@ var config = (() => {
             role: ROLE_HEALER,
             num: 1,
             parts: [HEAL, MOVE],
-            priorityGeneration: 2
+            priorityGeneration: 1
         },
         {
             role: ROLE_MELEE,
             num: DYNAMIC_SPAWN_NUM,
             parts: [TOUGH, ATTACK, ATTACK, ATTACK, MOVE],
-            priorityGeneration: 3
+            priorityGeneration: 1
         }
     ];
 

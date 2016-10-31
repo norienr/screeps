@@ -163,7 +163,8 @@ MODULE = (function (module) {
             Game.rooms[roomName].memory.spawnQueue = [];
         }
 
-        if (Game.rooms[roomName].underAttack) {
+        if (Game.rooms[roomName].memory.underAttack) {
+            const hostiles = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS);
             _.forEach(module.getCreepsByRole(roomName, Config.ROLE_MINER), function (m) {
                 _.forEach(hostiles, function (threat) {
                     if (m.pos.getRangeTo(threat) < Config.MIN_SAFE_DISTANCE) {
@@ -178,8 +179,8 @@ MODULE = (function (module) {
         }
 
         let creepsToSpawn = [...Config.CREEPS];
-        if (Game.rooms[roomName].underAttack) {
-            creepsToSpawn.push(...Config.DEFENSIVE_CREEPS);
+        if (Game.rooms[roomName].memory.underAttack) {
+            creepsToSpawn.unshift(...Config.DEFENSIVE_CREEPS);
         }
         _.forEach(creepsToSpawn, function (c) {
                 const numToSpawn = module.getMissingCreepsNum(roomName, c);
@@ -195,6 +196,8 @@ MODULE = (function (module) {
                 }
             }
         );
+
+        console.log(JSON.stringify(Game.rooms[roomName].memory.spawnQueue));
 
         if (Game.rooms[roomName].memory.spawnQueue.length) {
             Game.rooms[roomName].memory.spawnQueue =
