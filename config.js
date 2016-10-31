@@ -56,7 +56,11 @@ var config = (() => {
 
     const STRUCTURES = [ //highest priority at top
         {type: STRUCTURE_CONTAINER, level: 2},
-        {type: STRUCTURE_CONTAINER, level: 2}
+        {type: STRUCTURE_CONTAINER, level: 2},
+        {type: STRUCTURE_EXTENSION},
+        {type: STRUCTURE_EXTENSION},
+        {type: STRUCTURE_EXTENSION},
+        {type: STRUCTURE_TOWER}
         //{type: STRUCTURE_ROAD}
     ];
 

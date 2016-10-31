@@ -35,15 +35,24 @@ var constructionModule = (function () {
             });
             _.forEach(path, p => Game.rooms[roomName].createConstructionSite(p.x, p.y, STRUCTURE_ROAD));
         },
-        locateLvl2ContainerPos: function (roomName, spawn) {
+        locatePosNearObject: function (roomName, spawn) {
             const x1 = spawn.pos.x - 3;
             const x2 = spawn.pos.x + 3;
             const y1 = spawn.pos.y - 3;
             const y2 = spawn.pos.y + 3;
             const posArr = Game.rooms[roomName].lookForAtArea(LOOK_TERRAIN, y1, x1, y2, x2, true);
-            const filtered = _.filter(posArr, p => p.terrain === 'plain' &&
+            const posPlain = _.filter(posArr, p => p.terrain === 'plain' &&
             p.x != spawn.pos.x && p.y != spawn.pos.y && p.x != spawn.pos.x - 1 && p.y != spawn.pos.y - 1 &&
             p.x != spawn.pos.x + 1 && p.y != spawn.pos.y + 1);
+
+            const sites = Game.rooms[roomName].find(FIND_CONSTRUCTION_SITES);
+
+            const filteredQueue = _.filter(posPlain, p => _.filter(Game.rooms[roomName].memory.buildQueue,
+                o => o.pos.x === p.x && o.pos.y === p.y).length === 0);
+
+            const filtered = _.filter(filteredQueue, p => _.filter(sites,
+                s => s.pos.x === p.x && s.pos.y === p.y).length === 0);
+
             let positions = [];
             _.forEach(filtered, f => positions.push(new RoomPosition(f.x, f.y, Game.rooms[roomName].name)));
             if (positions.length) {
@@ -57,6 +66,8 @@ var constructionModule = (function () {
     var publicAPI = {
         run: function (roomName) {
 
+            console.log(JSON.stringify(Game.rooms[roomName].memory.buildQueue));
+
             if (Game.rooms[roomName].memory.buildQueue === undefined) {
                 Game.rooms[roomName].memory.buildQueue = [];
                 Game.rooms[roomName].memory.queueInitialized = false;
@@ -64,15 +75,16 @@ var constructionModule = (function () {
 
             if (Game.rooms[roomName].hasCreep(Config.ROLE_BUILDER)) {
                 if (!Game.rooms[roomName].memory.queueInitialized) {
-                    _.forEach(Config.STRUCTURES, function (structure) {
-                        if (structure.type === STRUCTURE_CONTAINER) {
-                            if (structure.level === 2) {
-                                const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
-                                const containers = o.locateLvl2ContainerPos(roomName, spawns[0]);
-                                if (containers.length) {
-                                    structure.pos = {x: containers[0].x, y: containers[0].y};
-                                    Game.rooms[roomName].memory.buildQueue.push(structure);
-                                }
+                    _.forEach(Config.STRUCTURES, (structure) => {
+                        console.log('ASASDASD');
+                        if (structure.pos === undefined) {
+                            const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
+                            const containers = o.locatePosNearObject(roomName, spawns[0]);
+                            if (containers.length > 1) {
+                                structure.pos = {x: containers[1].x, y: containers[1].y};
+                                Game.rooms[roomName].memory.buildQueue.push(structure);
+                            } else {
+                                console.log('cannot locate position');
                             }
                         } else {
                             Game.rooms[roomName].memory.buildQueue.push(structure);
@@ -84,20 +96,11 @@ var constructionModule = (function () {
                 if (Game.rooms[roomName].memory.buildQueue.length) {
                     if (_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS),
                             creep => creep.memory.canBuild === true).length) {
-                        if (o.buildStructure(roomName, Game.rooms[roomName].memory.buildQueue[0]) === OK) {
+                        const res = o.buildStructure(roomName, Game.rooms[roomName].memory.buildQueue[0]);
+                        if (res === OK) {
                             Game.rooms[roomName].memory.buildQueue.shift();
                         } else {
-                            const structure = Game.rooms[roomName].memory.buildQueue[0];
-                            if (structure.type === STRUCTURE_CONTAINER) {
-                                const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
-                                const containers = o.locateLvl2ContainerPos(roomName, spawns[0]);
-                                if (containers.length > 1) {
-                                    structure.pos = {x: containers[1].x, y: containers[1].y};
-                                    Game.rooms[roomName].memory.buildQueue.shift();
-                                    Game.rooms[roomName].memory.buildQueue.push(structure);
-                                }
-                            }
-
+                            console.log(`cannot build: ${res}`);
                         }
                     }
                 }
