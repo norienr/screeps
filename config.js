@@ -10,6 +10,8 @@ var config = (() => {
     const ROLE_MELEE = 'melee';
     const ROLE_HEALER = 'healer';
 
+    const MIN_TICKS_TO_RESPAWN = 30;
+
     const MIN_SAFE_DISTANCE = 5;
     const TOWER_ATTACK_INTERVAL = 5;
 
@@ -97,6 +99,7 @@ var config = (() => {
         DYNAMIC_SPAWN_NUM: DYNAMIC_SPAWN_NUM,
         MIN_SAFE_DISTANCE: MIN_SAFE_DISTANCE,
         TOWER_ATTACK_INTERVAL: TOWER_ATTACK_INTERVAL,
+        MIN_TICKS_TO_RESPAWN: MIN_TICKS_TO_RESPAWN,
         CREEPS: CREEPS,
         DEFENSIVE_CREEPS: DEFENSIVE_CREEPS,
         STRUCTURES: STRUCTURES

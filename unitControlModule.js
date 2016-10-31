@@ -106,7 +106,8 @@ MODULE = (function (module) {
     };
 
     module.getMissingCreepsNum = function (roomName, c) {
-        const creepsAlive = module.getCreeps(roomName, c.role, c.priorityGeneration).length;
+        const creepsAlive = _.filter(module.getCreeps(roomName, c.role, c.priorityGeneration),
+            c => c.ticksToLive > Config.MIN_TICKS_TO_RESPAWN).length;
         const creepsInQueue = _.filter(Game.rooms[roomName].memory.spawnQueue,
             cr => cr.role === c.role && cr.priorityGeneration === c.priorityGeneration).length;
         const creepsSpawning = _.filter(module.getSpawnsByRoom(roomName),
