@@ -32,21 +32,21 @@ var roleBuilder = {
                 roleHarvester.run(creep);
             }
         } else {
-            const source = creep.pos.findClosestByRange(FIND_SOURCES);
             const conts = _.filter(creep.room.find(FIND_STRUCTURES),
                 s => (s.structureType === STRUCTURE_CONTAINER ||
                 s.structureType === STRUCTURE_STORAGE ||
                 s.structureType === STRUCTURE_TERMINAL) &&
-                s.store[RESOURCE_ENERGY] > 0);
-            conts.push(source);
-            const s = creep.pos.findClosestByRange(conts);
-            if (s.structureType === undefined) { // -> source
-                if (creep.harvest(s) === ERR_NOT_IN_RANGE) {
+                s.store[RESOURCE_ENERGY] > 50);
+
+            if (conts.length) {
+                const s = creep.pos.findClosestByRange(conts);
+                if (s.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(s);
                 }
             } else {
-                if (s.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(s);
+                const source = creep.pos.findClosestByRange(FIND_SOURCES);
+                if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(source);
                 }
             }
         }
