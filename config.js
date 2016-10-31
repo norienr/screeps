@@ -61,7 +61,27 @@ var config = (() => {
         {type: STRUCTURE_EXTENSION},
         {type: STRUCTURE_EXTENSION},
         {type: STRUCTURE_TOWER}
-        //{type: STRUCTURE_ROAD}
+    ];
+
+    const DEFENSIVE_CREEPS = [
+        {
+            role: ROLE_ARCHER,
+            num: 2,
+            parts: [RANGED_ATTACK, MOVE],
+            priorityGeneration: 1
+        },
+        {
+            role: ROLE_HEALER,
+            num: 1,
+            parts: [HEAL, MOVE],
+            priorityGeneration: 2
+        },
+        {
+            role: ROLE_MELEE,
+            num: DYNAMIC_SPAWN_NUM,
+            parts: [TOUGH, ATTACK, ATTACK, ATTACK, MOVE],
+            priorityGeneration: 3
+        }
     ];
 
     return {
@@ -78,6 +98,7 @@ var config = (() => {
         MIN_SAFE_DISTANCE: MIN_SAFE_DISTANCE,
         TOWER_ATTACK_INTERVAL: TOWER_ATTACK_INTERVAL,
         CREEPS: CREEPS,
+        DEFENSIVE_CREEPS: DEFENSIVE_CREEPS,
         STRUCTURES: STRUCTURES
     };
 })();
