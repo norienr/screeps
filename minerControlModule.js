@@ -34,10 +34,10 @@ var MODULE = (function (module) {
             room.memory.dangerSources = [];
         }
         if (room.memory.dangerSources.length === 0) {
-            const x1 = source.pos.x - 10;
-            const x2 = source.pos.x + 10;
-            const y1 = source.pos.y - 10;
-            const y2 = source.pos.y + 10;
+            const x1 = source.pos.x - 2;
+            const x2 = source.pos.x + 2;
+            const y1 = source.pos.y - 2;
+            const y2 = source.pos.y + 2;
             const posArr = room.lookForAtArea(LOOK_CREEPS, y1, x1, y2, x2, true);
             const filtered = _.filter(posArr, p => p.creep.owner.username === 'Source Keeper');
             if (filtered.length) {
