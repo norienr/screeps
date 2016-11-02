@@ -10,23 +10,16 @@ const roleCourier = {
 
         if (creep.memory.harvesting) {
             if (creep.carry.energy < creep.carryCapacity) {
-                const source = creep.pos.findClosestByRange(FIND_SOURCES);
                 const conts = _.filter(creep.room.find(FIND_STRUCTURES),
                     s => (s.structureType === STRUCTURE_CONTAINER ||
                     s.structureType === STRUCTURE_STORAGE ||
                     s.structureType === STRUCTURE_TERMINAL) &&
                     s.store[RESOURCE_ENERGY] > 0);
-                conts.push(source);
                 const s = creep.pos.findClosestByRange(conts);
-                if (s.structureType === undefined) { // -> source
-                    if (creep.harvest(s) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(s);
-                    }
-                } else {
-                    if (s.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(s);
-                    }
+                if (s.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(s);
                 }
+
             } else {
                 creep.memory.harvesting = false;
             }
