@@ -45,13 +45,13 @@ var config = (() => {
         {
             role: ROLE_TRANSPORTER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [WORK, WORK, CARRY, MOVE],
+            parts: [CARRY, CARRY, MOVE, MOVE],
             priorityGeneration: 5
         },
         {
             role: ROLE_COURIER,
             num: 2,
-            parts: [WORK, WORK, CARRY, MOVE],
+            parts: [CARRY, CARRY, MOVE, MOVE],
             priorityGeneration: 6
         }
     ];
