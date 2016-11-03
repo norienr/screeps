@@ -9,14 +9,8 @@ var MODULE = (function (module) {
         const y = source.pos.y;
         const srcP = {x, y};
         const posArr = room.lookForAtArea(LOOK_TERRAIN, y - RADIUS, x - RADIUS, y + RADIUS, x + RADIUS, true);
-        const p1 = {x: x - 1, y: y - 1};
-        const p2 = {x: x - 1, y: y + 1};
-        const p3 = {x: x + 1, y: y - 1};
-        const p4 = {x: x - 1, y: y - 1};
         const filtered = _.filter(posArr, p => p.terrain === 'plain' &&
-        JSON.stringify({x: p.x, y: p.y}) !== JSON.stringify(srcP) && JSON.stringify({x: p.x, y: p.y}) !== JSON.stringify(p1) &&
-        JSON.stringify({x: p.x, y: p.y}) !== JSON.stringify(p2) && JSON.stringify({x: p.x, y: p.y}) !== JSON.stringify(p3) &&
-        JSON.stringify({x: p.x, y: p.y}) !== JSON.stringify(p4));
+        JSON.stringify({x: p.x, y: p.y}) !== JSON.stringify(srcP));
         let positions = [];
         _.forEach(filtered, f => positions.push(new RoomPosition(f.x, f.y, room.name)));
         if (positions.length) {
