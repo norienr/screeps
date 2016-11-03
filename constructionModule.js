@@ -66,13 +66,15 @@ var constructionModule = (function () {
     var publicAPI = {
         run: function (roomName) {
 
-            if (Game.rooms[roomName].memory.buildQueue === undefined) {
-                Game.rooms[roomName].memory.buildQueue = [];
-                Game.rooms[roomName].memory.queueInitialized = false;
+            const room = Game.rooms[roomName];
+
+            if (room.memory.buildQueue === undefined) {
+                room.memory.buildQueue = [];
+                room.memory.queueInitialized = false;
             }
 
-            if (Game.rooms[roomName].hasCreep(Config.ROLE_BUILDER)) {
-                if (!Game.rooms[roomName].memory.queueInitialized) {
+            if (room.hasCreep(Config.ROLE_BUILDER)) {
+                if (!room.memory.queueInitialized) {
                     _.forEach(Config.STRUCTURES, (structure) => {
                         if (structure.pos === undefined) {
                             const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
@@ -91,20 +93,20 @@ var constructionModule = (function () {
                                 console.log('cannot locate position');
                             }
                         } else {
-                            Game.rooms[roomName].memory.buildQueue.push(structure);
+                            room.memory.buildQueue.push(structure);
                         }
                     });
-                    Game.rooms[roomName].memory.queueInitialized = true;
+                    room.memory.queueInitialized = true;
                 }
 
-                if (Game.rooms[roomName].memory.buildQueue.length) {
-                    if (_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS),
+                if (room.memory.buildQueue.length) {
+                    if (_.filter(room.find(FIND_MY_CREEPS),
                             creep => creep.memory.canBuild === true).length) {
-                        const res = o.buildStructure(roomName, Game.rooms[roomName].memory.buildQueue[0]);
+                        const res = o.buildStructure(roomName, room.memory.buildQueue[0]);
                         if (res === OK) {
-                            Game.rooms[roomName].memory.buildQueue.shift();
+                            room.memory.buildQueue.shift();
                         } else {
-                            Game.rooms[roomName].memory.buildQueue.push(Game.rooms[roomName].memory.buildQueue.shift());
+                            room.memory.buildQueue.push(room.memory.buildQueue.shift());
                             console.log(`cannot build: ${res}`);
                         }
                     }
