@@ -232,7 +232,9 @@ MODULE = (function (module) {
                     const availableEnergy = Game.rooms[roomName].energyAvailable -
                         module.getNeededEnergy(parts);
                     if (availableEnergy >= module.getNeededEnergy([CARRY, MOVE])) {
-                        parts.unshift([CARRY, MOVE]);
+                        if (parts.length < 50) {
+                            parts.unshift([CARRY, MOVE]);
+                        }
                     }
 
                     if (module.spawnCreeps(s, creep) == OK) {
