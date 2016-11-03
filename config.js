@@ -50,7 +50,7 @@ var config = (() => {
         },
         {
             role: ROLE_COURIER,
-            num: 2,
+            num: DYNAMIC_SPAWN_NUM,
             parts: [CARRY, CARRY, MOVE, MOVE],
             priorityGeneration: 6
         }

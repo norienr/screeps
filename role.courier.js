@@ -15,9 +15,11 @@ const roleCourier = {
                     s.structureType === STRUCTURE_STORAGE ||
                     s.structureType === STRUCTURE_TERMINAL) &&
                     s.store[RESOURCE_ENERGY] > 0);
-                const s = creep.pos.findClosestByRange(conts);
-                if (s.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(s);
+                if (conts.length) {
+                    const s = creep.pos.findClosestByRange(conts);
+                    if (s.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(s);
+                    }
                 }
 
             } else {

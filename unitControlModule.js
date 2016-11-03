@@ -136,6 +136,11 @@ MODULE = (function (module) {
                         s => s.structureType === STRUCTURE_CONTAINER &&
                         _.filter(Game.rooms[roomName].memory.containers, x => x.containerId === s.id).length).length;
                 }
+            } else if (c.role === Config.ROLE_COURIER) {
+                num = 2 * _.filter(Game.rooms[roomName].find(FIND_STRUCTURES),
+                        s => (s.structureType === STRUCTURE_CONTAINER ||
+                        s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_TERMINAL) &&
+                        _.filter(Game.rooms[roomName].memory.containers, x => x.containerId === s.id).length === 0).length;
             }
 
             if ((num - creepsAlive - creepsInQueue - creepsSpawning) > 0) {
