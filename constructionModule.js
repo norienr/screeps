@@ -75,14 +75,11 @@ var constructionModule = (function () {
                     room.memory.queueInitialized = true;
                 }
 
-                console.log(JSON.stringify(room.memory.buildQueue));
-
                 if (room.memory.buildQueue.length) {
                     if (_.filter(room.find(FIND_MY_CREEPS),
                             creep => creep.memory.canBuild === true).length) {
                         const structure = room.memory.buildQueue[0];
                         if (structure.pos === undefined) {
-                            console.log('inside');
                             const nearObjs = o.getStructures(roomName, structure.near);
                             if (nearObjs.length) {
                                 let positions = o.locatePosNearObject(roomName, nearObjs[0], structure.radius);
