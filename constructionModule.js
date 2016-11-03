@@ -97,6 +97,7 @@ var constructionModule = (function () {
                         if (res === OK) {
                             Game.rooms[roomName].memory.buildQueue.shift();
                         } else {
+                            Game.rooms[roomName].memory.buildQueue.push(Game.rooms[roomName].memory.buildQueue.shift());
                             console.log(`cannot build: ${res}`);
                         }
                     }

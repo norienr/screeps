@@ -56,14 +56,14 @@ var config = (() => {
         }
     ];
 
-    const STRUCTURES = [ //highest priority at top
+    const MAX_EXTENSIONS_NUM = 60;
+
+    const STRUCTURES = [ //highest priority at top, yet considering if struct can be built
         {type: STRUCTURE_CONTAINER, level: 2},
         {type: STRUCTURE_CONTAINER, level: 2},
-        {type: STRUCTURE_EXTENSION},
-        {type: STRUCTURE_EXTENSION},
-        {type: STRUCTURE_EXTENSION},
+        ..._.fill(Array(MAX_EXTENSIONS_NUM), {type: STRUCTURE_EXTENSION}),
         {type: STRUCTURE_TOWER},
-        {type: STRUCTURE_TOWER}
+
     ];
 
     const DEFENSIVE_CREEPS = [
