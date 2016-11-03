@@ -130,7 +130,6 @@ MODULE = (function (module) {
                     s => (s.structureType === STRUCTURE_CONTAINER ||
                     s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_TERMINAL) &&
                     _.filter(Game.rooms[roomName].memory.containers, x => x.containerId === s.id).length === 0).length;
-                console.log(num);
                 if (num > 0) {
                     num += _.filter(Game.rooms[roomName].find(FIND_STRUCTURES),
                         s => s.structureType === STRUCTURE_CONTAINER &&

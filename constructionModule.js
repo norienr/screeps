@@ -66,8 +66,6 @@ var constructionModule = (function () {
     var publicAPI = {
         run: function (roomName) {
 
-            console.log(JSON.stringify(Game.rooms[roomName].memory.buildQueue));
-
             if (Game.rooms[roomName].memory.buildQueue === undefined) {
                 Game.rooms[roomName].memory.buildQueue = [];
                 Game.rooms[roomName].memory.queueInitialized = false;
@@ -76,7 +74,6 @@ var constructionModule = (function () {
             if (Game.rooms[roomName].hasCreep(Config.ROLE_BUILDER)) {
                 if (!Game.rooms[roomName].memory.queueInitialized) {
                     _.forEach(Config.STRUCTURES, (structure) => {
-                        console.log('ASASDASD');
                         if (structure.pos === undefined) {
                             const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
                             const containers = o.locatePosNearObject(roomName, spawns[0]);

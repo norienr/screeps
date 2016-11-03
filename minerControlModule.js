@@ -4,14 +4,19 @@ const roleMiner = require('role.miner');
 var MODULE = (function (module) {
 
     module.locateContainerPos = function (room, source) {
-        const x1 = source.pos.x - 5;
-        const x2 = source.pos.x + 5;
-        const y1 = source.pos.y - 5;
-        const y2 = source.pos.y + 5;
-        const posArr = room.lookForAtArea(LOOK_TERRAIN, y1, x1, y2, x2, true);
+        const RADIUS = 3;
+        const x = source.pos.x;
+        const y = source.pos.y;
+        const srcP = {x, y};
+        const posArr = room.lookForAtArea(LOOK_TERRAIN, y - RADIUS, x - RADIUS, y + RADIUS, x + RADIUS, true);
+        const p1 = {x: x - 1, y: y - 1};
+        const p2 = {x: x - 1, y: y + 1};
+        const p3 = {x: x + 1, y: y - 1};
+        const p4 = {x: x - 1, y: y - 1};
         const filtered = _.filter(posArr, p => p.terrain === 'plain' &&
-        p.x != source.pos.x && p.y != source.pos.y && p.x != source.pos.x - 1 && p.y != source.pos.y - 1 &&
-        p.x != source.pos.x + 1 && p.y != source.pos.y + 1);
+        JSON.stringify({...p}) !== JSON.stringify(srcP) && JSON.stringify({...p}) !== JSON.stringify(p1) &&
+        JSON.stringify({...p}) !== JSON.stringify(p2) && JSON.stringify({...p}) !== JSON.stringify(p3) &&
+        JSON.stringify({...p}) !== JSON.stringify(p4));
         let positions = [];
         _.forEach(filtered, f => positions.push(new RoomPosition(f.x, f.y, room.name)));
         if (positions.length) {
