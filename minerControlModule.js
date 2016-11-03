@@ -4,11 +4,11 @@ const roleMiner = require('role.miner');
 var MODULE = (function (module) {
 
     module.locateContainerPos = function (room, source) {
-        const RADIUS = 3;
+        const radius = Config.EXTENSIONS_POS_RADIUS;
         const x = source.pos.x;
         const y = source.pos.y;
         const srcP = {x, y};
-        const posArr = room.lookForAtArea(LOOK_TERRAIN, y - RADIUS, x - RADIUS, y + RADIUS, x + RADIUS, true);
+        const posArr = room.lookForAtArea(LOOK_TERRAIN, y - radius, x - radius, y + radius, x + radius, true);
         const filtered = _.filter(posArr, p => p.terrain === 'plain' &&
         JSON.stringify({x: p.x, y: p.y}) !== JSON.stringify(srcP));
         let positions = [];

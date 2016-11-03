@@ -58,6 +58,10 @@ var config = (() => {
 
     const MAX_EXTENSIONS_NUM = 60;
 
+    const CONTAINERS_POS_RADIUS = 3;
+    const EXTENSIONS_POS_RADIUS = 10;
+    const DEFAULT_POS_RADIUS = 3;
+
     const STRUCTURES = [ //highest priority at top, yet considering if struct can be built
         {type: STRUCTURE_CONTAINER, level: 2},
         {type: STRUCTURE_CONTAINER, level: 2},
@@ -104,6 +108,9 @@ var config = (() => {
         MIN_SAFE_DISTANCE: MIN_SAFE_DISTANCE,
         TOWER_ATTACK_INTERVAL: TOWER_ATTACK_INTERVAL,
         MIN_TICKS_TO_RESPAWN: MIN_TICKS_TO_RESPAWN,
+        CONTAINERS_POS_RADIUS: CONTAINERS_POS_RADIUS,
+        EXTENSIONS_POS_RADIUS: EXTENSIONS_POS_RADIUS,
+        DEFAULT_POS_RADIUS: DEFAULT_POS_RADIUS,
         CREEPS: CREEPS,
         DEFENSIVE_CREEPS: DEFENSIVE_CREEPS,
         STRUCTURES: STRUCTURES
