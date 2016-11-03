@@ -108,6 +108,7 @@ MODULE = (function (module) {
                 energy += 600;
             }
         });
+        console.log('ENERGY:' + energy);
         return energy;
     };
 
@@ -225,8 +226,8 @@ MODULE = (function (module) {
                     const parts = creep.parts;
                     const availableEnergy = Game.rooms[roomName].energyAvailable -
                         module.getNeededEnergy(parts);
-                    if (availableEnergy >= 100) {
-                        parts.unshift(WORK);
+                    if (availableEnergy >= module.getNeededEnergy([CARRY, MOVE])) {
+                        parts.unshift([CARRY, MOVE]);
                     }
 
                     if (module.spawnCreeps(s, creep) == OK) {
