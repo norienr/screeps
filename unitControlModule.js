@@ -77,7 +77,6 @@ MODULE = (function (module) {
         const generation = creep.priorityGeneration;
         const parts = creep.parts;
         const squadUnit = creep.squad || false;
-        console.log('squad: ' + creep.squad);
 
         var canSpawn = spawn.canCreateCreep(parts);
         if (canSpawn == OK) {
@@ -233,7 +232,7 @@ MODULE = (function (module) {
                         module.getNeededEnergy(parts);
                     if (availableEnergy >= module.getNeededEnergy([CARRY, MOVE])) {
                         if (parts.length < 50) {
-                            parts.unshift([CARRY, MOVE]);
+                            parts.unshift(...[CARRY, MOVE]);
                         }
                     }
 
