@@ -75,11 +75,14 @@ var constructionModule = (function () {
                     room.memory.queueInitialized = true;
                 }
 
+                console.log(JSON.stringify(room.memory.buildQueue));
+
                 if (room.memory.buildQueue.length) {
                     if (_.filter(room.find(FIND_MY_CREEPS),
                             creep => creep.memory.canBuild === true).length) {
                         const structure = room.memory.buildQueue[0];
                         if (structure.pos === undefined) {
+                            console.log('inside');
                             const nearObjs = o.getStructures(roomName, structure.near);
                             if (nearObjs.length) {
                                 let positions = o.locatePosNearObject(roomName, nearObjs[0], structure.radius);
@@ -87,8 +90,7 @@ var constructionModule = (function () {
                                     let getPosition = o.coroutine(o.posGen);
                                     let pos = getPosition().value || getPosition(positions).value;
                                     if (pos) {
-                                        structure.pos = pos;
-                                        let res = o.buildStructure(roomName, structure);
+                                        let res = o.buildStructure(roomName, {type: structure.type, pos: pos});
                                         while (res === ERR_INVALID_TARGET) {
                                             pos = getPosition().value;
                                             if (!pos) {
@@ -105,6 +107,13 @@ var constructionModule = (function () {
                                 } else {
                                     console.log('cannot locate position');
                                 }
+                            }
+                        } else {
+                            let res = o.buildStructure(roomName, structure);
+                            if (res === OK) {
+                                room.memory.buildQueue.shift();
+                            } else {
+                                console.log(`cannot build: ${res}`);
                             }
                         }
                     }
