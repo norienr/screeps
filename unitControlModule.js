@@ -107,7 +107,6 @@ MODULE = (function (module) {
                 energy += 600;
             }
         });
-        console.log('ENERGY:' + energy);
         return energy;
     };
 

@@ -8,25 +8,9 @@ var constructionModule = (function () {
                 struct => struct.structureType == structureType
             );
         },
-        buildRoadAutoPos: function (roomName, structurePayload) {
-            if (structurePayload.type == STRUCTURE_ROAD) {
-                const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
-                const spawnPos = new RoomPosition(spawns[0].pos.x, spawns[0].pos.y, roomName);
-                const closestSource = _.clone((spawns[0].pos.findClosestByRange(FIND_SOURCES)).pos);
-                const srcPos = new RoomPosition(closestSource.x, closestSource.y, roomName);
-                this.buildRoad(roomName, spawnPos, srcPos);
-                return OK;// always enough for the first structure
-            } else {
-                return -1; // no other auto-build structs supported
-            }
-        },
-        buildStructure: function (roomName, structurePayload) {
-            if (structurePayload.pos === undefined) {
-                this.buildRoadAutoPos(roomName, structurePayload);
-            } else {
-                return Game.rooms[roomName].createConstructionSite(structurePayload.pos.x, structurePayload.pos.y,
-                    structurePayload.type);
-            }
+        buildStructure: function (roomName, structure) {
+            return Game.rooms[roomName].createConstructionSite(structure.pos.x, structure.pos.y,
+                structure.type);
         },
         buildRoad: function (roomName, startPos, endPos) {
             const path = Game.rooms[roomName].findPath(startPos, endPos, {
@@ -35,21 +19,31 @@ var constructionModule = (function () {
             });
             _.forEach(path, p => Game.rooms[roomName].createConstructionSite(p.x, p.y, STRUCTURE_ROAD));
         },
-        locatePosNearObject: function (roomName, spawn, radius) {
-            const x1 = spawn.pos.x - radius;
-            const x2 = spawn.pos.x + radius;
-            const y1 = spawn.pos.y - radius;
-            const y2 = spawn.pos.y + radius;
+        coroutine: function (g) {
+            let it = g();
+            return function () {
+                return it.next.apply(it, arguments);
+            };
+        },
+        posGen: function*() {
+            let positions = (yield null);
+            for (let i = 0; i < positions.length; ++i) {
+                yield positions.shift();
+            }
+        },
+        locatePosNearObject: function (roomName, obj, radius) {
+            const x1 = obj.pos.x - radius;
+            const x2 = obj.pos.x + radius;
+            const y1 = obj.pos.y - radius;
+            const y2 = obj.pos.y + radius;
             const posArr = Game.rooms[roomName].lookForAtArea(LOOK_TERRAIN, y1, x1, y2, x2, true);
             const posPlain = _.filter(posArr, p => p.terrain === 'plain' &&
-            p.x != spawn.pos.x && p.y != spawn.pos.y && p.x != spawn.pos.x - 1 && p.y != spawn.pos.y - 1 &&
-            p.x != spawn.pos.x + 1 && p.y != spawn.pos.y + 1);
-
-            const sites = Game.rooms[roomName].find(FIND_CONSTRUCTION_SITES);
+            JSON.stringify({x: p.x, y: p.y}) !== JSON.stringify({x: obj.pos.x, y: obj.pos.y}));
 
             const filteredQueue = _.filter(posPlain, p => _.filter(Game.rooms[roomName].memory.buildQueue,
-                o => o.pos.x === p.x && o.pos.y === p.y).length === 0);
+                o => o.pos && o.pos.x === p.x && o.pos.y === p.y).length === 0);
 
+            const sites = Game.rooms[roomName].find(FIND_CONSTRUCTION_SITES);
             const filtered = _.filter(filteredQueue, p => _.filter(sites,
                 s => s.pos.x === p.x && s.pos.y === p.y).length === 0);
 
@@ -76,25 +70,7 @@ var constructionModule = (function () {
             if (room.hasCreep(Config.ROLE_BUILDER)) {
                 if (!room.memory.queueInitialized) {
                     _.forEach(Config.STRUCTURES, (structure) => {
-                        if (structure.pos === undefined) {
-                            const spawns = o.getStructures(roomName, STRUCTURE_SPAWN);
-                            let radius = Config.DEFAULT_POS_RADIUS;
-                            if (structure.type === STRUCTURE_EXTENSION) {
-                                radius = Config.EXTENSIONS_POS_RADIUS;
-                            } else if (structure.type === STRUCTURE_CONTAINER) {
-                                radius = Config.CONTAINERS_POS_RADIUS;
-                            }
-
-                            const containers = o.locatePosNearObject(roomName, spawns[0], radius);
-                            if (containers.length > 1) {
-                                structure.pos = {x: containers[1].x, y: containers[1].y};
-                                Game.rooms[roomName].memory.buildQueue.push(structure);
-                            } else {
-                                console.log('cannot locate position');
-                            }
-                        } else {
-                            room.memory.buildQueue.push(structure);
-                        }
+                        room.memory.buildQueue.push(structure);
                     });
                     room.memory.queueInitialized = true;
                 }
@@ -102,12 +78,34 @@ var constructionModule = (function () {
                 if (room.memory.buildQueue.length) {
                     if (_.filter(room.find(FIND_MY_CREEPS),
                             creep => creep.memory.canBuild === true).length) {
-                        const res = o.buildStructure(roomName, room.memory.buildQueue[0]);
-                        if (res === OK) {
-                            room.memory.buildQueue.shift();
-                        } else {
-                            room.memory.buildQueue.push(room.memory.buildQueue.shift());
-                            console.log(`cannot build: ${res}`);
+                        const structure = room.memory.buildQueue[0];
+                        if (structure.pos === undefined) {
+                            const nearObjs = o.getStructures(roomName, structure.near);
+                            if (nearObjs.length) {
+                                let positions = o.locatePosNearObject(roomName, nearObjs[0], structure.radius);
+                                if (positions.length) {
+                                    let getPosition = o.coroutine(o.posGen);
+                                    let pos = getPosition().value || getPosition(positions).value;
+                                    if (pos) {
+                                        structure.pos = pos;
+                                        let res = o.buildStructure(roomName, structure);
+                                        while (res === ERR_INVALID_TARGET) {
+                                            pos = getPosition().value;
+                                            if (!pos) {
+                                                break;
+                                            }
+                                            res = o.buildStructure(roomName, room.memory.buildQueue[0]);
+                                        }
+                                        if (res === OK) {
+                                            room.memory.buildQueue.shift();
+                                        } else {
+                                            console.log(`cannot build: ${res}`);
+                                        }
+                                    }
+                                } else {
+                                    console.log('cannot locate position');
+                                }
+                            }
                         }
                     }
                 }

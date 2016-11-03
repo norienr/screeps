@@ -63,10 +63,14 @@ var config = (() => {
     const DEFAULT_POS_RADIUS = 3;
 
     const STRUCTURES = [ //highest priority at top, yet considering if struct can be built
-        {type: STRUCTURE_CONTAINER, level: 2},
-        {type: STRUCTURE_CONTAINER, level: 2},
-        ..._.fill(Array(MAX_EXTENSIONS_NUM), {type: STRUCTURE_EXTENSION}),
-        {type: STRUCTURE_TOWER},
+        {type: STRUCTURE_CONTAINER, near: STRUCTURE_SPAWN, radius: CONTAINERS_POS_RADIUS},
+        {type: STRUCTURE_CONTAINER, near: STRUCTURE_SPAWN, radius: CONTAINERS_POS_RADIUS},
+        ..._.fill(Array(MAX_EXTENSIONS_NUM), {
+            type: STRUCTURE_EXTENSION,
+            near: STRUCTURE_SPAWN,
+            radius: EXTENSIONS_POS_RADIUS
+        }),
+        {type: STRUCTURE_TOWER, near: STRUCTURE_SPAWN, radius: DEFAULT_POS_RADIUS},
 
     ];
 
