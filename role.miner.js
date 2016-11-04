@@ -24,30 +24,32 @@ const roleMiner = {
             }
         } else {
             const cont = Game.getObjectById(creep.memory.containerId);
-            if (cont.store[RESOURCE_ENERGY] < cont.storeCapacity) {
-                if (creep.carry.energy < creep.carryCapacity) {
-                    const src = Game.getObjectById(creep.memory.sourceId);
-                    if (creep.harvest(src) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(src);
-                    }
-                } else {
-                    if (creep.transfer(cont, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(cont);
-                    }
-                }
-            } else {
-                const conts = _.filter(creep.room.find(FIND_STRUCTURES),
-                    s => (s.structureType === STRUCTURE_CONTAINER) &&
-                    s.store[RESOURCE_ENERGY] < s.storeCapacity / 2);
-                if (conts.length) {
+            if (cont) {
+                if (cont.store[RESOURCE_ENERGY] < cont.storeCapacity) {
                     if (creep.carry.energy < creep.carryCapacity) {
-                        const src = creep.pos.findClosestByRange(FIND_SOURCES);
+                        const src = Game.getObjectById(creep.memory.sourceId);
                         if (creep.harvest(src) === ERR_NOT_IN_RANGE) {
                             creep.moveTo(src);
                         }
                     } else {
-                        if (creep.transfer(conts[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                            creep.moveTo(conts[0]);
+                        if (creep.transfer(cont, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                            creep.moveTo(cont);
+                        }
+                    }
+                } else {
+                    const conts = _.filter(creep.room.find(FIND_STRUCTURES),
+                        s => (s.structureType === STRUCTURE_CONTAINER) &&
+                        s.store[RESOURCE_ENERGY] < s.storeCapacity / 2);
+                    if (conts.length) {
+                        if (creep.carry.energy < creep.carryCapacity) {
+                            const src = creep.pos.findClosestByRange(FIND_SOURCES);
+                            if (creep.harvest(src) === ERR_NOT_IN_RANGE) {
+                                creep.moveTo(src);
+                            }
+                        } else {
+                            if (creep.transfer(conts[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                                creep.moveTo(conts[0]);
+                            }
                         }
                     }
                 }
