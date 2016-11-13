@@ -1,39 +1,36 @@
-const conf = require('./storeProviderConfig');
+const {memoryObject, storePropertyName, reducer} = require('./storeProviderConfig');
 
 module.exports = (function () {
     let obj = {};
 
-    let memoryObject = conf.memoryObject;
-    let storePropertyName = conf.storePropertyName;
-
-    const INIT_ACTION = 'INIT';
-
     /**
      * Creates a distributed state action store that holds the action state tree.
      * The store data can only be changed through dispatchers.
+     *
+     * Reducer should already be defined in the config file.
      */
-    obj.createStore = function (reducer) {
-
-        if (typeof reducer !== 'function') {
-            throw new Error('Reducer must be a function.');
-        }
+    obj.createStore = function () {
 
         if (typeof memoryObject[storePropertyName] !== 'undefined') {
             throw new Error('Store is already initialized or storePropertyName is already used.');
         }
 
-        if (typeof reducer !== 'function') {
+        if (typeof memoryObject[reducer] !== 'function') {
             throw new Error('Reducer must be a function.');
         }
 
-        memoryObject[storePropertyName] = {currentState: {type: INIT_ACTION}};
-        memoryObject[storePropertyName] = reducer;
+        memoryObject[storePropertyName] = {};
+        memoryObject[storePropertyName].currentState = {strategies: []};
     };
 
     obj.storeIsInitialized = function () {
         return typeof memoryObject[storePropertyName] !== 'undefined';
     };
 
+    /**
+     * State represents actions that should be done now.
+     *
+     */
     obj.getState = function () {
         if (typeof memoryObject[storePropertyName] === 'undefined') {
             throw new Error('Store is not initialized');
@@ -52,21 +49,9 @@ module.exports = (function () {
         }
 
         memoryObject[storePropertyName].currentState =
-            memoryObject[storePropertyName].currentReducer(memoryObject[storePropertyName].currentState, action);
+            memoryObject[reducer](memoryObject[storePropertyName].currentState, action);
 
         return action;
-    };
-
-    obj.replaceReducer = function (nextReducer) {
-        if (typeof memoryObject[storePropertyName] === 'undefined') {
-            throw new Error('Store is not initialized');
-        }
-
-        if (typeof nextReducer !== 'function') {
-            throw new Error('Reducer must be a function.')
-        }
-
-        memoryObject[storePropertyName].currentReducer = nextReducer;
     };
 
     return obj;
