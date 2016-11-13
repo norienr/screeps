@@ -74,7 +74,7 @@ var config = (() => {
 
     ];
 
-    const DEFENSIVE_CREEPS = [
+    const SQUAD_CREEPS = [
         {
             role: ROLE_ARCHER,
             num: 2,
@@ -84,14 +84,14 @@ var config = (() => {
         },
         {
             role: ROLE_HEALER,
-            num: 1,
+            num: 2,
             parts: [HEAL, MOVE],
             squad: true,
             priorityGeneration: 1
         },
         {
             role: ROLE_MELEE,
-            num: DYNAMIC_SPAWN_NUM,
+            num: 4,
             parts: [TOUGH, ATTACK, ATTACK, ATTACK, MOVE],
             squad: true,
             priorityGeneration: 1
@@ -116,7 +116,7 @@ var config = (() => {
         EXTENSIONS_POS_RADIUS: EXTENSIONS_POS_RADIUS,
         DEFAULT_POS_RADIUS: DEFAULT_POS_RADIUS,
         CREEPS: CREEPS,
-        DEFENSIVE_CREEPS: DEFENSIVE_CREEPS,
+        DEFENSIVE_CREEPS: SQUAD_CREEPS,
         STRUCTURES: STRUCTURES
     };
 })();

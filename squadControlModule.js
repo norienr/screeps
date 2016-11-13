@@ -1,6 +1,5 @@
 const storeProvider = require('./storeProvider');
 const {action_types, actors, reducer} = require('./storeProviderConfig');
-const Listener = require('./listener');
 
 let squadControlModule = (function () {
 
@@ -25,6 +24,9 @@ let squadControlModule = (function () {
 
     return {
         run: function () {
+
+
+            /*
             o.setReducer(o.controlReducer);
             if (!storeProvider.storeIsInitialized()) {
                 storeProvider.createStore();
@@ -39,6 +41,7 @@ let squadControlModule = (function () {
                 }
 
             }
+            */
         }
     };
 
