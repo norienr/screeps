@@ -1,5 +1,6 @@
 const storeProvider = require('./storeProvider');
 const {action_types, actors, reducer} = require('./storeProviderConfig');
+const Listener = require('./listener');
 
 let squadControlModule = (function () {
 
@@ -20,9 +21,7 @@ let squadControlModule = (function () {
         setReducer: function (f) {
             Memory[reducer] = f;
         }
-
     };
-
 
     return {
         run: function () {
@@ -40,8 +39,6 @@ let squadControlModule = (function () {
                 }
 
             }
-
-
         }
     };
 
