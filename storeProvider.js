@@ -11,20 +11,19 @@ module.exports = (function () {
      */
     obj.createStore = function () {
 
-        if (typeof memoryObject[storePropertyName] !== 'undefined') {
+        if (typeof Memory[storePropertyName] !== 'undefined') {
             throw new Error('Store is already initialized or storePropertyName is already used.');
         }
 
-        if (typeof memoryObject[reducer] !== 'function') {
+        if (typeof Memory[reducer] !== 'function') {
             throw new Error('Reducer must be a function.');
         }
 
-        memoryObject[storePropertyName] = {};
-        memoryObject[storePropertyName].currentState = {strategies: []};
+        Memory[storePropertyName] = [];
     };
 
     obj.storeIsInitialized = function () {
-        return typeof memoryObject[storePropertyName] !== 'undefined';
+        return typeof Memory[storePropertyName] !== 'undefined';
     };
 
     /**
@@ -32,15 +31,15 @@ module.exports = (function () {
      *
      */
     obj.getState = function () {
-        if (typeof memoryObject[storePropertyName] === 'undefined') {
+        if (typeof Memory[storePropertyName] === 'undefined') {
             throw new Error('Store is not initialized');
         }
 
-        return memoryObject[storePropertyName].currentState;
+        return Memory[storePropertyName];
     };
 
     obj.dispatch = function (action) {
-        if (typeof memoryObject[storePropertyName] === 'undefined') {
+        if (typeof Memory[storePropertyName] === 'undefined') {
             throw new Error('Store is not initialized');
         }
 
@@ -48,8 +47,8 @@ module.exports = (function () {
             throw new Error('Action must be a string.');
         }
 
-        memoryObject[storePropertyName].currentState =
-            memoryObject[reducer](memoryObject[storePropertyName].currentState, action);
+        Memory[storePropertyName] =
+            Memory[reducer](memoryObject[storePropertyName], action);
 
         return action;
     };

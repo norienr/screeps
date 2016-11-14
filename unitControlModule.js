@@ -76,11 +76,17 @@ MODULE = (function (module) {
         const role = creep.role;
         const generation = creep.priorityGeneration;
         const parts = creep.parts;
-        const squadUnit = creep.squad || false;
+        const assemble = creep.assemble || false;
+        const squad = creep.squad;
 
         var canSpawn = spawn.canCreateCreep(parts);
-        if (canSpawn == OK) {
-            spawn.createCreep(parts, undefined, {priorityGeneration: generation, role: role, squad: squadUnit});
+        if (canSpawn === OK) {
+            spawn.createCreep(parts, undefined, {
+                priorityGeneration: generation,
+                role: role,
+                assemble: assemble,
+                squad: squad
+            });
             spawn.memory.lastSpawningCreepMemory = {priorityGeneration: generation, role: role};
         }
         return canSpawn;
@@ -161,7 +167,7 @@ MODULE = (function (module) {
         const flags = Game.rooms[roomName].find(FIND_FLAGS);
         if (flags.length) {
             const squadUnits = _.filter(Game.rooms[roomName].find(FIND_MY_CREEPS),
-                creep => creep.memory.squad === true);
+                creep => creep.memory.assemble === true);
             if (squadUnits.length) {
                 _.forEach(squadUnits, u => u.moveTo(flags[0]));
             }
@@ -213,7 +219,7 @@ MODULE = (function (module) {
                             role: c.role,
                             parts: c.parts,
                             priorityGeneration: c.priorityGeneration,
-                            squad: c.squad || false
+                            assemble: c.assemble || false
                         });
                     }
                 }
