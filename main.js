@@ -20,9 +20,9 @@ var main = function () {
         unitControlModule.run(roomName);
         constructionModule.run(roomName);
         defenseModule.run(roomName);
-        squadControlModule.run();
     }
 
+    squadControlModule.run();
 };
 
 module.exports.loop = main;
