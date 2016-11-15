@@ -1,4 +1,4 @@
-const {memoryObject, storePropertyName, reducer} = require('./storeProviderConfig');
+const {storePropertyName, reducer} = require('./storeProviderConfig');
 
 module.exports = (function () {
     let obj = {};
@@ -39,6 +39,10 @@ module.exports = (function () {
     };
 
     obj.dispatch = function (action) {
+        if (typeof Memory[reducer] === 'undefined') {
+            throw new Error('Reducer is not defined.');
+        }
+
         if (typeof Memory[storePropertyName] === 'undefined') {
             throw new Error('Store is not initialized');
         }
@@ -48,7 +52,7 @@ module.exports = (function () {
         }
 
         Memory[storePropertyName] =
-            Memory[reducer](memoryObject[storePropertyName], action);
+            Memory[reducer](Memory[storePropertyName], action);
 
         return action;
     };

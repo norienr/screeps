@@ -14,4 +14,4 @@ Secondary color represents action to be taken by the squad with main color.
 | squad color     | COLOR_YELLOW| Spawn and command this squad to locate near the flag|
 | squad color      | COLOR_GREEN| Command this squad to locate near the flag|
 | squad color      | COLOR_RED  | Make this squad attack the position where the secondary flag is placed |
-| squad color      | COLOR_WHITE| Make this squad retreat to the possition where the secondary flag is placed |
+| squad color      | COLOR_WHITE| Make this squad retreat to the first spawn in Game.spawns(not to position of the retreat flag) |

@@ -7,7 +7,7 @@ module.exports = {
         SPAWN_COLOR: COLOR_YELLOW,
         LOCATE_COLOR: COLOR_GREEN,
         ATTACK_COLOR: COLOR_RED,
-        RETREAT_COLOR: COLOR_WHITE,
+        RETREAT_COLOR: COLOR_WHITE
     },
     SQUAD_DEF: [
         {
