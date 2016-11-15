@@ -1,7 +1,6 @@
 const {ROLE_ARCHER, ROLE_HEALER, ROLE_MELEE} = require('./config');
 
 module.exports = {
-    memoryObject: Memory,
     squadsPropertyName: 'squads',
     COLORS: {
         SPAWN_COLOR: COLOR_YELLOW,

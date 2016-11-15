@@ -14,11 +14,12 @@ const flagListener = (function () {
         Memory[squadsPropertyName] = [];
     };
 
-    p.addSquad = function (color, flag) {
-        const squad = new Squad(color, [...SQUAD_DEF]);
+    p.addSquad = function (flag) {
+        const squad = new Squad(flag.color, [...SQUAD_DEF]);
         Memory[squadsPropertyName].push(squad);
-        _.forEach(squad.squadUnits, unit => unit.squad = color);
+        _.forEach(squad.squadUnits, unit => unit.squad = flag.color);
         _.forEach(squad.squadUnits, unit => {
+            console.log('spawn');
             const n = unit.num;
             delete unit.num;
             for (let i = 0; i < n; ++i) {
@@ -34,7 +35,7 @@ const flagListener = (function () {
         const col = flag.secondaryColor;
 
         if (col === COLORS.SPAWN_COLOR) {
-            p.addSquad(flag.color, flag);
+            p.addSquad(flag);
             flag.memory.status = 'processed';
 
         } else if (col === COLORS.LOCATE_COLOR) {
