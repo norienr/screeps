@@ -7,6 +7,7 @@ const roleCourier = require('role.courier');
 const roleArcher = require('role.archer');
 const roleMelee = require('role.melee');
 const roleHealer = require('role.healer');
+const roleBridge = require('role.bridge'); //added creep with role 'bridge'
 let MODULE = require('minerControlModule');
 
 MODULE = (function (module) {
@@ -51,7 +52,10 @@ MODULE = (function (module) {
                         roleMelee.run(creep);
                     } else if (creep.memory.role === Config.ROLE_HEALER) {
                         roleHealer.run(creep);
-                    }
+                    } else if (creep.memory.role === Config.ROLE_BRIDGE) {
+						roleBridge.run(creep);
+					}
+					 
                 }
             }
         );

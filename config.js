@@ -9,6 +9,7 @@ var config = (() => {
     const ROLE_ARCHER = 'archer';
     const ROLE_MELEE = 'melee';
     const ROLE_HEALER = 'healer';
+	const ROLE_BRIDGE = 'bridge';
 
     const MIN_TICKS_TO_RESPAWN = 30;
 
@@ -53,7 +54,13 @@ var config = (() => {
             num: DYNAMIC_SPAWN_NUM,
             parts: [CARRY, CARRY, MOVE, MOVE],
             priorityGeneration: 6
-        }
+        },
+		{
+			role: ROLE_BRIDGE,
+			num: 1,
+			parts: [CARRY, CARRY, MOVE, MOVE],
+			priorityGeneration: 7
+		}
     ];
 
     const MAX_EXTENSIONS_NUM = 60;
@@ -108,6 +115,7 @@ var config = (() => {
         ROLE_ARCHER: ROLE_ARCHER,
         ROLE_MELEE: ROLE_MELEE,
         ROLE_HEALER: ROLE_HEALER,
+		ROLE_BRIDGE: ROLE_BRIDGE,
         DYNAMIC_SPAWN_NUM: DYNAMIC_SPAWN_NUM,
         MIN_SAFE_DISTANCE: MIN_SAFE_DISTANCE,
         TOWER_ATTACK_INTERVAL: TOWER_ATTACK_INTERVAL,
