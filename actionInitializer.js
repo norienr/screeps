@@ -53,9 +53,9 @@ let actionInitializer = (function () {
                         }
                     } else if (s.type === action_types.RETREAT) {
                         const squad = [];
+                        const spawn = Game.spawns[Object.keys(Game.spawns)[0]];
                         for (let creepName in Game.creeps) {
                             if (Game.creeps[creepName].memory.squad === s.actor) {
-                                const spawn = Game.spawns[0];
                                 if (typeof spawn !== 'undefined') {
                                     Game.creeps[creepName].moveTo(spawn);
                                 }
