@@ -5,9 +5,10 @@ Version: _0.1.0_
 -------
 #####Flags to control squads
 
-Each squad should be represented by unique color — _Main flag color_.
-
-Secondary color represents action to be taken by the squad with main color.
+Squads can be controlled by flags. 
+Each squad is identified by the first color of a spawn flag. If multiple spawn flags with the same main color were spawned, they will be considered as a one squad unit.
+The second flag color defines an action to be taken by a specific squad, which is identified by the main color of this flag.
+There are currently supported only 4 actions: SPAWN, MOVE_TO, ATTACK, RETREAT.
 
 | Main color      | Secondary color  | Description |
 |:-----------|:----------:|:------------:|
