@@ -226,39 +226,72 @@ MODULE = (function (module) {
             _.forEach(module.getSpawnsByRoom(roomName), function (s) {
                 if (s.spawning == null && Game.rooms[roomName].memory.spawnQueue.length) {
                   const creep = Game.rooms[roomName].memory.spawnQueue[0];
-                  const parts = creep.parts;
-                  const availableEnergy = Game.rooms[roomName].energyAvailable -
-                    module.getNeededEnergy(parts);
-                  if (creep.role === Config.ROLE_TRANSPORTER || creep.role === Config.ROLE_COURIER) {
-                    if (availableEnergy >= module.getNeededEnergy([CARRY, CARRY, MOVE,])) {
-                      if (parts.length < 50) {
-                        parts.push(...[CARRY, CARRY, MOVE]);
+                  const parts = [];
+                    parts.push(...creep.parts);
+                  parts.reverse();
+                  if (creep.role === Config.ROLE_MINER) {
+                  for (let i in parts) {
+                    let availableEnergy = Game.rooms[roomName].energyAvailable -
+                      module.getNeededEnergy(parts[i]);
+                      if (availableEnergy >= module.getNeededEnergy(parts[i])) {
+                        if (parts[i].length <= 11) {
+                          creep.parts = parts[i];
+                          break;
+                        }
                       }
                     }
-                  } else if (creep.role === Config.ROLE_MINER) {
-                    if (availableEnergy >= module.getNeededEnergy([WORK, MOVE])) {
-                      if (parts.length < 10) {
-                        parts.unshift(...[WORK, MOVE]);
-                      } else if (parts.length >= 10 && parts.length < 11) {
-                        parts.unshift(...[WORK]);
+                  } else if (creep.role === Config.ROLE_COURIER || creep.role === Config.ROLE_TRANSPORTER) {
+                    for (let i in parts) {
+                      let availableEnergy = Game.rooms[roomName].energyAvailable -
+                        (module.getNeededEnergy(parts[i]));
+                      /*
+                     if (availableEnergy >= module.getNeededEnergy(parts[i])*5) {
+                         let p = [];
+                           p.push(...parts[i]);
+                        while (parts[i].length < 50) {
+                          parts[i].push(...p);
+                        }
+                       creep.parts = parts[i];
+                       break;
+
+                      }else
+                      */
+                      if(availableEnergy >= module.getNeededEnergy(parts[i]) + module.getNeededEnergy([CARRY, CARRY, MOVE])){
+                      while (availableEnergy >= module.getNeededEnergy(parts[i]) + module.getNeededEnergy([CARRY, CARRY, MOVE]) && parts[i].length < 48) {
+                         parts[i].push(...[CARRY, CARRY, MOVE]);
+                       }
+                       creep.parts = parts[i];
+                       break;
+                     } else if(availableEnergy >= module.getNeededEnergy(parts[i])){
+                       creep.parts = parts[i];
+                        break;
                       }
                     }
-                  } else if (creep.role === Config.ROLE_MELEE) {
-                    if (availableEnergy >= module.getNeededEnergy([ATTACK, MOVE])) {
-                      if (parts.length < 50) {
-                        parts.unshift(...[ATTACK, MOVE]);
+                  }  else if (creep.role === Config.ROLE_MELEE) {
+                    let availableEnergy = Game.rooms[roomName].energyAvailable -
+                      (module.getNeededEnergy(parts));
+                    if (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([ATTACK, MOVE])) {
+                      while (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([ATTACK, MOVE]) && parts.length < 50) {
+                        parts.push(...[ATTACK]);
+                        parts.unshift(...[MOVE]);
                       }
                     }
                   } else if (creep.role === Config.ROLE_ARCHER) {
-                    if (availableEnergy >= module.getNeededEnergy([RANGED_ATTACK, MOVE])) {
-                      if (parts.length < 50) {
-                        parts.unshift(...[RANGED_ATTACK, MOVE]);
+                    let availableEnergy = Game.rooms[roomName].energyAvailable -
+                      (module.getNeededEnergy(parts));
+                    if (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([RANGED_ATTACK, MOVE])) {
+                      while (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([RANGED_ATTACK, MOVE]) && parts.length < 50) {
+                        parts.push(...[RANGED_ATTACK]);
+                        parts.unshift(...[MOVE]);
                       }
                     }
                   } else if (creep.role === Config.ROLE_HEALER) {
-                    if (availableEnergy >= module.getNeededEnergy([HEAL, MOVE])) {
-                      if (parts.length < 50) {
-                        parts.unshift(...[HEAL, MOVE]);
+                    let availableEnergy = Game.rooms[roomName].energyAvailable -
+                      (module.getNeededEnergy(parts));
+                    if (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([HEAL, MOVE])) {
+                      while (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([HEAL, MOVE]) && parts.length < 50) {
+                        parts.push(...[HEAL]);
+                        parts.unshift(...[MOVE]);
                       }
                     }
                   }

@@ -33,7 +33,14 @@ var config = (() => {
         {
             role: ROLE_MINER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [WORK, WORK, CARRY, MOVE],
+          parts: [
+            [MOVE, CARRY, WORK, WORK, WORK],
+            [MOVE, CARRY, WORK, WORK, WORK, WORK],
+            [MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK],
+            [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK],
+            [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK],
+            [MOVE, MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK]
+          ],
             priorityGeneration: 3
         },
         {
@@ -45,13 +52,21 @@ var config = (() => {
         {
             role: ROLE_TRANSPORTER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [CARRY, CARRY, MOVE, MOVE],
+            parts: [
+              [CARRY, CARRY, MOVE, MOVE],
+              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
+              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
+            ],
             priorityGeneration: 5
         },
         {
             role: ROLE_COURIER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [CARRY, CARRY, MOVE, MOVE],
+            parts: [
+              [CARRY, CARRY, MOVE, MOVE],
+              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
+              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
+            ],
             priorityGeneration: 6
         }
     ];
@@ -92,7 +107,7 @@ var config = (() => {
         {
             role: ROLE_MELEE,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [TOUGH, ATTACK, ATTACK, ATTACK, MOVE],
+            parts: [ATTACK, MOVE],
             squad: true,
             priorityGeneration: 1
         }
