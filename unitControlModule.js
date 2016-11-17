@@ -75,6 +75,13 @@ MODULE = (function (module) {
         return _.filter(Game.rooms[roomName].find(FIND_MY_STRUCTURES),
             struct => struct.structureType === STRUCTURE_SPAWN);
     };
+    
+    //creating Bridge
+    module.createBridge = function(spawn) {
+        if(spawn.canCreateCreep([CARRY, CARRY, MOVE], undefined) == OK) {
+            spawn.createCreep([CARRY, CARRY, MOVE], undefined, {role: 'bridge'});
+        }
+    }
 
     module.spawnCreeps = function (spawn, creep) {
         const role = creep.role;
@@ -176,6 +183,24 @@ MODULE = (function (module) {
         _.forEach(_.filter(Game.rooms[roomName].find(FIND_MY_CREEPS), c => c.memory.tempRole != undefined),
             c => c.memory.tempRole = undefined);
     };
+	
+	//function of checking Storage and Storage Link in the room
+	module.checkStorageAndLink = function(roomName) {
+		if(Game.rooms[roomName].storage) {
+			var storage = Game.rooms[roomName].storage;
+			
+			var storLink = storage.pos.findInRange(FIND_MY_STRUCTURES, 2, 
+				{filter: {structureType: STRUCTURE_LINK}})[0];
+			
+			if(storLink) {
+				return true;
+			}
+			else return false;
+		}
+		else 
+			return false;
+			
+	}
 
     module.run = function (roomName) {
 
@@ -208,10 +233,12 @@ MODULE = (function (module) {
         } else { // assemble defense units
             module.assembleSquad(roomName);
         }
+		
         _.forEach(creepsToSpawn, function (c) {
                 const numToSpawn = module.getMissingCreepsNum(roomName, c);
 
                 if (numToSpawn > 0) {
+                    
                     for (let i = 0; i < numToSpawn; ++i) {
                         Game.rooms[roomName].memory.spawnQueue.push({
                             role: c.role,
@@ -228,6 +255,15 @@ MODULE = (function (module) {
             Game.rooms[roomName].memory.spawnQueue =
                 _.sortBy(Game.rooms[roomName].memory.spawnQueue, 'priorityGeneration');
             _.forEach(module.getSpawnsByRoom(roomName), function (s) {
+                
+                //adding condition to spawn bridge creep
+        		//console.log("Checking storage and Link: "+module.checkStorageAndLink(Game.rooms[roomName].name));
+        		if( (module.checkStorageAndLink(roomName) == true) && module.getCreepsByRole(roomName, "bridge").length == 0) {
+        			module.createBridge(s)
+        		}
+                
+                
+                
                 if (s.spawning == null && Game.rooms[roomName].memory.spawnQueue.length) {
                     const creep = Game.rooms[roomName].memory.spawnQueue[0];
                     const parts = creep.parts;

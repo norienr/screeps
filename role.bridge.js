@@ -5,18 +5,18 @@ var getIdOfStorageLink = function(creep) {
     });
 	
 	if(storage) {
-		var storLink = storage.pos.findInRange(FIND_MY_STRUCTURES, 3, 
+		var storLink = storage.pos.findInRange(FIND_MY_STRUCTURES, 2, 
 			{filter: {structureType: STRUCTURE_LINK}})[0];
 		if(storLink) {
 			return storLink.id;
 		}
 		else {
-			creep.say("No str link");
+			//creep.say("No str link");
 			return -1;
 		}
 	}
 	else {
-		creep.say("No stor");
+		//creep.say("No stor");
 		return -1;
 	}	
 }
@@ -29,24 +29,44 @@ var withdrawEnergyFromLink = function(creep, id) {
 		creep.moveTo(link);    
 	}
 	else if(creep.withdraw(link, RESOURCE_ENERGY) == ERR_NOT_ENOUGH_RESOURCES) {
-		creep.say("No resources");
+		//creep.say("No resources");
 	}
 }
 
 var getIdOfTerminal = function(creep) {
-	var terminal = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-        filter: {structureType: STRUCTURE_TERMINAL}
-    });
+
+	var room = creep.room;
+	if(room) {
+		var terminal = creep.room.terminal;
+		if(terminal) {
+			return terminal.id;
+		}
+		else return -1;
+	}
+	else return -1;
 	
-	if(terminal) {
-		return terminal.id;
-	}
-	else {
-		return -1;
-	}
 }
 
-var transferToStructures = function(creep) {
+var transferToStorage = function(creep) {
+    
+    var stor_id = creep.memory.storageId;
+
+	if(stor_id) {
+		var storage = Game.getObjectById(stor_id);
+		
+		//console.log("Trans To stor: "+creep.transfer(storage, RESOURCE_ENERGY));
+		
+		if(creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+			creep.moveTo(storage);    
+		}
+	}
+	else {
+		//creep.say("No stor");
+	}
+    
+}
+
+var transferToStructures = function(creep) {	
     var term_id = creep.memory.terminalId;
 	
 	if(term_id) {
@@ -63,28 +83,18 @@ var transferToStructures = function(creep) {
 			}
 		}
 		else {
-		    
+		    //There is a terminal, but it has enough energy, so
 		    //Transferring to Storage
-		    var stor_id = creep.memory.storageId;
-	
-        	if(stor_id) {
-        		var storage = Game.getObjectById(stor_id);
-        		
-        		console.log("Trans To stor: "+creep.transfer(storage, RESOURCE_ENERGY));
-        		
-        		if(creep.transfer(storage, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-        			creep.moveTo(storage);    
-        		}
-        	}
-        	else {
-        		creep.say("No stor");
-        	}
-		    
+        	transferToStorage(creep);
 		}
 	}
 	else {
-		creep.say("No term");
+	    //There is no terminal, so
+	    //Transferring to Storage
+    	transferToStorage(creep);
+	    
 	}
+	
 }
 
 
@@ -135,7 +145,7 @@ var doRun = function(creep) {
 			creep.memory.terminalId = terminalId;
 		}
 		else {
-			creep.say("fail termId");
+			//creep.say("fail termId");
 		}
 	}
 	

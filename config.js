@@ -54,13 +54,8 @@ var config = (() => {
             num: DYNAMIC_SPAWN_NUM,
             parts: [CARRY, CARRY, MOVE, MOVE],
             priorityGeneration: 6
-        },
-		{
-			role: ROLE_BRIDGE,
-			num: 1,
-			parts: [CARRY, CARRY, MOVE, MOVE],
-			priorityGeneration: 7
-		}
+        }
+ 
     ];
 
     const MAX_EXTENSIONS_NUM = 60;
