@@ -11,7 +11,6 @@ var constructionModule = (function () {
         buildStructure: function (roomName, structure) {
             return Game.rooms[roomName].createConstructionSite(structure.pos.x, structure.pos.y,
                 structure.type);
-
         },
         buildRoad: function (roomName, startPos, endPos) {
             const path = Game.rooms[roomName].findPath(startPos, endPos, {
@@ -94,7 +93,7 @@ var constructionModule = (function () {
                                             if (!pos) {
                                                 break;
                                             }
-                                            res = o.buildStructure(roomName, {type: structure.type, pos: pos});
+                                            res = o.buildStructure(roomName, room.memory.buildQueue[0]);
                                         }
                                         if (res === OK) {
                                             room.memory.buildQueue.shift();

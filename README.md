@@ -1,7 +1,9 @@
 ##Screeps
 
-Version: _0.1.0_
-
+Version: _0.1.1_
+-------
+Changelog for v0.1.1
+- Fixed autopos bug
 -------
 #####Flags to control squads
 
