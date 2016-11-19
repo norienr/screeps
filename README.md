@@ -1,3 +1,3 @@
 **Screeps**
 _______
-Version: _0.1.0_
+Version: _0.1.1_
