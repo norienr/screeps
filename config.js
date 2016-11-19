@@ -1,4 +1,4 @@
-var config = (() => {
+const config = (() => {
 
     const ROLE_HARVESTER = 'harvester';
     const ROLE_UPGRADER = 'upgrader';
@@ -56,23 +56,12 @@ var config = (() => {
         }
     ];
 
-    const MAX_EXTENSIONS_NUM = 60;
-
     const CONTAINERS_POS_RADIUS = 3;
     const EXTENSIONS_POS_RADIUS = 10;
     const DEFAULT_POS_RADIUS = 3;
 
-    const STRUCTURES = [ //highest priority at top, yet considering if struct can be built
-        {type: STRUCTURE_CONTAINER, near: STRUCTURE_SPAWN, radius: CONTAINERS_POS_RADIUS},
-        {type: STRUCTURE_CONTAINER, near: STRUCTURE_SPAWN, radius: CONTAINERS_POS_RADIUS},
-        ..._.fill(Array(MAX_EXTENSIONS_NUM), {
-            type: STRUCTURE_EXTENSION,
-            near: STRUCTURE_SPAWN,
-            radius: EXTENSIONS_POS_RADIUS
-        }),
-        {type: STRUCTURE_TOWER, near: STRUCTURE_SPAWN, radius: DEFAULT_POS_RADIUS},
-
-    ];
+    const STRUCTURES = [];// Structure auto building is currently disabled, so it should not be used,
+                          // though miners will still build its containers.
 
     const DEFENSIVE_CREEPS = [
         {
