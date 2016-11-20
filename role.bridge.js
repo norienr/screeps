@@ -1,24 +1,29 @@
-var getIdOfStorageLink = function(creep) {
-	
-	var storage = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-        filter: {structureType: STRUCTURE_STORAGE}
-    });
-	
-	if(storage) {
-		var storLink = storage.pos.findInRange(FIND_MY_STRUCTURES, 2, 
+var initializeStorageWithLink = function(creep) {
+    
+    if(creep.room.storage) {
+	    var storage = creep.room.storage;
+	    var storage_id = storage.id;
+	    
+	    
+	    var storLink = storage.pos.findInRange(FIND_MY_STRUCTURES, 2, 
 			{filter: {structureType: STRUCTURE_LINK}})[0];
+		
 		if(storLink) {
-			return storLink.id;
+		    var link_id = storLink.id;
+		    
+		    //Initializing ids of Storage and Storage Link in creep's memory
+		    creep.memory.storageId = storage_id;
+		    creep.memory.linkId = link_id;
 		}
 		else {
-			//creep.say("No str link");
-			return -1;
+		    //No storage link present
+		    return -1;
 		}
-	}
-	else {
-		//creep.say("No stor");
-		return -1;
-	}	
+	 }
+	 else {
+	     //No storage present
+	     return -1;
+	 }
 }
 
 var withdrawEnergyFromLink = function(creep, id) {
@@ -35,13 +40,8 @@ var withdrawEnergyFromLink = function(creep, id) {
 
 var getIdOfTerminal = function(creep) {
 
-	var room = creep.room;
-	if(room) {
-		var terminal = creep.room.terminal;
-		if(terminal) {
-			return terminal.id;
-		}
-		else return -1;
+	if(creep.room.terminal) {
+	    return creep.room.terminal.id;
 	}
 	else return -1;
 	
@@ -98,44 +98,13 @@ var transferToStructures = function(creep) {
 }
 
 
-var getIdOfStorage = function(creep) {
-	var storage = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-        filter: {structureType: STRUCTURE_STORAGE}
-    });
-	
-	if(storage) {
-	    //console.log("stor id: "+storage.id);
-		return storage.id;
-	}
-	else {
-		return -1;
-	}
-}
-
-
 var doRun = function(creep) {
 	
 	//Initializing Storage Link and Storage in creep's memory
-	if(!creep.memory.linkId) {
-		var linkId = getIdOfStorageLink(creep);
-		
-		if(linkId != -1) {
-			creep.memory.linkId = linkId;
-		}
-		else {
-			creep.say("Fail linkId");
-		}
-	}
-
-	if(!creep.memory.storageId) {
-		var storageId = getIdOfStorage(creep);
-		
-		if(storageId != -1) {
-			creep.memory.storageId = storageId;
-		}
-		else {
-			creep.say("Fail storId");
-		}
+	if(!creep.memory.storageId && !creep.memory.linkId) {
+	    if(initializeStorageWithLink(creep) == -1) {
+	        creep.say("No st or lnk");
+	    }
 	}
 	
 	if(!creep.memory.terminalId) {
