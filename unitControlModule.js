@@ -76,11 +76,17 @@ MODULE = (function (module) {
         const role = creep.role;
         const generation = creep.priorityGeneration;
         const parts = creep.parts;
-        const squadUnit = creep.squad || false;
+        const assemble = creep.assemble || false;
+        const squad = creep.squad;
 
         var canSpawn = spawn.canCreateCreep(parts);
-        if (canSpawn == OK) {
-            spawn.createCreep(parts, undefined, {priorityGeneration: generation, role: role, squad: squadUnit});
+        if (canSpawn === OK) {
+            spawn.createCreep(parts, undefined, {
+                priorityGeneration: generation,
+                role: role,
+                assemble: assemble,
+                squad: squad
+            });
             spawn.memory.lastSpawningCreepMemory = {priorityGeneration: generation, role: role};
         }
         return canSpawn;
@@ -161,7 +167,7 @@ MODULE = (function (module) {
         const flags = Game.rooms[roomName].find(FIND_FLAGS);
         if (flags.length) {
             const squadUnits = _.filter(Game.rooms[roomName].find(FIND_MY_CREEPS),
-                creep => creep.memory.squad === true);
+                creep => creep.memory.assemble === true);
             if (squadUnits.length) {
                 _.forEach(squadUnits, u => u.moveTo(flags[0]));
             }
@@ -213,7 +219,7 @@ MODULE = (function (module) {
                             role: c.role,
                             parts: c.parts,
                             priorityGeneration: c.priorityGeneration,
-                            squad: c.squad || false
+                            assemble: c.assemble || false
                         });
                     }
                 }
@@ -225,15 +231,64 @@ MODULE = (function (module) {
                 _.sortBy(Game.rooms[roomName].memory.spawnQueue, 'priorityGeneration');
             _.forEach(module.getSpawnsByRoom(roomName), function (s) {
                 if (s.spawning == null && Game.rooms[roomName].memory.spawnQueue.length) {
-                    const creep = Game.rooms[roomName].memory.spawnQueue[0];
-                    const parts = creep.parts;
-                    const availableEnergy = Game.rooms[roomName].energyAvailable -
-                        module.getNeededEnergy(parts);
-                    if (availableEnergy >= module.getNeededEnergy([CARRY, MOVE])) {
-                        if (parts.length < 50) {
-                            parts.unshift(...[CARRY, MOVE]);
+                  const creep = Game.rooms[roomName].memory.spawnQueue[0];
+                  const parts = [];
+                    parts.push(...creep.parts);
+                  parts.reverse();
+                  if (creep.role === Config.ROLE_MINER) {
+                  for (let i in parts) {
+                    let availableEnergy = Game.rooms[roomName].energyAvailable -
+                      module.getNeededEnergy(parts[i]);
+                      if (availableEnergy >= module.getNeededEnergy(parts[i])) {
+                        if (parts[i].length <= 11) {
+                          creep.parts = parts[i];
+                          break;
                         }
+                      }
                     }
+                  } else if (creep.role === Config.ROLE_COURIER || creep.role === Config.ROLE_TRANSPORTER) {
+                    for (let i in parts) {
+                      let availableEnergy = Game.rooms[roomName].energyAvailable -
+                        (module.getNeededEnergy(parts[i]));
+                      if(availableEnergy >= module.getNeededEnergy(parts[i]) + module.getNeededEnergy([CARRY, CARRY, MOVE])){
+                      while (availableEnergy >= module.getNeededEnergy(parts[i]) + module.getNeededEnergy([CARRY, CARRY, MOVE]) && parts[i].length < 48) {
+                         parts[i].push(...[CARRY, CARRY, MOVE]);
+                       }
+                       creep.parts = parts[i];
+                       break;
+                     } else if(availableEnergy >= module.getNeededEnergy(parts[i])){
+                       creep.parts = parts[i];
+                        break;
+                      }
+                    }
+                  }  else if (creep.role === Config.ROLE_MELEE) {
+                    let availableEnergy = Game.rooms[roomName].energyAvailable -
+                      (module.getNeededEnergy(parts));
+                    if (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([ATTACK, MOVE])) {
+                      while (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([ATTACK, MOVE]) && parts.length < 50) {
+                        parts.push(ATTACK);
+                        parts.unshift(MOVE);
+                      }
+                    }
+                  } else if (creep.role === Config.ROLE_ARCHER) {
+                    let availableEnergy = Game.rooms[roomName].energyAvailable -
+                      (module.getNeededEnergy(parts));
+                    if (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([RANGED_ATTACK, MOVE])) {
+                      while (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([RANGED_ATTACK, MOVE]) && parts.length < 50) {
+                        parts.push(RANGED_ATTACK);
+                        parts.unshift(MOVE);
+                      }
+                    }
+                  } else if (creep.role === Config.ROLE_HEALER) {
+                    let availableEnergy = Game.rooms[roomName].energyAvailable -
+                      (module.getNeededEnergy(parts));
+                    if (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([HEAL, MOVE])) {
+                      while (availableEnergy >= module.getNeededEnergy(parts) + module.getNeededEnergy([HEAL, MOVE]) && parts.length < 50) {
+                        parts.push(HEAL);
+                        parts.unshift(MOVE);
+                      }
+                    }
+                  }
 
                     if (module.spawnCreeps(s, creep) == OK) {
                         module.getCreepsToNormalRoles(roomName);

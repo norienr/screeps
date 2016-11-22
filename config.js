@@ -1,4 +1,4 @@
-var config = (() => {
+const config = (() => {
 
     const ROLE_HARVESTER = 'harvester';
     const ROLE_UPGRADER = 'upgrader';
@@ -33,7 +33,14 @@ var config = (() => {
         {
             role: ROLE_MINER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [WORK, WORK, CARRY, MOVE],
+          parts: [
+            [MOVE, CARRY, WORK, WORK, WORK],
+            [MOVE, CARRY, WORK, WORK, WORK, WORK],
+            [MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK],
+            [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK],
+            [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK],
+            [MOVE, MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK]
+          ],
             priorityGeneration: 3
         },
         {
@@ -45,56 +52,53 @@ var config = (() => {
         {
             role: ROLE_TRANSPORTER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [CARRY, CARRY, MOVE, MOVE],
+            parts: [
+              [CARRY, CARRY, MOVE, MOVE],
+              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
+              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
+            ],
             priorityGeneration: 5
         },
         {
             role: ROLE_COURIER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [CARRY, CARRY, MOVE, MOVE],
+            parts: [
+              [CARRY, CARRY, MOVE, MOVE],
+              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
+              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
+            ],
             priorityGeneration: 6
         }
     ];
-
-    const MAX_EXTENSIONS_NUM = 60;
 
     const CONTAINERS_POS_RADIUS = 3;
     const EXTENSIONS_POS_RADIUS = 10;
     const DEFAULT_POS_RADIUS = 3;
 
-    const STRUCTURES = [ //highest priority at top, yet considering if struct can be built
-        {type: STRUCTURE_CONTAINER, near: STRUCTURE_SPAWN, radius: CONTAINERS_POS_RADIUS},
-        {type: STRUCTURE_CONTAINER, near: STRUCTURE_SPAWN, radius: CONTAINERS_POS_RADIUS},
-        ..._.fill(Array(MAX_EXTENSIONS_NUM), {
-            type: STRUCTURE_EXTENSION,
-            near: STRUCTURE_SPAWN,
-            radius: EXTENSIONS_POS_RADIUS
-        }),
-        {type: STRUCTURE_TOWER, near: STRUCTURE_SPAWN, radius: DEFAULT_POS_RADIUS},
-
-    ];
+    const STRUCTURES = [];// Structure auto building is currently disabled, so it should not be used,
+                          // though miners will still build its containers.
 
     const DEFENSIVE_CREEPS = [
         {
             role: ROLE_ARCHER,
             num: 2,
             parts: [RANGED_ATTACK, MOVE],
-            squad: true,
-            priorityGeneration: 1
+            assemble: true,
+            priorityGeneration: 0
         },
         {
             role: ROLE_HEALER,
-            num: 1,
+            num: 2,
             parts: [HEAL, MOVE],
-            squad: true,
-            priorityGeneration: 1
+            assemble: true,
+            priorityGeneration: 0
         },
         {
             role: ROLE_MELEE,
-            num: DYNAMIC_SPAWN_NUM,
-            parts: [TOUGH, ATTACK, ATTACK, ATTACK, MOVE],
+            num: 4,
+            parts: [ATTACK, MOVE],
             squad: true,
-            priorityGeneration: 1
+            priorityGeneration: 0
         }
     ];
 
