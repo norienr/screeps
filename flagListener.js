@@ -23,7 +23,7 @@ const flagListener = (function () {
             const n = unit.num;
             delete unit.num;
             for (let i = 0; i < n; ++i) {
-                flag.room.memory.spawnQueue1.push(unit);
+                flag.room.memory.spawnQueue.push(unit);
             }
         });
 

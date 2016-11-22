@@ -20,7 +20,7 @@ const config = (() => {
     const CREEPS = [
         {
             role: ROLE_HARVESTER,
-            num: 1,
+            num: 0,
             parts: [WORK, CARRY, MOVE, MOVE],
             priorityGeneration: 0
         },
