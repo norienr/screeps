@@ -22,13 +22,13 @@ const config = (() => {
             role: ROLE_HARVESTER,
             num: 1,
             parts: [WORK, CARRY, MOVE, MOVE],
-            priorityGeneration: 1
+            priorityGeneration: 0
         },
         {
             role: ROLE_BUILDER,
-            num: 2,
+            num: 4,
             parts: [WORK, WORK, CARRY, MOVE],
-            priorityGeneration: 2
+            priorityGeneration: 3
         },
         {
             role: ROLE_MINER,
@@ -42,13 +42,13 @@ const config = (() => {
                 [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK],
                 [MOVE, MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK]
             ],
-            priorityGeneration: 3
+            priorityGeneration: 4
         },
         {
             role: ROLE_UPGRADER,
             num: 1,
             parts: [WORK, WORK, CARRY, MOVE],
-            priorityGeneration: 4
+            priorityGeneration: 5
         },
         {
             role: ROLE_TRANSPORTER,
@@ -58,7 +58,7 @@ const config = (() => {
                 [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
                 [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
             ],
-            priorityGeneration: 5
+            priorityGeneration: 2
         },
         {
             role: ROLE_COURIER,
@@ -68,7 +68,7 @@ const config = (() => {
                 [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
                 [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
             ],
-            priorityGeneration: 6
+            priorityGeneration: 1
         }
     ];
 
