@@ -33,14 +33,15 @@ const config = (() => {
         {
             role: ROLE_MINER,
             num: DYNAMIC_SPAWN_NUM,
-          parts: [
-            [MOVE, CARRY, WORK, WORK, WORK],
-            [MOVE, CARRY, WORK, WORK, WORK, WORK],
-            [MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK],
-            [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK],
-            [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK],
-            [MOVE, MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK]
-          ],
+            parts: [
+                [MOVE, CARRY, WORK, WORK],
+                [MOVE, CARRY, WORK, WORK, WORK],
+                [MOVE, CARRY, WORK, WORK, WORK, WORK],
+                [MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK],
+                [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK],
+                [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK],
+                [MOVE, MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK]
+            ],
             priorityGeneration: 3
         },
         {
@@ -53,9 +54,9 @@ const config = (() => {
             role: ROLE_TRANSPORTER,
             num: DYNAMIC_SPAWN_NUM,
             parts: [
-              [CARRY, CARRY, MOVE, MOVE],
-              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
-              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
+                [CARRY, CARRY, MOVE, MOVE],
+                [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
+                [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
             ],
             priorityGeneration: 5
         },
@@ -63,9 +64,9 @@ const config = (() => {
             role: ROLE_COURIER,
             num: DYNAMIC_SPAWN_NUM,
             parts: [
-              [CARRY, CARRY, MOVE, MOVE],
-              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
-              [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
+                [CARRY, CARRY, MOVE, MOVE],
+                [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
+                [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
             ],
             priorityGeneration: 6
         }
