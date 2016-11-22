@@ -187,8 +187,6 @@ MODULE = (function (module) {
 
         module.runCreeps(roomName);
 
-        Game.rooms[roomName].memory.spawnQueue = undefined;
-
         if (Game.rooms[roomName].memory.spawnQueue === undefined) {
             Game.rooms[roomName].memory.spawnQueue = [];
         }
