@@ -1,12 +1,15 @@
 ##Screeps
 
-Version: _0.2.0_
+Version: _0.2.1_
 -------
-###Changelog for v0.2.0
+###Changelog for v0.2.1
 
 - Added squads. Squads can be controlled with flags.
 - Added auto-scaling creeps with levels.
 - Disabled auto-positioning of the structures.
+- Fixed bug resulting in miner not being built properly.
+
+
 -------
 #####Flags to control squads
 
