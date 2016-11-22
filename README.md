@@ -1,9 +1,12 @@
 ##Screeps
 
-Version: _0.1.1_
+Version: _0.2.0_
 -------
-Changelog for v0.1.1
-- Fixed autopos bug
+###Changelog for v0.2.0
+
+- Added squads. Squads can be controlled with flags.
+- Added auto-scaling creeps with levels.
+- Disabled auto-positioning of the structures.
 -------
 #####Flags to control squads
 
@@ -20,7 +23,7 @@ There are currently supported only 4 actions: SPAWN, MOVE_TO, ATTACK, RETREAT.
 | squad color      | COLOR_WHITE| Make this squad retreat to the first spawn in Game.spawns(not to position of the retreat flag) |
 
 -------
-#####Auto scaling creeps
+#####Auto-scaling creeps
 
 Parts are added depending on the amount of energy in the room.
 
