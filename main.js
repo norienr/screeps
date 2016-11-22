@@ -1,5 +1,4 @@
 var defenseModule = require('defenseModule');
-var constructionModule = require('constructionModule');
 var unitControlModule = require('unitControlModule');
 var squadControlModule = require('squadControlModule');
 
@@ -18,7 +17,6 @@ var main = function () {
         }
 
         unitControlModule.run(roomName);
-        constructionModule.run(roomName);
         defenseModule.run(roomName);
     }
 

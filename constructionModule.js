@@ -58,6 +58,10 @@ var constructionModule = (function () {
     };
 
     var publicAPI = {
+        /**
+         * @deprecated [Construction module should not be used and all
+         * the structures besides miner containers should be built manually.]
+         */
         run: function (roomName) {
 
             const room = Game.rooms[roomName];
