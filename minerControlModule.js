@@ -4,24 +4,6 @@ const roleMiner = require('role.miner');
 var MODULE = (function (module) {
     "use strict";
 
-    module.locateContainerPos = function (room, source) {
-        const radius = Config.EXTENSIONS_POS_RADIUS;
-        console.log('src'+JSON.stringify(source));
-        const x = source.pos.x;
-        const y = source.pos.y;
-        const srcP = {x, y};
-        const posArr = room.lookForAtArea(LOOK_TERRAIN, y - radius, x - radius, y + radius, x + radius, true);
-        const filtered = _.filter(posArr, p => p.terrain === 'plain' &&
-        JSON.stringify({x: p.x, y: p.y}) !== JSON.stringify(srcP));
-        let positions = [];
-        _.forEach(filtered, f => positions.push(new RoomPosition(f.x, f.y, room.name)));
-        if (positions.length) {
-            const res = source.pos.findClosestByPath(positions);
-            return res;
-        }
-        return false;
-    };
-
     module.hasMinerAssigned = function (room, source) {
         return _.filter(room.find(FIND_MY_CREEPS),
             creep => creep.memory.role === Config.ROLE_MINER &&
@@ -55,81 +37,24 @@ var MODULE = (function (module) {
         return creep.pos.findClosestByRange(srcs);
     };
 
-    module.removeUnavailableContainers = function (room) {
-        for (let i = 0, n = room.memory.containers.length; i < n; ++i) {
-            const c = Game.getObjectById(room.memory.containers[i].containerId);
-            if (!c && typeof c === 'object') {
-                room.memory.containers.splice(i, 1);
-            }
-        }
-    };
-
     module.initMiner = function (creep) {
-        const room = creep.room;
-        if (room.memory.containers === undefined) {
-            room.memory.containers = [];
-        }
-
-        module.removeUnavailableContainers(room);
 
         if (typeof creep.memory.sourceId === 'undefined') {
             const src = module.findUnassignedSource(creep);
             if (typeof src !== 'undefined') {
-                const container = _.filter(room.memory.containers, x => x.sourceId === src.id);
-                if (container.length) {
-                    creep.memory.sourceId = container[0].sourceId;
-                    creep.memory.siteId = container[0].siteId;
-                    creep.memory.containerId = container[0].containerId;
-                } else {
-                    const container = module.locateContainerPos(room, src);
-                    if (container) {
-                        room.createConstructionSite(container.x, container.y, STRUCTURE_CONTAINER);
-                        creep.memory.sourceId = src.id;
-                        creep.memory.needsInit = container;
-                    }
-                }
+                creep.memory.sourceId = src.id;
             }
         } else {
-            if (creep.memory.needsInit) {
-                const container = creep.memory.needsInit;
-                const site = creep.room.lookForAt(LOOK_CONSTRUCTION_SITES,
-                    new RoomPosition(container.x,
-                        container.y, room.name));
-                if (site.length) {
-                    creep.memory.siteId = site[0].id;
-                    room.memory.containers.push({
-                        siteId: site[0].id,
-                        sourceId: creep.memory.sourceId,
-                        x: site[0].pos.x,
-                        y: site[0].pos.y
-                    });
-                    delete creep.memory.needsInit;
-                } else {
-                    delete creep.memory.sourceId;
-                    delete creep.memory.needsInit;
-                    console.log('Cannot assign site');
-                }
+            const conts = _.filter(creep.room.find(FIND_STRUCTURES),
+                s => (s.structureType === STRUCTURE_CONTAINER) &&
+                s.pos.isNearTo(Game.getObjectById(creep.memory.sourceId)));
+            if (conts.length) {
+                roleMiner.run(creep, conts[0].id);
             } else {
-                const site = Game.getObjectById(creep.memory.siteId);
-                if (site === null && creep.memory.containerId === undefined) {
-                    const conts = _.filter(room.memory.containers,
-                        x => x.siteId === creep.memory.siteId);
-                    if (conts.length) {
-                        const containers = creep.room.lookForAt(LOOK_STRUCTURES,
-                            new RoomPosition(conts[0].x,
-                                conts[0].y, room.name));
-                        if (containers.length) {
-                            creep.memory.containerId = containers[0].id;
-                            conts[0].containerId = containers[0].id;
-                        } else {
-                            console.log('Cannot init container');
-                        }
-                    }
-                } else {
-                    roleMiner.run(creep);
-                }
+                console.log(`Please, build container for miner`);
             }
         }
+
     };
     return module;
 })(MODULE || {});

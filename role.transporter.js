@@ -1,4 +1,4 @@
-var roleTransporter = {
+const roleTransporter = {
     /** @param {Creep} creep **/
     run: (creep) => {
         const room = creep.room;
@@ -6,9 +6,9 @@ var roleTransporter = {
         if (creep.memory.harvesting) {
             if (creep.carry.energy < creep.carryCapacity) {
                 const srcs = _.filter(room.find(FIND_STRUCTURES),
-                    s => s.structureType === STRUCTURE_CONTAINER &&
-                    _.filter(room.memory.containers, x => x.containerId === s.id).length &&
-                    s.store[RESOURCE_ENERGY] > 0);
+                    cont => cont.structureType === STRUCTURE_CONTAINER &&
+                    _.filter(room.find(FIND_SOURCES), src => cont.pos.isNearTo(src)).length &&
+                    cont.store[RESOURCE_ENERGY] > 0);
                 if (srcs.length) {
                     const s = creep.pos.findClosestByRange(srcs);
                     if (s.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {

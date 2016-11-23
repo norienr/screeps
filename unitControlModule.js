@@ -169,7 +169,7 @@ MODULE = (function (module) {
 
         const room = Game.rooms[roomName];
 
-        console.log(JSON.stringify(room.memory.spawnQueue));
+        //console.log(JSON.stringify(room.memory.spawnQueue));
 
         module.deleteUnusedNames();
 
