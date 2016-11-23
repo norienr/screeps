@@ -2,9 +2,11 @@ const Config = require('config');
 const roleMiner = require('role.miner');
 
 var MODULE = (function (module) {
+    "use strict";
 
     module.locateContainerPos = function (room, source) {
         const radius = Config.EXTENSIONS_POS_RADIUS;
+        console.log('src'+JSON.stringify(source));
         const x = source.pos.x;
         const y = source.pos.y;
         const srcP = {x, y};
@@ -16,15 +18,14 @@ var MODULE = (function (module) {
         if (positions.length) {
             const res = source.pos.findClosestByPath(positions);
             return res;
-        } else {
-            return false;
         }
+        return false;
     };
 
     module.hasMinerAssigned = function (room, source) {
         return _.filter(room.find(FIND_MY_CREEPS),
             creep => creep.memory.role === Config.ROLE_MINER &&
-            creep.memory.sourceId != undefined &&
+            typeof creep.memory.sourceId !== 'undefined' &&
             creep.memory.sourceId === source.id).length;
     };
 
@@ -71,28 +72,20 @@ var MODULE = (function (module) {
 
         module.removeUnavailableContainers(room);
 
-        if (creep.memory.sourceId === undefined) {
+        if (typeof creep.memory.sourceId === 'undefined') {
             const src = module.findUnassignedSource(creep);
-            if (src != undefined) {
-                const container = _.filter(room.memory.containers,
-                    x => x.sourceId === src.id);
+            if (typeof src !== 'undefined') {
+                const container = _.filter(room.memory.containers, x => x.sourceId === src.id);
                 if (container.length) {
                     creep.memory.sourceId = container[0].sourceId;
                     creep.memory.siteId = container[0].siteId;
-                    if (container[0].containerId != undefined) {
-                        creep.memory.containerId = container[0].containerId;
-                    }
-                } else { // need to add
+                    creep.memory.containerId = container[0].containerId;
+                } else {
                     const container = module.locateContainerPos(room, src);
                     if (container) {
-                        const res = room.createConstructionSite(container.x, container.y,
-                            STRUCTURE_CONTAINER);
-                        if (res === OK) {
-                            creep.memory.sourceId = src.id;
-                            creep.memory.needsInit = container;
-                        } else {
-                            console.log(`cannot build container: ${res}`);
-                        }
+                        room.createConstructionSite(container.x, container.y, STRUCTURE_CONTAINER);
+                        creep.memory.sourceId = src.id;
+                        creep.memory.needsInit = container;
                     }
                 }
             }
@@ -110,9 +103,11 @@ var MODULE = (function (module) {
                         x: site[0].pos.x,
                         y: site[0].pos.y
                     });
-                    creep.memory.needsInit = undefined;
+                    delete creep.memory.needsInit;
                 } else {
-                    console.log('cannot assign site');
+                    delete creep.memory.sourceId;
+                    delete creep.memory.needsInit;
+                    console.log('Cannot assign site');
                 }
             } else {
                 const site = Game.getObjectById(creep.memory.siteId);
@@ -127,7 +122,7 @@ var MODULE = (function (module) {
                             creep.memory.containerId = containers[0].id;
                             conts[0].containerId = containers[0].id;
                         } else {
-                            console.log('cannot init container');
+                            console.log('Cannot init container');
                         }
                     }
                 } else {

@@ -17,49 +17,61 @@ const config = (() => {
 
     const DYNAMIC_SPAWN_NUM = -1;
 
+    const MAX_PARTS_NUM = 50;
+
     const CREEPS = [
         {
             role: ROLE_HARVESTER,
             num: 1,
-            parts: [WORK, CARRY, MOVE, MOVE],
+            staticParts: [],
+            dynamicParts: [WORK, CARRY, MOVE],
+            pattern: [1, 1, 2],
+            limit: MAX_PARTS_NUM,
             priorityGeneration: 0
         },
         {
             role: ROLE_BUILDER,
             num: 4,
-            parts: [WORK, WORK, CARRY, MOVE],
+            staticParts: [],
+            dynamicParts: [WORK, CARRY, MOVE],
+            pattern: [2, 1, 1],
+            limit: MAX_PARTS_NUM,
             priorityGeneration: 4
         },
         {
             role: ROLE_MINER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [
-                [MOVE, CARRY, WORK, WORK],
-                [MOVE, CARRY, WORK, WORK, WORK],
-                [MOVE, CARRY, WORK, WORK, WORK, WORK],
-                [MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK],
-                [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK],
-                [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK],
-                [MOVE, MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK]
-            ],
+            staticParts: [WORK, CARRY, MOVE, MOVE, MOVE],
+            dynamicParts: [WORK],
+            pattern: [1],
+            limit: 11,
             priorityGeneration: 3
         },
         {
             role: ROLE_UPGRADER,
             num: 1,
-            parts: [WORK, WORK, CARRY, MOVE],
+            staticParts: [],
+            dynamicParts: [WORK, CARRY, MOVE],
+            pattern: [2, 1, 1],
+            limit: MAX_PARTS_NUM,
             priorityGeneration: 5
         },
         {
             role: ROLE_TRANSPORTER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [], // will be added dynamically
+            staticParts: [],
+            dynamicParts: [CARRY, MOVE],
+            pattern: [2, 1],
+            limit: MAX_PARTS_NUM,
             priorityGeneration: 2
         },
         {
             role: ROLE_COURIER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [], // will be added dynamically
+            staticParts: [],
+            dynamicParts: [CARRY, MOVE],
+            pattern: [2, 1],
+            limit: MAX_PARTS_NUM,
             priorityGeneration: 1
         }
     ];
@@ -75,22 +87,31 @@ const config = (() => {
         {
             role: ROLE_ARCHER,
             num: 2,
-            parts: [RANGED_ATTACK, MOVE],
+            staticParts: [],
+            dynamicParts: [RANGED_ATTACK, MOVE],
+            pattern: [1, 1],
+            limit: MAX_PARTS_NUM,
             assemble: true,
             priorityGeneration: 0
         },
         {
             role: ROLE_HEALER,
             num: 2,
-            parts: [HEAL, MOVE],
+            staticParts: [],
+            dynamicParts: [HEAL, MOVE],
+            pattern: [1, 1],
+            limit: MAX_PARTS_NUM,
             assemble: true,
             priorityGeneration: 0
         },
         {
             role: ROLE_MELEE,
             num: 4,
-            parts: [ATTACK, MOVE],
-            squad: true,
+            staticParts: [],
+            dynamicParts: [ATTACK, MOVE],
+            pattern: [1, 1],
+            limit: MAX_PARTS_NUM,
+            assemble: true,
             priorityGeneration: 0
         }
     ];

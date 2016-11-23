@@ -1,21 +1,12 @@
-var defenseModule = require('defenseModule');
-var unitControlModule = require('unitControlModule');
-var squadControlModule = require('squadControlModule');
+const defenseModule = require('defenseModule');
+const unitControlModule = require('unitControlModule');
+const squadControlModule = require('squadControlModule');
+const prototypesInitializer = require('prototypesInitializer');
 
-var main = function () {
+const main = function () {
 
-    for (let i in Game.rooms) {
-        const roomName = Game.rooms[i].name;
-
-        if (Game.rooms[roomName].hasCreep == undefined) {
-            Room.prototype.hasCreep = function (creepRole) {
-                if (_.filter(Game.rooms[this.name].find(FIND_MY_CREEPS), creep => creep.memory.role == creepRole).length) {
-                    return true;
-                }
-                return false;
-            };
-        }
-
+    for (let roomName in Game.rooms) {
+        prototypesInitializer.init(roomName);
         unitControlModule.run(roomName);
         defenseModule.run(roomName);
     }
