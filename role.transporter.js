@@ -28,7 +28,7 @@ const roleTransporter = {
             const structs = _.filter(room.find(FIND_STRUCTURES),
                 s => s.structureType === STRUCTURE_CONTAINER &&
                 s.store[RESOURCE_ENERGY] < s.storeCapacity &&
-                _.filter(room.memory.containers, x => x.containerId === s.id).length === 0);
+                _.filter(room.find(FIND_SOURCES), src => s.pos.isNearTo(src)).length === 0);
             if (structs.length) {
                 if (creep.transfer(structs[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(structs[0]);

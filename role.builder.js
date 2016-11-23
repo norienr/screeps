@@ -15,8 +15,7 @@ var roleBuilder = {
         if (creep.memory.building) {
             let targets = [];
             if (sites.length === 0) {
-                targets = _.filter(creep.room.find(FIND_CONSTRUCTION_SITES),
-                    s => _.filter(creep.room.memory.containers, x => x.siteId === s.id).length === 0);
+                targets = creep.room.find(FIND_CONSTRUCTION_SITES);
             } else {
                 targets = _.filter(creep.room.find(FIND_CONSTRUCTION_SITES),
                     s => _.filter(sites, s2 => s2.id === s.id).length);
