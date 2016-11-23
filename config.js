@@ -53,21 +53,13 @@ const config = (() => {
         {
             role: ROLE_TRANSPORTER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [
-                [CARRY, CARRY, MOVE, MOVE],
-                [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
-                [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
-            ],
+            parts: [], // will be added dynamically
             priorityGeneration: 2
         },
         {
             role: ROLE_COURIER,
             num: DYNAMIC_SPAWN_NUM,
-            parts: [
-                [CARRY, CARRY, MOVE, MOVE],
-                [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE],
-                [CARRY, CARRY, MOVE, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]
-            ],
+            parts: [], // will be added dynamically
             priorityGeneration: 1
         }
     ];
