@@ -34,7 +34,7 @@ var MODULE = (function (module) {
     module.findUnassignedSource = function (creep) {
         const srcs = _.filter(creep.room.find(FIND_SOURCES),
             src => !module.hasMinerAssigned(creep.room, src) && !module.hasHostilesAround(creep.room, src));
-        return creep.pos.findClosestByRange(srcs);
+        return srcs[0];
     };
 
     module.initMiner = function (creep) {
