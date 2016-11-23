@@ -1,8 +1,8 @@
 ##Screeps
 
-Version: _0.2.4_
+Version: _0.2.5_
 -------
-###Changelog for v0.2.4
+###Changelog for v0.2.5
 
 - Added squads. Squads can be controlled with flags.
 - Added auto-scaling creeps with levels.
@@ -13,6 +13,7 @@ Version: _0.2.4_
 - Fixed auto-scaling not working properly.
 - Fixed bug resulting in wrong resolving source id.
 - Fixed calculating of needed transporters and couriers.
+- Fixed minor bugs regarding builders and transporters
 
 -------
 #####Flags to control squads
