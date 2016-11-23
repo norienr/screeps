@@ -1,5 +1,3 @@
-const roleBuilder = require('role.builder');
-
 const roleCourier = {
 
     /** @param {Creep} creep **/
