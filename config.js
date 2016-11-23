@@ -20,7 +20,7 @@ const config = (() => {
     const CREEPS = [
         {
             role: ROLE_HARVESTER,
-            num: 0,
+            num: 1,
             parts: [WORK, CARRY, MOVE, MOVE],
             priorityGeneration: 0
         },
@@ -28,7 +28,7 @@ const config = (() => {
             role: ROLE_BUILDER,
             num: 4,
             parts: [WORK, WORK, CARRY, MOVE],
-            priorityGeneration: 3
+            priorityGeneration: 4
         },
         {
             role: ROLE_MINER,
@@ -42,7 +42,7 @@ const config = (() => {
                 [MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK],
                 [MOVE, MOVE, MOVE, MOVE, CARRY, WORK, WORK, WORK, WORK, WORK, WORK]
             ],
-            priorityGeneration: 4
+            priorityGeneration: 3
         },
         {
             role: ROLE_UPGRADER,
