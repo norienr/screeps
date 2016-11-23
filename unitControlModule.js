@@ -120,17 +120,12 @@ MODULE = (function (module) {
                 num = _.filter(room.find(FIND_STRUCTURES),
                     s => (s.structureType === STRUCTURE_CONTAINER ||
                     s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_TERMINAL) &&
-                    _.filter(room.memory.containers, x => x.containerId === s.id).length === 0).length;
-                if (num > 0) {
-                    num += _.filter(room.find(FIND_STRUCTURES),
-                        s => s.structureType === STRUCTURE_CONTAINER &&
-                        _.filter(room.memory.containers, x => x.containerId === s.id).length).length;
-                }
+                    _.filter(room.find(FIND_SOURCES), src => s.pos.isNearTo(src)).length).length;
             } else if (c.role === Config.ROLE_COURIER) {
-                num = 2 * _.filter(room.find(FIND_STRUCTURES),
-                        s => (s.structureType === STRUCTURE_CONTAINER ||
-                        s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_TERMINAL) &&
-                        _.filter(room.memory.containers, x => x.containerId === s.id).length === 0).length;
+                num = _.filter(room.find(FIND_STRUCTURES),
+                    s => (s.structureType === STRUCTURE_CONTAINER ||
+                    s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_TERMINAL) &&
+                    _.filter(room.find(FIND_SOURCES), src => s.pos.isNearTo(src)).length === 0).length;
             }
 
             if ((num - creepsAlive - creepsInQueue - creepsSpawning) > 0) {

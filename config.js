@@ -17,7 +17,7 @@ const config = (() => {
 
     const DYNAMIC_SPAWN_NUM = -1;
 
-    const MAX_PARTS_NUM = 50;
+    const MAX_PARTS_NUM = MAX_CREEP_SIZE;
 
     const CREEPS = [
         {
