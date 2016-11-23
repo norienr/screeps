@@ -12,19 +12,28 @@ module.exports = {
         {
             role: ROLE_ARCHER,
             num: 2,
-            parts: [RANGED_ATTACK, MOVE],
+            staticParts: [],
+            dynamicParts: [RANGED_ATTACK, MOVE],
+            pattern: [1, 1],
+            limit: 50,
             priorityGeneration: 1
         },
         {
             role: ROLE_HEALER,
             num: 2,
-            parts: [HEAL, MOVE],
+            staticParts: [],
+            dynamicParts: [HEAL, MOVE],
+            pattern: [1, 1],
+            limit: 50,
             priorityGeneration: 1
         },
         {
             role: ROLE_MELEE,
             num: 4,
-            parts: [TOUGH, ATTACK, ATTACK, ATTACK, MOVE],
+            staticParts: [],
+            dynamicParts: [ATTACK, MOVE],
+            pattern: [1, 1],
+            limit: 50,
             priorityGeneration: 1
         }
     ]
