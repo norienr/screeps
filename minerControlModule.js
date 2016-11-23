@@ -54,11 +54,22 @@ var MODULE = (function (module) {
         return creep.pos.findClosestByRange(srcs);
     };
 
+    module.removeUnavailableContainers = function (room) {
+        for (let i = 0, n = room.memory.containers.length; i < n; ++i) {
+            const c = Game.getObjectById(room.memory.containers[i].containerId);
+            if (!c && typeof c === 'object') {
+                room.memory.containers.splice(i, 1);
+            }
+        }
+    };
+
     module.initMiner = function (creep) {
         const room = creep.room;
         if (room.memory.containers === undefined) {
             room.memory.containers = [];
         }
+
+        module.removeUnavailableContainers(room);
 
         if (creep.memory.sourceId === undefined) {
             const src = module.findUnassignedSource(creep);
