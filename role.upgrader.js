@@ -25,8 +25,7 @@ const roleUpgrader = {
             } else {
                 roleBuilder.run(creep);
             }
-        }
-        else {
+        } else {
             const conts = _.filter(creep.room.find(FIND_STRUCTURES),
                 s => (s.structureType === STRUCTURE_CONTAINER ||
                 s.structureType === STRUCTURE_STORAGE ||
