@@ -31,10 +31,12 @@ const defenseModule = (function () {
       for (let i in targets) {
         let numOfTicks1 = targets[i].hits / (this.getPotentialDamage(tower, targets[i]) - this.getPotentialHeal(targets[i], targets));
         let numOfTicks2 = threat.hits / (this.getPotentialDamage(tower, threat) - this.getPotentialHeal(threat, targets));
-        if (numOfTicks1 < numOfTicks2) {
+        if (numOfTicks1 > 0 && numOfTicks1 < numOfTicks2) {
           threat = targets[i];
         }
       }
+      console.log('potential damage: ', this.getPotentialDamage(tower, threat) - this.getPotentialHeal(threat, targets));
+      console.log(threat.hits / (this.getPotentialDamage(tower, threat) - this.getPotentialHeal(threat, targets)));
       tower.attack(threat);
     },
     getPotentialDamage: function (tower, target) {
