@@ -10,6 +10,7 @@ const roleHealer = require('role.healer');
 const roleRemoteMiner = require('role.remoteMiner');
 const roleRemoteTransporter = require('role.remoteTransporter');
 let MODULE = require('minerControlModule');
+const remoteMiningControlModule = require('remoteMiningControlModule');
 
 MODULE = (function (module) {
 
@@ -65,6 +66,7 @@ MODULE = (function (module) {
                 }
             }
         );
+        remoteMiningControlModule.run();
     };
 
     module.getCreepsByRole = function (room, role) {
