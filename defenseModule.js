@@ -40,8 +40,6 @@ const defenseModule = (function () {
           threat = targets[i];
         }
       }
-      console.log('potential damage: ', this.getPotentialDamage(tower, threat) - this.getPotentialHeal(threat, targets));
-      console.log(threat.hits / (this.getPotentialDamage(tower, threat) - this.getPotentialHeal(threat, targets)));
       tower.attack(threat);
     },
     getPotentialDamage: function (tower, target) {
