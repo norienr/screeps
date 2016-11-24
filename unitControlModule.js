@@ -7,6 +7,7 @@ const roleCourier = require('role.courier');
 const roleArcher = require('role.archer');
 const roleMelee = require('role.melee');
 const roleHealer = require('role.healer');
+const roleBridge = require('role.bridge'); //added creep with role 'bridge'
 let MODULE = require('minerControlModule');
 
 MODULE = (function (module) {
@@ -55,7 +56,10 @@ MODULE = (function (module) {
                         roleMelee.run(creep);
                     } else if (creep.memory.role === Config.ROLE_HEALER) {
                         roleHealer.run(creep);
-                    }
+                    } else if (creep.memory.role === Config.ROLE_BRIDGE) {
+						roleBridge.run(creep);
+					}
+					 
                 }
             }
         );
@@ -75,6 +79,13 @@ MODULE = (function (module) {
         return _.filter(room.find(FIND_MY_STRUCTURES),
             struct => struct.structureType === STRUCTURE_SPAWN);
     };
+    
+    //creating Bridge
+    module.createBridge = function(spawn) {
+        if(spawn.canCreateCreep([CARRY, CARRY, MOVE], undefined) == OK) {
+            spawn.createCreep([CARRY, CARRY, MOVE], undefined, {role: 'bridge'});
+        }
+    }
 
     module.spawnCreeps = function (spawn, creep) {
         const role = creep.role;
@@ -159,6 +170,24 @@ MODULE = (function (module) {
         _.forEach(_.filter(room.find(FIND_MY_CREEPS), c => typeof c.memory.tempRole !== 'undefined'),
             c => c.memory.tempRole = undefined);
     };
+	
+	//function of checking Storage and Storage Link in the room
+	module.checkStorageAndLink = function(roomName) {
+		if(Game.rooms[roomName].storage) {
+			var storage = Game.rooms[roomName].storage;
+			
+			var storLink = storage.pos.findInRange(FIND_MY_STRUCTURES, 2, 
+				{filter: {structureType: STRUCTURE_LINK}})[0];
+			
+			if(storLink) {
+				return true;
+			}
+			else return false;
+		}
+		else 
+			return false;
+			
+	}
 
     module.run = function (roomName) {
 
@@ -195,15 +224,33 @@ MODULE = (function (module) {
         } else {
             module.assembleSquad(room);
         }
+<<<<<<< HEAD
 
         _.forEach(creepsToSpawn, function (creep) {
                 const numToSpawn = module.getMissingCreepsNum(room, creep);
                 for (let i = 0; i < numToSpawn; ++i) {
                     room.memory.spawnQueue.push(Object.assign({}, creep));
+=======
+		
+        _.forEach(creepsToSpawn, function (c) {
+                const numToSpawn = module.getMissingCreepsNum(roomName, c);
+
+                if (numToSpawn > 0) {
+                    
+                    for (let i = 0; i < numToSpawn; ++i) {
+                        Game.rooms[roomName].memory.spawnQueue.push({
+                            role: c.role,
+                            parts: c.parts,
+                            priorityGeneration: c.priorityGeneration,
+                            squad: c.squad || false
+                        });
+                    }
+>>>>>>> feature/role_bridge
                 }
             }
         );
 
+<<<<<<< HEAD
         if (room.memory.spawnQueue.length) {
             room.memory.spawnQueue =
                 _.sortBy(room.memory.spawnQueue, 'priorityGeneration');
@@ -218,6 +265,29 @@ MODULE = (function (module) {
                     for (let i = 0, n = creep.dynamicParts.length; i < n; ++i) {
                         for (let j = 0; j < creep.pattern[i]; ++i) {
                             partsBlock.push(creep.dynamicParts[i]);
+=======
+        if (Game.rooms[roomName].memory.spawnQueue.length) {
+            Game.rooms[roomName].memory.spawnQueue =
+                _.sortBy(Game.rooms[roomName].memory.spawnQueue, 'priorityGeneration');
+            _.forEach(module.getSpawnsByRoom(roomName), function (s) {
+                
+                //adding condition to spawn bridge creep
+        		//console.log("Checking storage and Link: "+module.checkStorageAndLink(Game.rooms[roomName].name));
+        		if( (module.checkStorageAndLink(roomName) == true) && module.getCreepsByRole(roomName, "bridge").length == 0) {
+        			module.createBridge(s)
+        		}
+                
+                
+                
+                if (s.spawning == null && Game.rooms[roomName].memory.spawnQueue.length) {
+                    const creep = Game.rooms[roomName].memory.spawnQueue[0];
+                    const parts = creep.parts;
+                    const availableEnergy = Game.rooms[roomName].energyAvailable -
+                        module.getNeededEnergy(parts);
+                    if (availableEnergy >= module.getNeededEnergy([CARRY, MOVE])) {
+                        if (parts.length < 50) {
+                            parts.unshift(...[CARRY, MOVE]);
+>>>>>>> feature/role_bridge
                         }
                     }
 

@@ -9,6 +9,7 @@ const config = (() => {
     const ROLE_ARCHER = 'archer';
     const ROLE_MELEE = 'melee';
     const ROLE_HEALER = 'healer';
+	const ROLE_BRIDGE = 'bridge';
 
     const MIN_TICKS_TO_RESPAWN = 30;
 
@@ -75,6 +76,7 @@ const config = (() => {
             limit: MAX_PARTS_NUM,
             priorityGeneration: 1
         }
+ 
     ];
 
     const CONTAINERS_POS_RADIUS = 3;
@@ -127,6 +129,7 @@ const config = (() => {
         ROLE_ARCHER: ROLE_ARCHER,
         ROLE_MELEE: ROLE_MELEE,
         ROLE_HEALER: ROLE_HEALER,
+		ROLE_BRIDGE: ROLE_BRIDGE,
         DYNAMIC_SPAWN_NUM: DYNAMIC_SPAWN_NUM,
         MIN_SAFE_DISTANCE: MIN_SAFE_DISTANCE,
         TOWER_ATTACK_INTERVAL: TOWER_ATTACK_INTERVAL,

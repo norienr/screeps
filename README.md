@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ##Screeps
 
 Version: _0.2.10_
@@ -46,3 +47,18 @@ Parts are added depending on the amount of energy in the room.
 | Miner     | Can contain from 5 to 11 parts. Max 6 W, 1 C and 4 M|
 | Courier or Transporter     | Can contain from 4 to 49 parts. Starting with 2 M and 2 C further added 2 C and 1 M up to 49 parts|
 | Military creeps      | Can contain from 2 to 50 parts. Starting with 1 M and 1 A\R\H further added 1 M and 1 A\R\H up to 50 parts |
+=======
+**Screeps**
+_______
+Version: _0.1.0_
+
+# Roles
+## Describing roles behaviours.
+###### Bridge
+
+1. Spawned only if there's a Storage and Storage Link present in the room. Configuration: CARRY, CARRY, MOVE;
+2. Not spawned till previous one dies;
+3. Harvests energy only from Link, which is near to Storage (in the range of 2 squares);
+4. If Terminal is present in the room and has less than 50000 of energy creep will transfer energy to this Terminal; 
+	1. Otherwise it will transfer energy to Storage.
+>>>>>>> feature/role_bridge
