@@ -1,9 +1,9 @@
 /**
  * To create remoteMiner creep you need:
  * 1. createFlag on the source of another room
- * 2. assign flag name, role and source id to creep, e.g:
+ * 2. assign flag name and role a to creep, e.g:
  *  Game.spawns.Spawn1.createCreep([MOVE, WORK, WORK, CARRY], null,
- *  {role: 'remoteMiner', sourceId: '0d080772ccae8f2', flag: 'RemoteMining' });
+ *  {role: 'remoteMiner', flag: 'RemoteMining' });
  *
  *  Creep creates and builds container automatically, if there are no container near remote source
  */
@@ -16,7 +16,7 @@ const roleRemoteMiner = {
         }
         else {
             const cont = Game.getObjectById(creep.memory.containerId);
-            const src = Game.getObjectById(creep.memory.sourceId);
+            const src = flag.pos.findInRange(FIND_SOURCES, 1)[0];
             if (cont) {
                 if (creep.memory.harvesting) {
                     if (creep.carry.energy < creep.carryCapacity) {

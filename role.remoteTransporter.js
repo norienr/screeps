@@ -1,3 +1,10 @@
+/**
+ * To create remoteTransporter creep you need:
+ * 1. createFlag on the source of another room
+ * 2. assign flag name and role a to creep, e.g:
+ *  Game.spawns.Spawn1.createCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY], null,
+ *  {role: 'remoteTransporter', flag: 'RemoteMining' });
+ */
 const roleRemoteTransporter = {
     /** @param {Creep} creep **/
     run: (creep) => {
@@ -42,7 +49,7 @@ const roleRemoteTransporter = {
                             && structure.energy < structure.energyCapacity;
                     }
                 });
-                console.log(structs.length);
+                // console.log(structs.length);
                 if (structs.length) {
                     // creep.pos.findClosestByRange(structs)
                     if (creep.transfer(structs[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
