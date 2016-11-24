@@ -5,7 +5,7 @@ var constructionModule = (function () {
     var o = {
         getStructures: function (roomName, structureType) {
             return _.filter(Game.rooms[roomName].find(FIND_MY_STRUCTURES),
-                struct => struct.structureType == structureType
+                struct => struct.structureType === structureType
             );
         },
         buildStructure: function (roomName, structure) {

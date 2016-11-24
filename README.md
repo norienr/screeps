@@ -1,8 +1,8 @@
 ##Screeps
 
-Version: _0.2.10_
+Version: _0.2.11_
 -------
-###Changelog for v0.2.10
+###Changelog for v0.2.11
 
 - Added squads. Squads can be controlled with flags.
 - Added auto-scaling creeps with levels.

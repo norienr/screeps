@@ -1,5 +1,5 @@
 let prototypesInitializer = (function () {
-    "use strict";
+    'use strict';
 
     let prots = {};
 
