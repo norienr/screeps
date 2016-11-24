@@ -1,8 +1,8 @@
 ##Screeps
 
-Version: _0.2.9_
+Version: _0.2.10_
 -------
-###Changelog for v0.2.9
+###Changelog for v0.2.10
 
 - Added squads. Squads can be controlled with flags.
 - Added auto-scaling creeps with levels.
@@ -19,6 +19,7 @@ Version: _0.2.9_
 - Towers won't repair walls with hits more than defined in config.
 - Fixed performance issues caused by creep behaviour
 - Additional minor bug fixes
+- Fix builders harvesting only 1 source
 
 -------
 #####Flags to control squads
