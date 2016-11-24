@@ -1,8 +1,8 @@
 ##Screeps
 
-Version: _0.2.6_
+Version: _0.2.9_
 -------
-###Changelog for v0.2.6
+###Changelog for v0.2.9
 
 - Added squads. Squads can be controlled with flags.
 - Added auto-scaling creeps with levels.
@@ -13,8 +13,12 @@ Version: _0.2.6_
 - Fixed auto-scaling not working properly.
 - Fixed bug resulting in wrong resolving source id.
 - Fixed calculating of needed transporters and couriers.
-- Fixed minor bugs regarding builders and transporters and couriers
-- Fixed towers only repairing if room is under attack
+- Fixed minor bugs regarding builders and transporters and couriers.
+- Fixed towers only repairing if room is under attack.
+- When controller level is max, upgraders will only upgrade it when its ticksToDowngrade is 1/2 of max available.
+- Towers won't repair walls with hits more than defined in config.
+- Fixed performance issues caused by creep behaviour
+- Additional minor bug fixes
 
 -------
 #####Flags to control squads

@@ -1,4 +1,6 @@
-var roleUpgrader = {
+const roleBuilder = require('role.builder');
+
+const roleUpgrader = {
 
     /** @param {Creep} creep **/
     run: function (creep) {
@@ -11,8 +13,17 @@ var roleUpgrader = {
         }
 
         if (creep.memory.upgrading) {
-            if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller);
+            const controller = creep.room.controller;
+            if (controller.level === 8 && controller.ticksToDowngrade <= (CONTROLLER_DOWNGRADE[8] / 2)) {
+                if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.controller);
+                }
+            } else if (controller.level < 8) {
+                if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(creep.room.controller);
+                }
+            } else {
+                roleBuilder.run(creep);
             }
         }
         else {
