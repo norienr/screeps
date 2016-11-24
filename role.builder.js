@@ -32,10 +32,9 @@ var roleBuilder = {
             }
         } else {
             const conts = _.filter(creep.room.find(FIND_STRUCTURES),
-                s => (s.structureType === STRUCTURE_CONTAINER ||
+                s => s.structureType === STRUCTURE_CONTAINER ||
                 s.structureType === STRUCTURE_STORAGE ||
-                s.structureType === STRUCTURE_TERMINAL) &&
-                s.store[RESOURCE_ENERGY] > 50);
+                s.structureType === STRUCTURE_TERMINAL);
 
             if (conts.length) {
                 const s = creep.pos.findClosestByRange(conts);
