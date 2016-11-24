@@ -46,9 +46,9 @@ Parts are added depending on the amount of energy in the room.
 #####Improve tower logic
 
 Computing potential damage that tower can deal:
-- if range to target <= 5 than damage = 600;
-- if range to target >= 20 than damage = 150;
-- if range to target in interval from 5 to 20 than damage = 600 - (x-5)*30.
+- if range to target <= 5 then damage = 600;
+- if range to target >= 20 then damage = 150;
+- if range to target in interval from 5 to 20 then damage = 600 - (x-5)*30.
 
 Computing potential heal that hostile can get, by adding all heal points that a target can get from itself and another hostiles:
 - target heals itself for number of heal body parts * 12;
