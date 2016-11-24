@@ -1,4 +1,4 @@
-const Config = require('config');
+const {TOWER_ATTACK_INTERVAL, MIN_WALL_HEALTH} = require('config');
 
 const defenseModule = (function () {
     const o = {
@@ -16,7 +16,12 @@ const defenseModule = (function () {
         },
         getClosestDamagedStructs: function (tower) {
             return tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: (structure) => structure.hits < structure.hitsMax
+                filter: (structure) => {
+                    if (structure.structureType === STRUCTURE_WALL) {
+                        return structure.hits < MIN_WALL_HEALTH;
+                    }
+                    return structure.hits < structure.hitsMax;
+                }
             });
         },
         doRepair: function (tower, closestDamagedStructure) {
@@ -57,10 +62,10 @@ const defenseModule = (function () {
                         tower => o.attackThreats(tower, targets));
                 } else if (o.hasDamagedStructs(roomName)) {
                     _.forEach(towers, (tower) => {
-                        if (typeof Memory.lastRepair[tower.id] === 'undefined') {
+                        if (Memory.lastRepair[tower.id] === undefined) {
                             Memory.lastRepair[tower.id] = 0;
                         }
-                        if (Game.time > (Memory.lastRepair[tower.id] + Config.TOWER_ATTACK_INTERVAL)) {
+                        if (Game.time > (Memory.lastRepair[tower.id] + TOWER_ATTACK_INTERVAL)) {
                             o.doRepair(tower, o.getClosestDamagedStructs(tower));
                         }
                     });

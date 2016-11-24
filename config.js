@@ -14,6 +14,7 @@ const config = (() => {
 
     const MIN_SAFE_DISTANCE = 5;
     const TOWER_ATTACK_INTERVAL = 5;
+    const MIN_WALL_HEALTH = 10000;
 
     const DYNAMIC_SPAWN_NUM = -1;
 
@@ -135,7 +136,8 @@ const config = (() => {
         DEFAULT_POS_RADIUS: DEFAULT_POS_RADIUS,
         CREEPS: CREEPS,
         DEFENSIVE_CREEPS: DEFENSIVE_CREEPS,
-        STRUCTURES: STRUCTURES
+        STRUCTURES: STRUCTURES,
+        MIN_WALL_HEALTH: MIN_WALL_HEALTH
     };
 })();
 
