@@ -37,16 +37,20 @@ var roleBuilder = {
                 s.structureType === STRUCTURE_TERMINAL);
 
             if (conts.length) {
-                const s = creep.pos.findClosestByRange(conts);
-                if (s.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(s);
-                }
-            } else {
-                const source = creep.pos.findClosestByRange(FIND_SOURCES);
-                if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source);
+                const containers = _.filter(conts, c => c.store[RESOURCE_ENERGY] > creep.carryCapacity);
+                if (containers.length) {
+                    const s = creep.pos.findClosestByRange(containers);
+                    if (s.transfer(creep, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(s);
+                    }
+                    return;
                 }
             }
+            const source = creep.pos.findClosestByRange(FIND_SOURCES);
+            if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(source);
+            }
+
         }
     }
 };

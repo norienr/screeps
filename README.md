@@ -1,8 +1,8 @@
 ##Screeps
 
-Version: _0.2.8_
+Version: _0.2.9_
 -------
-###Changelog for v0.2.8
+###Changelog for v0.2.9
 
 - Added squads. Squads can be controlled with flags.
 - Added auto-scaling creeps with levels.
@@ -18,6 +18,7 @@ Version: _0.2.8_
 - When controller level is max, upgraders will only upgrade it when its ticksToDowngrade is 1/2 of max available.
 - Towers won't repair walls with hits more than defined in config.
 - Fixed performance issues caused by creep behaviour
+- Additional minor bug fixes
 
 -------
 #####Flags to control squads
