@@ -10,6 +10,7 @@ const config = (() => {
     const ROLE_MELEE = 'melee';
     const ROLE_HEALER = 'healer';
     const ROLE_REMOTE_MINER = 'remoteMiner';
+    const ROLE_REMOTE_TRANSPORTER = 'remoteTransporter';
 
     const MIN_TICKS_TO_RESPAWN = 30;
 
@@ -138,6 +139,7 @@ const config = (() => {
         ROLE_MELEE: ROLE_MELEE,
         ROLE_HEALER: ROLE_HEALER,
         ROLE_REMOTE_MINER: ROLE_REMOTE_MINER,
+        ROLE_REMOTE_TRANSPORTER: ROLE_REMOTE_TRANSPORTER,
         DYNAMIC_SPAWN_NUM: DYNAMIC_SPAWN_NUM,
         MIN_SAFE_DISTANCE: MIN_SAFE_DISTANCE,
         TOWER_ATTACK_INTERVAL: TOWER_ATTACK_INTERVAL,

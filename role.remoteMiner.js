@@ -33,7 +33,7 @@ const roleRemoteMiner = {
                 }
 
                 if (!creep.memory.harvesting) {
-                    if (cont.hits < cont.maxHits / 2) {
+                    if (cont.hits < (cont.hitsMax / 1.5) ) {
                         if (creep.repair(cont) === ERR_NOT_IN_RANGE) {
                             creep.moveTo(cont);
                         }
@@ -58,9 +58,12 @@ const roleRemoteMiner = {
                     }
                 }
                 else {
-                    creep.memory.containerId = src.pos.findInRange(FIND_STRUCTURES, 1,
+                    let containerr = src.pos.findInRange(FIND_STRUCTURES, 1,
                         {filter: function (structure) {
-                            return (structure.structureType == STRUCTURE_CONTAINER);}})[0].id;
+                            return (structure.structureType == STRUCTURE_CONTAINER);}})[0];
+                    if(containerr){
+                        creep.memory.containerId = containerr.id;
+                    }
                     creep.room.createConstructionSite(creep.pos, STRUCTURE_CONTAINER);
                 }
             }

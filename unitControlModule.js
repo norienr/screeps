@@ -8,6 +8,7 @@ const roleArcher = require('role.archer');
 const roleMelee = require('role.melee');
 const roleHealer = require('role.healer');
 const roleRemoteMiner = require('role.remoteMiner');
+const roleRemoteTransporter = require('role.remoteTransporter');
 let MODULE = require('minerControlModule');
 
 MODULE = (function (module) {
@@ -58,6 +59,8 @@ MODULE = (function (module) {
                         roleHealer.run(creep);
                     } else if (creep.memory.role === Config.ROLE_REMOTE_MINER) {
                         roleRemoteMiner.run(creep);
+                    } else if (creep.memory.role === Config.ROLE_REMOTE_TRANSPORTER) {
+                        roleRemoteTransporter.run(creep);
                     }
                 }
             }
