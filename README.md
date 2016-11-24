@@ -46,13 +46,13 @@ Parts are added depending on the amount of energy in the room.
 #####Improve tower logic
 
 Computing potential damage that tower can deal:
-1) if range to target <= 5 than damage = 600;
-2) if range to target >= 20 than damage = 150;
-3) if range to target in interval from 5 to 20 than damage = 600 - (x-5)*30.
+- if range to target <= 5 than damage = 600;
+- if range to target >= 20 than damage = 150;
+- if range to target in interval from 5 to 20 than damage = 600 - (x-5)*30.
 
 Computing potential heal that hostile can get, by adding all heal points that a target can get from itself and another hostiles:
-1) target heals itself for number of heal body parts * 12;
-2) target is healed by healers at distance up to 1 square for number of their heal body parts * 12;
-2) target is healed by healers at distance from 2 to 3 squares for number of their heal body parts * 4;
+- target heals itself for number of heal body parts * 12;
+- target is healed by healers at distance up to 1 square for number of their heal body parts * 12;
+- target is healed by healers at distance from 2 to 3 squares for number of their heal body parts * 4;
 
 Finding the most vulnerable creep which has the smallest number of ticks that should be made to kill it.
