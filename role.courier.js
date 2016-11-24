@@ -12,6 +12,7 @@ const roleCourier = {
                     s => (s.structureType === STRUCTURE_CONTAINER ||
                     s.structureType === STRUCTURE_STORAGE ||
                     s.structureType === STRUCTURE_TERMINAL) &&
+                    _.filter(creep.room.find(FIND_SOURCES), src => s.pos.isNearTo(src)).length === 0 &&
                     s.store[RESOURCE_ENERGY] > 0);
                 if (conts.length) {
                     const s = creep.pos.findClosestByRange(conts);

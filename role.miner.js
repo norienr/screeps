@@ -19,7 +19,11 @@ const roleMiner = {
             }
 
             if (!creep.memory.harvesting) {
-                if (cont.store[RESOURCE_ENERGY] < cont.storeCapacity) {
+                if (cont.hits < cont.maxHits / 2) {
+                    if (creep.repair(cont) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(cont);
+                    }
+                } else if (cont.store[RESOURCE_ENERGY] < cont.storeCapacity) {
                     if (creep.transfer(cont, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                         creep.moveTo(cont);
                     }

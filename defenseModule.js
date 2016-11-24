@@ -1,7 +1,7 @@
-var Config = require('config');
+const {TOWER_ATTACK_INTERVAL, MIN_WALL_HEALTH} = require('config');
 
-var defenseModule = (function () {
-    var o = {
+const defenseModule = (function () {
+    const o = {
         getTowers: function (roomName) {
             return Game.rooms[roomName].find(
                 FIND_MY_STRUCTURES, {
@@ -16,25 +16,58 @@ var defenseModule = (function () {
         },
         getClosestDamagedStructs: function (tower) {
             return tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: (structure) => structure.hits < structure.hitsMax
+                filter: (structure) => {
+                    if (structure.structureType === STRUCTURE_WALL) {
+                        return structure.hits < MIN_WALL_HEALTH;
+                    }
+                    return structure.hits < structure.hitsMax;
+                }
             });
         },
         doRepair: function (tower, closestDamagedStructure) {
-            if (closestDamagedStructure) {
-                if (tower.repair(closestDamagedStructure) == OK) {
+            if (typeof closestDamagedStructure !== 'undefined') {
+                if (tower.repair(closestDamagedStructure) === OK) {
                     Memory.lastRepair[tower.id] = Game.time;
                 }
             }
         },
         attackThreats: function (tower, targets) {
-            const closestThreat = tower.pos.findClosestByRange(targets);
-            if (closestThreat) {
-                tower.attack(closestThreat);
+            let threat = targets[0];
+            for (let i in targets) {
+                let numOfTicks1 = targets[i].hits / (this.getPotentialDamage(tower, targets[i]) - this.getPotentialHeal(targets[i], targets));
+                let numOfTicks2 = threat.hits / (this.getPotentialDamage(tower, threat) - this.getPotentialHeal(threat, targets));
+                if (numOfTicks1 > 0 && numOfTicks1 < numOfTicks2) {
+                    threat = targets[i];
+                }
             }
+            tower.attack(threat);
+        },
+        getPotentialDamage: function (tower, target) {
+            const range = tower.pos.getRangeTo(target.pos);
+            if (range <= 5)
+                return 600;
+            else if (range >= 20)
+                return 150;
+            else
+                return 600 - (range - 5) * 30;
+        },
+        getPotentialHeal: function (target, targets) {
+            const closestHealer = _.filter(target.pos.findInRange(targets, 3),
+                c => c.getActiveBodyparts(HEAL) > 0);
+            let potentialHeal = target.getActiveBodyparts(HEAL) * 12;
+            if (closestHealer.length) {
+                for (let i in closestHealer) {
+                    if (target.pos.getRangeTo(closestHealer[i].pos) == 1)
+                        potentialHeal = +closestHealer[i].getActiveBodyparts(HEAL) * 12;
+                    else if (target.pos.getRangeTo(closestHealer[i].pos) > 1)
+                        potentialHeal = +closestHealer[i].getActiveBodyparts(HEAL) * 4;
+                }
+            }
+            return potentialHeal;
         }
     };
 
-    var publicAPI = {
+    const publicAPI = {
         run: function (roomName) {
 
             if (Memory.lastRepair === undefined) {
@@ -46,25 +79,25 @@ var defenseModule = (function () {
 
             if (targets.length) {
                 Game.rooms[roomName].memory.underAttack = true;
-
-                let towers;
-                if ((towers = o.getTowers(roomName)).length) {
-                    if (targets.length) {
-                        towers.forEach(
-                            tower => o.attackThreats(tower, targets));
-                    } else if (o.hasDamagedStructs(roomName)) {
-                        _.forEach(towers, (tower) => {
-                            if (Memory.lastRepair[tower.id] === undefined) {
-                                Memory.lastRepair[tower.id] = 0;
-                            }
-                            if (Game.time > (Memory.lastRepair[tower.id] + Config.TOWER_ATTACK_INTERVAL)) {
-                                o.doRepair(tower, o.getClosestDamagedStructs(tower));
-                            }
-                        });
-                    }
-                }
             } else {
                 Game.rooms[roomName].memory.underAttack = false;
+            }
+
+            let towers;
+            if ((towers = o.getTowers(roomName)).length) {
+                if (targets.length) {
+                    towers.forEach(
+                        tower => o.attackThreats(tower, targets));
+                } else if (o.hasDamagedStructs(roomName)) {
+                    _.forEach(towers, (tower) => {
+                        if (Memory.lastRepair[tower.id] === undefined) {
+                            Memory.lastRepair[tower.id] = 0;
+                        }
+                        if (Game.time > (Memory.lastRepair[tower.id] + TOWER_ATTACK_INTERVAL)) {
+                            o.doRepair(tower, o.getClosestDamagedStructs(tower));
+                        }
+                    });
+                }
             }
 
 
