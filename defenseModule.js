@@ -95,7 +95,7 @@ const defenseModule = (function () {
                         if (Memory.lastRepair[tower.id] === undefined) {
                             Memory.lastRepair[tower.id] = 0;
             }
-            if (Game.time > (Memory.lastRepair[tower.id] + Config.TOWER_ATTACK_INTERVAL)) {
+            if (Game.time > (Memory.lastRepair[tower.id] + TOWER_ATTACK_INTERVAL)) {
               o.doRepair(tower, o.getClosestDamagedStructs(tower));
             }
           });
