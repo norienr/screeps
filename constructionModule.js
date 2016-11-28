@@ -65,61 +65,89 @@ var constructionModule = (function () {
         run: function (roomName) {
 
             const room = Game.rooms[roomName];
+            /*
+             if (room.memory.buildQueue === undefined) {
+             room.memory.buildQueue = [];
+             room.memory.queueInitialized = false;
+             }
+             */
 
-            if (room.memory.buildQueue === undefined) {
-                room.memory.buildQueue = [];
-                room.memory.queueInitialized = false;
-            }
-
-            if (room.hasCreep(Config.ROLE_BUILDER)) {
-                if (!room.memory.queueInitialized) {
-                    _.forEach(Config.STRUCTURES, (structure) => {
-                        room.memory.buildQueue.push(structure);
-                    });
-                    room.memory.queueInitialized = true;
+            if (room.find(FIND_CONSTRUCTION_SITES).length < 100) {
+                const spawns = room.find(FIND_MY_SPAWNS);
+                const controller = room.controller;
+                const sources = _.filter(room.find(FIND_SOURCES),
+                    s => s.pos.findInRange(FIND_HOSTILE_STRUCTURES, 6).length < 1);
+                for (let i in spawns) {
+                    for (let y in sources) {
+                        o.buildRoad(roomName, spawns[i].pos, sources[y].pos);
+                    }
+                    o.buildRoad(roomName, spawns[i].pos, controller.pos);
                 }
-
-                if (room.memory.buildQueue.length) {
-                    if (_.filter(room.find(FIND_MY_CREEPS),
-                            creep => creep.memory.canBuild === true).length) {
-                        const structure = room.memory.buildQueue[0];
-                        if (structure.pos === undefined) {
-                            const nearObjs = o.getStructures(roomName, structure.near);
-                            if (nearObjs.length) {
-                                let positions = o.locatePosNearObject(roomName, nearObjs[0], structure.radius);
-                                if (positions.length) {
-                                    let getPosition = o.coroutine(o.posGen);
-                                    let pos = getPosition().value || getPosition(positions).value;
-                                    if (pos) {
-                                        let res = o.buildStructure(roomName, {type: structure.type, pos: pos});
-                                        while (res === ERR_INVALID_TARGET) {
-                                            pos = getPosition().value;
-                                            if (!pos) {
-                                                break;
-                                            }
-                                            res = o.buildStructure(roomName, room.memory.buildQueue[0]);
-                                        }
-                                        if (res === OK) {
-                                            room.memory.buildQueue.shift();
-                                        } else {
-                                            console.log(`cannot build: ${res}`);
-                                        }
-                                    }
-                                } else {
-                                    console.log('cannot locate position');
-                                }
-                            }
-                        } else {
-                            let res = o.buildStructure(roomName, structure);
-                            if (res === OK) {
-                                room.memory.buildQueue.shift();
-                            } else {
-                                console.log(`cannot build: ${res}`);
-                            }
+                if (spawns.length < 1) {
+                    const structures = _.filter(room.find(FIND_STRUCTURES),
+                        s => (s.structureType === STRUCTURE_LINK ||
+                        s.structureType === STRUCTURE_STORAGE ||
+                        s.structureType === STRUCTURE_TERMINAL));
+                    if (structures.length > 0) {
+                        for (let y in sources) {
+                            const closestStructure = sources[y].pos.findClosestByPath(structures);
+                            o.buildRoad(roomName, closestStructure.pos, sources[y].pos);
+                            console.log(closestStructure, sources[y].pos);
                         }
                     }
+
                 }
             }
+            /*
+             if (room.hasCreep(Config.ROLE_BUILDER)) {
+             if (!room.memory.queueInitialized) {
+             _.forEach(Config.STRUCTURES, (structure) => {
+             room.memory.buildQueue.push(structure);
+             });
+             room.memory.queueInitialized = true;
+             }
+
+             if (room.memory.buildQueue.length) {
+             if (_.filter(room.find(FIND_MY_CREEPS),
+             creep => creep.memory.canBuild === true).length) {
+             const structure = room.memory.buildQueue[0];
+             if (structure.pos === undefined) {
+             const nearObjs = o.getStructures(roomName, structure.near);
+             if (nearObjs.length) {
+             let positions = o.locatePosNearObject(roomName, nearObjs[0], structure.radius);
+             if (positions.length) {
+             let getPosition = o.coroutine(o.posGen);
+             let pos = getPosition().value || getPosition(positions).value;
+             if (pos) {
+             let res = o.buildStructure(roomName, {type: structure.type, pos: pos});
+             while (res === ERR_INVALID_TARGET) {
+             pos = getPosition().value;
+             if (!pos) {
+             break;
+             }
+             res = o.buildStructure(roomName, room.memory.buildQueue[0]);
+             }
+             if (res === OK) {
+             room.memory.buildQueue.shift();
+             } else {
+             console.log(`cannot build: ${res}`);
+             }
+             }
+             } else {
+             console.log('cannot locate position');
+             }
+             }
+             } else {
+             let res = o.buildStructure(roomName, structure);
+             if (res === OK) {
+             room.memory.buildQueue.shift();
+             } else {
+             console.log(`cannot build: ${res}`);
+             }
+             }
+             }
+             }
+             }*/
         }
     };
 
