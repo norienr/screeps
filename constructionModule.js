@@ -70,13 +70,29 @@ var constructionModule = (function () {
              room.memory.buildQueue = [];
              room.memory.queueInitialized = false;
              }
-             */
+
+
+             let cs = Game.rooms[roomName].find(FIND_CONSTRUCTION_SITES);
+             for (let c in cs) {
+             cs[c].remove();
+             }*/
+
+            const structures = [];
+            for (let r in Game.rooms) {
+                console.log(r);
+                structures.push(...(_.filter(Game.rooms[r].find(FIND_STRUCTURES),
+                    s => (s.structureType === STRUCTURE_LINK ||
+                    s.structureType === STRUCTURE_STORAGE ||
+                    s.structureType === STRUCTURE_TERMINAL))));
+            }
 
             if (room.find(FIND_CONSTRUCTION_SITES).length < 100) {
                 const spawns = room.find(FIND_MY_SPAWNS);
                 const controller = room.controller;
                 const sources = _.filter(room.find(FIND_SOURCES),
                     s => s.pos.findInRange(FIND_HOSTILE_STRUCTURES, 6).length < 1);
+
+
                 for (let i in spawns) {
                     for (let y in sources) {
                         o.buildRoad(roomName, spawns[i].pos, sources[y].pos);
@@ -84,18 +100,42 @@ var constructionModule = (function () {
                     o.buildRoad(roomName, spawns[i].pos, controller.pos);
                 }
                 if (spawns.length < 1) {
-                    const structures = _.filter(room.find(FIND_STRUCTURES),
-                        s => (s.structureType === STRUCTURE_LINK ||
-                        s.structureType === STRUCTURE_STORAGE ||
-                        s.structureType === STRUCTURE_TERMINAL));
                     if (structures.length > 0) {
                         for (let y in sources) {
-                            const closestStructure = sources[y].pos.findClosestByPath(structures);
-                            o.buildRoad(roomName, closestStructure.pos, sources[y].pos);
-                            console.log(closestStructure, sources[y].pos);
+                            let range = 0;
+                            let closestStructure = structures[0];
+                            let closestExit = null;
+                            let closestExit1 = null;
+                            let r = null;
+                            for (let a in structures) {
+                                let r1 = structures[a].room;
+                                let r2 = sources[y].room;
+                                let closestExit2 = sources[y].pos.findClosestByPath(sources[y].room.findExitTo(r1));
+                                let closestExit3 = structures[a].pos.findClosestByPath(structures[a].room.findExitTo(r2));
+                                if (closestExit2 != null && closestExit3 != null) {
+                                    if ((closestExit2.x == 0 && closestExit3.x == 49) || (closestExit2.x == 49 && closestExit3.x == 0))
+                                        closestExit2.y = closestExit3.y;
+                                    else if ((closestExit2.y == 0 && closestExit1.y == 49) || (closestExit2.y == 49 && closestExit3.y == 0))
+                                        closestExit2.x = closestExit3.x;
+                                    let range1 = sources[y].pos.getRangeTo(closestExit2) + structures[a].pos.getRangeTo(closestExit3);
+                                    if (range >= range1 || range == 0) {
+                                        closestStructure = structures[a];
+                                        range = range1;
+                                        closestExit = closestExit2;
+                                        closestExit1 = closestExit3;
+                                        r = r1;
+                                    }
+                                }
+                            }
+                            if (closestExit != null || closestExit1 != null) {
+                                console.log(closestStructure);
+                                console.log(closestExit1, closestExit);
+                                o.buildRoad(roomName, sources[y].pos, closestExit);
+                                o.buildRoad(r.name, closestStructure.pos, closestExit1);
+                            }
                         }
-                    }
 
+                    }
                 }
             }
             /*
