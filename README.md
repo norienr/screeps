@@ -1,8 +1,8 @@
 ##Screeps
 
-Version: _0.2.11_
+Version: _0.2.12_
 -------
-###Changelog for v0.2.11
+###Changelog for v0.2.12
 
 - Added squads. Squads can be controlled with flags.
 - Added auto-scaling creeps with levels.
@@ -20,6 +20,8 @@ Version: _0.2.11_
 - Fixed performance issues caused by creep behaviour
 - Additional minor bug fixes
 - Fix builders harvesting only 1 source
+- Transporters will first search for storages to fill up.
+- Disabled auto-spawning military creeps when enemy is detected in the room.
 
 -------
 #####Flags to control squads

@@ -57,8 +57,7 @@ MODULE = (function (module) {
                     roleHealer.run(creep);
                 }
             }
-        }
-        );
+        });
     };
 
     module.getCreepsByRole = function (room, role) {
@@ -122,10 +121,10 @@ MODULE = (function (module) {
                     s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_TERMINAL) &&
                     _.filter(room.find(FIND_SOURCES), src => s.pos.isNearTo(src)).length === 0).length;
             } else if (c.role === Config.ROLE_COURIER) {
-                num = 2 * _.filter(room.find(FIND_STRUCTURES),
-                        s => (s.structureType === STRUCTURE_CONTAINER ||
-                        s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_TERMINAL) &&
-                        _.filter(room.find(FIND_SOURCES), src => s.pos.isNearTo(src)).length === 0).length;
+                num = _.filter(room.find(FIND_STRUCTURES),
+                    s => (s.structureType === STRUCTURE_CONTAINER ||
+                    s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_TERMINAL) &&
+                    _.filter(room.find(FIND_SOURCES), src => s.pos.isNearTo(src)).length === 0).length;
             }
 
             if ((num - creepsAlive - creepsInQueue - creepsSpawning) > 0) {
@@ -190,19 +189,20 @@ MODULE = (function (module) {
         }
 
         let creepsToSpawn = [...Config.CREEPS];
+        /*
         if (room.memory.underAttack) {
             creepsToSpawn.unshift(...Config.DEFENSIVE_CREEPS);
         } else {
             module.assembleSquad(room);
         }
+        */
 
         _.forEach(creepsToSpawn, function (creep) {
             const numToSpawn = module.getMissingCreepsNum(room, creep);
             for (let i = 0; i < numToSpawn; ++i) {
                 room.memory.spawnQueue.push(Object.assign({}, creep));
             }
-        }
-        );
+        });
 
         if (room.memory.spawnQueue.length) {
             room.memory.spawnQueue =
@@ -240,22 +240,24 @@ MODULE = (function (module) {
                         module.getCreepsToNormalRoles(room);
                         room.memory.spawnQueue.shift();
                     } else { // reassign roles if can't spawn most valuable ones (harvester)
-                        if (res === -6) {
-                            room.memory.spawnQueue.shift();
-                        }
+                        /*
+                         if (res === -6) {
+                         room.memory.spawnQueue.shift();
+                         }
 
-                        if (module.getCreepsByRole(room, Config.ROLE_HARVESTER).length < 1) {
-                            const availableCreeps = _.sortBy(_.filter(room.find(FIND_MY_CREEPS),
-                                c => typeof c.memory.tempRole === 'undefined'),
-                                'priorityGeneration'
-                            );
+                         if (module.getCreepsByRole(room, Config.ROLE_HARVESTER).length < 1) {
+                         const availableCreeps = _.sortBy(_.filter(room.find(FIND_MY_CREEPS),
+                         c => typeof c.memory.tempRole === 'undefined'),
+                         'priorityGeneration'
+                         );
 
-                            availableCreeps.reverse();
+                         availableCreeps.reverse();
 
-                            if (availableCreeps.length) {
-                                availableCreeps[0].memory.tempRole = Config.ROLE_HARVESTER;
-                            }
-                        }
+                         if (availableCreeps.length) {
+                         availableCreeps[0].memory.tempRole = Config.ROLE_HARVESTER;
+                         }
+                         }
+                         */
                     }
                 }
             });
