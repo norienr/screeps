@@ -42,7 +42,7 @@ const config = (() => {
         },
         {
             role: ROLE_MINER,
-            num: DYNAMIC_SPAWN_NUM,
+            num: DYNAMIC_SPAWN_NUM, //number of sources
             staticParts: [WORK, CARRY, MOVE, MOVE, MOVE],
             dynamicParts: [WORK],
             pattern: [1],
@@ -60,7 +60,7 @@ const config = (() => {
         },
         {
             role: ROLE_TRANSPORTER,
-            num: DYNAMIC_SPAWN_NUM,
+            num: DYNAMIC_SPAWN_NUM, //containers + storage + terminal
             staticParts: [],
             dynamicParts: [CARRY, MOVE],
             pattern: [2, 1],
@@ -69,7 +69,7 @@ const config = (() => {
         },
         {
             role: ROLE_COURIER,
-            num: DYNAMIC_SPAWN_NUM,
+            num: DYNAMIC_SPAWN_NUM, // 2 * (containers + storage + terminal)
             staticParts: [],
             dynamicParts: [CARRY, MOVE],
             pattern: [2, 1],

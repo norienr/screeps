@@ -188,10 +188,23 @@ MODULE = (function (module) {
 			return false;
 			
 	}
+	
 
     module.run = function (roomName) {
 
         const room = Game.rooms[roomName];
+        
+        //Just for statictics
+        console.log("****************");
+        
+        console.log("Miners: "+module.getCreepsByRole(room, Config.ROLE_MINER).length);
+        console.log("Transporters: "+module.getCreepsByRole(room, Config.ROLE_TRANSPORTER).length);
+        console.log("Couriers: "+module.getCreepsByRole(room, Config.ROLE_COURIER).length);
+        console.log("Harvesters: "+module.getCreepsByRole(room, Config.ROLE_HARVESTER).length);
+        console.log("Builders: "+module.getCreepsByRole(room, Config.ROLE_BUILDER).length);
+        console.log("Upgraders: "+module.getCreepsByRole(room, Config.ROLE_UPGRADER).length);
+        
+        console.log("****************");
 
         //console.log(JSON.stringify(room.memory.spawnQueue));
 
@@ -217,40 +230,25 @@ MODULE = (function (module) {
         } else {
             _.forEach(module.getCreepsByRole(room, Config.ROLE_MINER), m => m.memory.saving = false);
         }
+        
+        Config.CREEP
 
         let creepsToSpawn = [...Config.CREEPS];
         if (room.memory.underAttack) {
-            creepsToSpawn.unshift(...Config.DEFENSIVE_CREEPS);
+            //creepsToSpawn.unshift(...Config.DEFENSIVE_CREEPS);
         } else {
             module.assembleSquad(room);
         }
-<<<<<<< HEAD
 
         _.forEach(creepsToSpawn, function (creep) {
                 const numToSpawn = module.getMissingCreepsNum(room, creep);
                 for (let i = 0; i < numToSpawn; ++i) {
                     room.memory.spawnQueue.push(Object.assign({}, creep));
-=======
-		
-        _.forEach(creepsToSpawn, function (c) {
-                const numToSpawn = module.getMissingCreepsNum(roomName, c);
-
-                if (numToSpawn > 0) {
-                    
-                    for (let i = 0; i < numToSpawn; ++i) {
-                        Game.rooms[roomName].memory.spawnQueue.push({
-                            role: c.role,
-                            parts: c.parts,
-                            priorityGeneration: c.priorityGeneration,
-                            squad: c.squad || false
-                        });
-                    }
->>>>>>> feature/role_bridge
                 }
             }
         );
 
-<<<<<<< HEAD
+
         if (room.memory.spawnQueue.length) {
             room.memory.spawnQueue =
                 _.sortBy(room.memory.spawnQueue, 'priorityGeneration');
@@ -265,29 +263,6 @@ MODULE = (function (module) {
                     for (let i = 0, n = creep.dynamicParts.length; i < n; ++i) {
                         for (let j = 0; j < creep.pattern[i]; ++i) {
                             partsBlock.push(creep.dynamicParts[i]);
-=======
-        if (Game.rooms[roomName].memory.spawnQueue.length) {
-            Game.rooms[roomName].memory.spawnQueue =
-                _.sortBy(Game.rooms[roomName].memory.spawnQueue, 'priorityGeneration');
-            _.forEach(module.getSpawnsByRoom(roomName), function (s) {
-                
-                //adding condition to spawn bridge creep
-        		//console.log("Checking storage and Link: "+module.checkStorageAndLink(Game.rooms[roomName].name));
-        		if( (module.checkStorageAndLink(roomName) == true) && module.getCreepsByRole(roomName, "bridge").length == 0) {
-        			module.createBridge(s)
-        		}
-                
-                
-                
-                if (s.spawning == null && Game.rooms[roomName].memory.spawnQueue.length) {
-                    const creep = Game.rooms[roomName].memory.spawnQueue[0];
-                    const parts = creep.parts;
-                    const availableEnergy = Game.rooms[roomName].energyAvailable -
-                        module.getNeededEnergy(parts);
-                    if (availableEnergy >= module.getNeededEnergy([CARRY, MOVE])) {
-                        if (parts.length < 50) {
-                            parts.unshift(...[CARRY, MOVE]);
->>>>>>> feature/role_bridge
                         }
                     }
 
