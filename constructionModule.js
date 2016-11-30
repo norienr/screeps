@@ -15,6 +15,7 @@ var constructionModule = (function () {
         buildRoad: function (roomName, startPos, endPos) {
             const path = Game.rooms[roomName].findPath(startPos, endPos, {
                 ignoreCreeps: true,
+                ignoreConstructionSites: true,
                 maxOps: 1000
             });
             _.forEach(path, p => Game.rooms[roomName].createConstructionSite(p.x, p.y, STRUCTURE_ROAD));
@@ -65,80 +66,67 @@ var constructionModule = (function () {
         run: function (roomName) {
 
             const room = Game.rooms[roomName];
-            /*
-             if (room.memory.buildQueue === undefined) {
-             room.memory.buildQueue = [];
-             room.memory.queueInitialized = false;
-             }
-
-
-             let cs = Game.rooms[roomName].find(FIND_CONSTRUCTION_SITES);
-             for (let c in cs) {
-             cs[c].remove();
-             }*/
-
             const structures = [];
             for (let r in Game.rooms) {
-                console.log(r);
                 structures.push(...(_.filter(Game.rooms[r].find(FIND_STRUCTURES),
                     s => (s.structureType === STRUCTURE_LINK ||
                     s.structureType === STRUCTURE_STORAGE ||
                     s.structureType === STRUCTURE_TERMINAL))));
             }
 
-            if (room.find(FIND_CONSTRUCTION_SITES).length < 100) {
-                const spawns = room.find(FIND_MY_SPAWNS);
-                const controller = room.controller;
-                const sources = _.filter(room.find(FIND_SOURCES),
-                    s => s.pos.findInRange(FIND_HOSTILE_STRUCTURES, 6).length < 1);
+            const spawns = room.find(FIND_MY_SPAWNS);
+            const controller = room.controller;
+            const sources = _.filter(room.find(FIND_SOURCES),
+                s => s.pos.findInRange(FIND_HOSTILE_STRUCTURES, Config.DISTANCE_TO_HOSTILE_STRUCTURE).length < 1);
 
 
-                for (let i in spawns) {
-                    for (let y in sources) {
-                        o.buildRoad(roomName, spawns[i].pos, sources[y].pos);
-                    }
-                    o.buildRoad(roomName, spawns[i].pos, controller.pos);
+            for (let i in spawns) {
+                for (let y in sources) {
+                    o.buildRoad(roomName, spawns[i].pos, sources[y].pos);
                 }
-                if (spawns.length < 1) {
-                    if (structures.length > 0) {
-                        for (let y in sources) {
-                            let range = 0;
-                            let closestStructure = structures[0];
-                            let closestExit = null;
-                            let closestExit1 = null;
-                            let r = null;
-                            for (let a in structures) {
-                                let r1 = structures[a].room;
-                                let r2 = sources[y].room;
-                                let closestExit2 = sources[y].pos.findClosestByPath(sources[y].room.findExitTo(r1));
-                                let closestExit3 = structures[a].pos.findClosestByPath(structures[a].room.findExitTo(r2));
-                                if (closestExit2 != null && closestExit3 != null) {
-                                    if ((closestExit2.x == 0 && closestExit3.x == 49) || (closestExit2.x == 49 && closestExit3.x == 0))
-                                        closestExit2.y = closestExit3.y;
-                                    else if ((closestExit2.y == 0 && closestExit1.y == 49) || (closestExit2.y == 49 && closestExit3.y == 0))
-                                        closestExit2.x = closestExit3.x;
-                                    let range1 = sources[y].pos.getRangeTo(closestExit2) + structures[a].pos.getRangeTo(closestExit3);
-                                    if (range >= range1 || range == 0) {
-                                        closestStructure = structures[a];
-                                        range = range1;
-                                        closestExit = closestExit2;
-                                        closestExit1 = closestExit3;
-                                        r = r1;
-                                    }
-                                }
-                            }
-                            if (closestExit != null || closestExit1 != null) {
-                                console.log(closestStructure);
-                                console.log(closestExit1, closestExit);
-                                o.buildRoad(roomName, sources[y].pos, closestExit);
-                                o.buildRoad(r.name, closestStructure.pos, closestExit1);
+                o.buildRoad(roomName, spawns[i].pos, controller.pos);
+            }
+            if (spawns.length < 1) {
+                if (structures.length > 0) {
+                    for (let y in sources) {
+                        let range = 0;
+                        let closestStructure = structures[0];
+                        let r = null;
+                        for (let a in structures) {
+                            let r1 = structures[a].room;
+                            let r2 = sources[y].room;
+                            let closestExit = Game.rooms[r2.name].findPath(sources[y].pos, structures[a].pos, {
+                                ignoreCreeps: true,
+                                maxOps: 1000
+                            });
+                            let closestExit1 = Game.rooms[r1.name].findPath(structures[a].pos, sources[y].pos, {
+                                ignoreCreeps: true,
+                                maxOps: 1000
+                            });
+                            let range1 = closestExit.length + closestExit1.length;
+                            if (range > range1 || range < 1) {
+                                closestStructure = structures[a];
+                                range = range1;
+                                r = r1;
                             }
                         }
 
+                        o.buildRoad(roomName, sources[y].pos, closestStructure.pos);
+                        o.buildRoad(r.name, closestStructure.pos, sources[y].pos);
                     }
+
                 }
             }
             /*
+             if (room.memory.buildQueue === undefined) {
+             room.memory.buildQueue = [];
+             room.memory.queueInitialized = false;
+             }
+
+             let cs = Game.rooms[roomName].find(FIND_CONSTRUCTION_SITES);
+             for (let c in cs) {
+             cs[c].remove();
+             }
              if (room.hasCreep(Config.ROLE_BUILDER)) {
              if (!room.memory.queueInitialized) {
              _.forEach(Config.STRUCTURES, (structure) => {

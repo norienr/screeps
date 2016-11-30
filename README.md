@@ -61,3 +61,14 @@ Computing potential heal that hostile can get, by adding all heal points that a 
 - target is healed by healers at distance from 2 to 3 squares for number of their heal body parts * 4;
 
 Finding the most vulnerable creep which has the smallest number of ticks that should be made to kill it.
+
+-------
+#####Automatic road building
+
+Automatic roads placement:
+- from spawns to sources;
+- From spawns to controller;
+- from nearest link, storage or terminal to each mining place in remote room.
+Before roads placement:
+- checking for hostile structures near the source;
+- find nearest link, storage or terminal.
