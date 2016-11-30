@@ -25,10 +25,19 @@ const roleTransporter = {
         }
 
         if (!creep.memory.harvesting) {
-            const structs = _.filter(room.find(FIND_STRUCTURES),
-                s => s.structureType === STRUCTURE_CONTAINER &&
+            let structs = _.filter(room.find(FIND_STRUCTURES),
+                s => s.structureType === STRUCTURE_STORAGE &&
                 s.store[RESOURCE_ENERGY] < s.storeCapacity &&
                 _.filter(room.find(FIND_SOURCES), src => s.pos.isNearTo(src)).length === 0);
+
+            if (structs.length === 0) {
+                structs = _.filter(room.find(FIND_STRUCTURES),
+                    s => (s.structureType === STRUCTURE_TERMINAL ||
+                    s.structureType === STRUCTURE_CONTAINER) &&
+                    s.store[RESOURCE_ENERGY] < s.storeCapacity &&
+                    _.filter(room.find(FIND_SOURCES), src => s.pos.isNearTo(src)).length === 0);
+            }
+
             if (structs.length) {
                 if (creep.transfer(structs[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(structs[0]);
