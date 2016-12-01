@@ -69,6 +69,7 @@ Automatic roads placement:
 - from spawns to sources;
 - From spawns to controller;
 - from nearest link, storage or terminal to each mining place in remote room.
+
 Before roads placement:
 - checking for hostile structures near the source;
 - find nearest link, storage or terminal.
