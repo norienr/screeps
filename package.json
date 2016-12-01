@@ -1,0 +1,10 @@
+{
+  "name": "screeps",
+  "version": "0.2.11",
+  "scripts": {
+    "lint": "eslint ./"
+  },
+  "devDependencies": {
+    "eslint": "^3.10.2"
+  }
+}

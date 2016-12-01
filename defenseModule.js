@@ -32,10 +32,38 @@ const defenseModule = (function () {
             }
         },
         attackThreats: function (tower, targets) {
-            const closestThreat = tower.pos.findClosestByRange(targets);
-            if (closestThreat) {
-                tower.attack(closestThreat);
+            let threat = targets[0];
+            for (let i in targets) {
+                let numOfTicks1 = targets[i].hits / (this.getPotentialDamage(tower, targets[i]) - this.getPotentialHeal(targets[i], targets));
+                let numOfTicks2 = threat.hits / (this.getPotentialDamage(tower, threat) - this.getPotentialHeal(threat, targets));
+                if (numOfTicks1 > 0 && numOfTicks1 < numOfTicks2) {
+                    threat = targets[i];
+                }
             }
+            tower.attack(threat);
+        },
+        getPotentialDamage: function (tower, target) {
+            const range = tower.pos.getRangeTo(target.pos);
+            if (range <= 5)
+                return 600;
+            else if (range >= 20)
+                return 150;
+            else
+                return 600 - (range - 5) * 30;
+        },
+        getPotentialHeal: function (target, targets) {
+            const closestHealer = _.filter(target.pos.findInRange(targets, 3),
+                c => c.getActiveBodyparts(HEAL) > 0);
+            let potentialHeal = target.getActiveBodyparts(HEAL) * 12;
+            if (closestHealer.length) {
+                for (let i in closestHealer) {
+                    if (target.pos.getRangeTo(closestHealer[i].pos) == 1)
+                        potentialHeal = +closestHealer[i].getActiveBodyparts(HEAL) * 12;
+                    else if (target.pos.getRangeTo(closestHealer[i].pos) > 1)
+                        potentialHeal = +closestHealer[i].getActiveBodyparts(HEAL) * 4;
+                }
+            }
+            return potentialHeal;
         }
     };
 

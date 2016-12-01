@@ -21,44 +21,43 @@ MODULE = (function (module) {
 
     module.runCreeps = function (room) {
         _.forEach(room.find(FIND_MY_CREEPS), (creep) => {
-                if (creep.memory.saving) {
-                    const closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
-                    creep.moveTo(closestSpawn);
-                } else if (typeof creep.memory.tempRole !== 'undefined') {
-                    if (creep.memory.tempRole === Config.ROLE_HARVESTER) {
-                        roleHarvester.run(creep);
-                    } else if (creep.memory.tempRole === Config.ROLE_UPGRADER) {
-                        roleUpgrader.run(creep);
-                    } else if (creep.memory.tempRole === Config.ROLE_BUILDER) {
-                        roleBuilder.run(creep);
-                    } else if (creep.memory.tempRole === Config.ROLE_TRANSPORTER) {
-                        roleTransporter.run(creep);
-                    } else if (creep.memory.tempRole === Config.ROLE_COURIER) {
-                        roleCourier.run(creep);
-                    }
-                } else {
-                    if (creep.memory.role === Config.ROLE_HARVESTER) {
-                        roleHarvester.run(creep);
-                    } else if (creep.memory.role === Config.ROLE_UPGRADER) {
-                        roleUpgrader.run(creep);
-                    } else if (creep.memory.role === Config.ROLE_BUILDER) {
-                        roleBuilder.run(creep);
-                    } else if (creep.memory.role === Config.ROLE_MINER) {
-                        module.initMiner(creep);
-                    } else if (creep.memory.role === Config.ROLE_TRANSPORTER) {
-                        roleTransporter.run(creep);
-                    } else if (creep.memory.role === Config.ROLE_COURIER) {
-                        roleCourier.run(creep);
-                    } else if (creep.memory.role === Config.ROLE_ARCHER) {
-                        roleArcher.run(creep);
-                    } else if (creep.memory.role === Config.ROLE_MELEE) {
-                        roleMelee.run(creep);
-                    } else if (creep.memory.role === Config.ROLE_HEALER) {
-                        roleHealer.run(creep);
-                    }
+            if (creep.memory.saving) {
+                const closestSpawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+                creep.moveTo(closestSpawn);
+            } else if (typeof creep.memory.tempRole !== 'undefined') {
+                if (creep.memory.tempRole === Config.ROLE_HARVESTER) {
+                    roleHarvester.run(creep);
+                } else if (creep.memory.tempRole === Config.ROLE_UPGRADER) {
+                    roleUpgrader.run(creep);
+                } else if (creep.memory.tempRole === Config.ROLE_BUILDER) {
+                    roleBuilder.run(creep);
+                } else if (creep.memory.tempRole === Config.ROLE_TRANSPORTER) {
+                    roleTransporter.run(creep);
+                } else if (creep.memory.tempRole === Config.ROLE_COURIER) {
+                    roleCourier.run(creep);
+                }
+            } else {
+                if (creep.memory.role === Config.ROLE_HARVESTER) {
+                    roleHarvester.run(creep);
+                } else if (creep.memory.role === Config.ROLE_UPGRADER) {
+                    roleUpgrader.run(creep);
+                } else if (creep.memory.role === Config.ROLE_BUILDER) {
+                    roleBuilder.run(creep);
+                } else if (creep.memory.role === Config.ROLE_MINER) {
+                    module.initMiner(creep);
+                } else if (creep.memory.role === Config.ROLE_TRANSPORTER) {
+                    roleTransporter.run(creep);
+                } else if (creep.memory.role === Config.ROLE_COURIER) {
+                    roleCourier.run(creep);
+                } else if (creep.memory.role === Config.ROLE_ARCHER) {
+                    roleArcher.run(creep);
+                } else if (creep.memory.role === Config.ROLE_MELEE) {
+                    roleMelee.run(creep);
+                } else if (creep.memory.role === Config.ROLE_HEALER) {
+                    roleHealer.run(creep);
                 }
             }
-        );
+        });
     };
 
     module.getCreepsByRole = function (room, role) {
@@ -98,7 +97,7 @@ MODULE = (function (module) {
 
     module.getNeededEnergy = function (parts) {
         let energy = 0;
-        _.forEach(parts, p => energy += BODYPART_COST[WORK]);
+        _.forEach(parts, p => energy += BODYPART_COST[p]);
         return energy;
     };
 
@@ -190,19 +189,20 @@ MODULE = (function (module) {
         }
 
         let creepsToSpawn = [...Config.CREEPS];
+        /*
         if (room.memory.underAttack) {
             creepsToSpawn.unshift(...Config.DEFENSIVE_CREEPS);
         } else {
             module.assembleSquad(room);
         }
+        */
 
         _.forEach(creepsToSpawn, function (creep) {
-                const numToSpawn = module.getMissingCreepsNum(room, creep);
-                for (let i = 0; i < numToSpawn; ++i) {
-                    room.memory.spawnQueue.push(Object.assign({}, creep));
-                }
+            const numToSpawn = module.getMissingCreepsNum(room, creep);
+            for (let i = 0; i < numToSpawn; ++i) {
+                room.memory.spawnQueue.push(Object.assign({}, creep));
             }
-        );
+        });
 
         if (room.memory.spawnQueue.length) {
             room.memory.spawnQueue =
@@ -240,22 +240,24 @@ MODULE = (function (module) {
                         module.getCreepsToNormalRoles(room);
                         room.memory.spawnQueue.shift();
                     } else { // reassign roles if can't spawn most valuable ones (harvester)
-                        if (res === -6) {
-                            room.memory.spawnQueue.shift();
-                        }
+                        /*
+                         if (res === -6) {
+                         room.memory.spawnQueue.shift();
+                         }
 
-                        if (module.getCreepsByRole(room, Config.ROLE_HARVESTER).length < 1) {
-                            const availableCreeps = _.sortBy(_.filter(room.find(FIND_MY_CREEPS),
-                                c => typeof c.memory.tempRole === 'undefined'),
-                                'priorityGeneration'
-                            );
+                         if (module.getCreepsByRole(room, Config.ROLE_HARVESTER).length < 1) {
+                         const availableCreeps = _.sortBy(_.filter(room.find(FIND_MY_CREEPS),
+                         c => typeof c.memory.tempRole === 'undefined'),
+                         'priorityGeneration'
+                         );
 
-                            availableCreeps.reverse();
+                         availableCreeps.reverse();
 
-                            if (availableCreeps.length) {
-                                availableCreeps[0].memory.tempRole = Config.ROLE_HARVESTER;
-                            }
-                        }
+                         if (availableCreeps.length) {
+                         availableCreeps[0].memory.tempRole = Config.ROLE_HARVESTER;
+                         }
+                         }
+                         */
                     }
                 }
             });

@@ -2,7 +2,7 @@ const Config = require('config');
 const roleMiner = require('role.miner');
 
 var MODULE = (function (module) {
-    "use strict";
+    'use strict';
 
     module.hasMinerAssigned = function (room, source) {
         return _.filter(room.find(FIND_MY_CREEPS),
@@ -51,7 +51,7 @@ var MODULE = (function (module) {
             if (conts.length) {
                 roleMiner.run(creep, conts[0].id);
             } else {
-                console.log(`Please, build container for miner`);
+                console.log('Please, build container for miner');
             }
         }
 
