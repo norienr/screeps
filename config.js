@@ -9,6 +9,8 @@ const config = (() => {
     const ROLE_ARCHER = 'archer';
     const ROLE_MELEE = 'melee';
     const ROLE_HEALER = 'healer';
+    const ROLE_REMOTE_MINER = 'remoteMiner';
+    const ROLE_REMOTE_TRANSPORTER = 'remoteTransporter';
 
     const MIN_TICKS_TO_RESPAWN = 30;
 
@@ -74,6 +76,15 @@ const config = (() => {
             pattern: [2, 1],
             limit: MAX_PARTS_NUM,
             priorityGeneration: 1
+        },
+        {
+            role: ROLE_REMOTE_MINER,
+            num: DYNAMIC_SPAWN_NUM,
+            staticParts: [WORK, CARRY, MOVE, MOVE, MOVE],
+            dynamicParts: [WORK],
+            pattern: [1],
+            limit: 11,
+            priorityGeneration: 3
         }
     ];
 
@@ -127,6 +138,8 @@ const config = (() => {
         ROLE_ARCHER: ROLE_ARCHER,
         ROLE_MELEE: ROLE_MELEE,
         ROLE_HEALER: ROLE_HEALER,
+        ROLE_REMOTE_MINER: ROLE_REMOTE_MINER,
+        ROLE_REMOTE_TRANSPORTER: ROLE_REMOTE_TRANSPORTER,
         DYNAMIC_SPAWN_NUM: DYNAMIC_SPAWN_NUM,
         MIN_SAFE_DISTANCE: MIN_SAFE_DISTANCE,
         TOWER_ATTACK_INTERVAL: TOWER_ATTACK_INTERVAL,
