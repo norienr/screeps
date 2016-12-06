@@ -1,6 +1,5 @@
 const roleCourier = {
 
-    /** @param {Creep} creep **/
     run: function (creep) {
         if (creep.memory.harvesting === undefined) {
             creep.memory.harvesting = false;
@@ -34,13 +33,15 @@ const roleCourier = {
             let targets = creep.room.find(FIND_STRUCTURES, {
                 filter: (s) => {
                     return ((s.structureType === STRUCTURE_EXTENSION ||
-                    s.structureType === STRUCTURE_SPAWN ||
+                    //s.structureType === STRUCTURE_SPAWN ||
                     s.structureType === STRUCTURE_TOWER) && s.energy < s.energyCapacity);
                 }
             });
             if (targets.length) {
+                
+                //First we should fill tower it has less than 50% of energy
                 let towers = _.filter(targets,
-                    (s) => s.structureType === STRUCTURE_TOWER);
+                    (s) => s.structureType === STRUCTURE_TOWER && s.energy < s.energyCapacity / 2);
 
                 let target;
                 if (towers.length) {
