@@ -2,6 +2,7 @@ const defenseModule = require('defenseModule');
 const unitControlModule = require('unitControlModule');
 const squadControlModule = require('squadControlModule');
 const prototypesInitializer = require('prototypesInitializer');
+const linkModule = require('linkModule');
 
 const main = function () {
 
@@ -10,7 +11,7 @@ const main = function () {
         unitControlModule.run(roomName);
         defenseModule.run(roomName);
     }
-
+    linkModule.run();
     squadControlModule.run();
 };
 
